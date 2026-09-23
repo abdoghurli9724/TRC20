@@ -148,28 +148,67 @@
     </div>
 </div>
 
+<!-- تضمين ملف الإعدادات أولاً -->
+<script src="js/config.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // إذا كان المستخدم مسجلاً الدخول بالفعل ينقله فوراً للصفحة الرئيسية index.html
         if (localStorage.getItem('isLoggedIn') === 'true') {
             window.location.href = 'index.html';
         }
 
-        // معالجة نموذج تسجيل الدخول
         const loginForm = document.getElementById('loginForm');
-        loginForm.addEventListener('submit', function (e) {
+        const submitBtn = document.querySelector('.btn-submit');
+
+        loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
 
-            if (usernameInput !== "") {
-                // حفظ حالة الجلسة واسم المستخدم
+            if (!usernameInput || !passwordInput) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "جاري التحقق...";
+
+            // 1. تسجيل دخول الأدمن
+            if (usernameInput === ADMIN_USERNAME && passwordInput === ADMIN_PASSWORD) {
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('currentUser', usernameInput);
-
-                // التوجيه المباشر إلى الصفحة الرئيسية index.html
+                localStorage.setItem('isAdmin', 'true');
                 window.location.href = 'index.html';
+                return;
             }
+
+            // 2. جلب بيانات السيرفر للأعضاء العاديين
+            let serverData = await fetchServerData();
+            let usersDB = serverData.usersDB || {};
+
+            // إذا كان عضو جديد -> إنشاؤه برصيد 0
+            if (!usersDB[usernameInput]) {
+                usersDB[usernameInput] = {
+                    password: passwordInput,
+                    balance: 0,
+                    deposit: 0,
+                    vipLevel: 'VIP0'
+                };
+                serverData.usersDB = usersDB;
+                await updateServerData(serverData);
+            } else {
+                // إذا كان عضو مسجل -> فحص كلمة المرور
+                if (usersDB[usernameInput].password !== passwordInput) {
+                    alert("كلمة المرور غير صحيحة!");
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "دخول";
+                    return;
+                }
+            }
+
+            // حفظ بيانات الجلسة المحلية
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('currentUser', usernameInput);
+            localStorage.setItem('isAdmin', 'false');
+            window.location.href = 'index.html';
         });
     });
 </script>
