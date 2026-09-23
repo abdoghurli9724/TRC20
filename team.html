@@ -10,26 +10,11 @@
         body { background-color: #cce7ff; min-height: 100vh; padding-bottom: 90px; direction: rtl; }
         .container { max-width: 480px; margin: 0 auto; padding: 15px; }
 
-        .card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 15px; }
+        .card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .ref-input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; margin: 8px 0; text-align: center; font-weight: bold; }
+        .btn-copy { background: #0284c7; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* شريط التنقل السفلي الثابت */
-        .bottom-nav {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
-            max-width: 480px;
-            margin: 0 auto;
-            background: #ffffff;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 10px 0;
-            border-top: 1px solid #e2e8f0;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
-            z-index: 9999;
-        }
+        .bottom-nav { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; max-width: 480px; margin: 0 auto; background: #ffffff; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; border-top: 1px solid #e2e8f0; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); z-index: 9999; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; text-align: center; }
         .nav-item i { font-size: 18px; margin-bottom: 3px; }
         .nav-item.active { color: #0284c7; font-weight: bold; }
@@ -38,14 +23,20 @@
 <body>
 
 <div class="container">
-    <h2 style="text-align: center; margin-bottom: 20px;">تقرير الفريق</h2>
+    <h2 style="text-align: center; margin-bottom: 20px;">صفحة دعوة الأصدقاء والفريق</h2>
+
     <div class="card">
-        <h3>حجم الفريق: 0</h3>
-        <p style="color: #64748b; font-size: 13px; margin-top: 5px;">أرباح الإحالة الإجمالية: $0.00</p>
+        <h3>رمز الدعوة الخاص بك</h3>
+        <input type="text" id="refCodeBox" class="ref-input" readonly>
+    </div>
+
+    <div class="card">
+        <h3>رابط الدعوة المباشر</h3>
+        <input type="text" id="refLinkBox" class="ref-input" readonly>
+        <button class="btn-copy" onclick="copyLink()">نسخ رابط الدعوة</button>
     </div>
 </div>
 
-<!-- الشريط السفلي الثابت -->
 <div class="bottom-nav">
     <a href="index.html" class="nav-item"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
     <a href="tasks.html" class="nav-item"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
@@ -53,5 +44,31 @@
     <a href="vip.html" class="nav-item"><i class="fa-solid fa-crown"></i><span>VIP</span></a>
 </div>
 
+<script>
+    const currentUser = localStorage.getItem('currentUser') || '099999999';
+
+    function initTeam() {
+        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
+        let user = users[currentUser] || {};
+
+        if(!user.referralCode) {
+            user.referralCode = 'REF' + Math.floor(1000 + Math.random() * 9000);
+            users[currentUser] = user;
+            localStorage.setItem('usersDB', JSON.stringify(users));
+        }
+
+        document.getElementById('refCodeBox').value = user.referralCode;
+        document.getElementById('refLinkBox').value = window.location.origin + '/register.html?ref=' + user.referralCode;
+    }
+
+    function copyLink() {
+        let copyText = document.getElementById("refLinkBox");
+        copyText.select();
+        document.execCommand("copy");
+        alert("تم نسخ رابط الدعوة الخاص بك بنجاح!");
+    }
+
+    document.addEventListener("DOMContentLoaded", initTeam);
+</script>
 </body>
 </html>
