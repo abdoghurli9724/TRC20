@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>افتراضية مول - VirtualMall</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Cascading Style Sheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="app-title">
+            <i class="fa-solid fa-cart-shopping"></i> VirtualMall افتراضية مول
+        </div>
+        <div style="font-size: 14px;"><i class="fa-solid fa-globe"></i> عربي</div>
+    </div>
+
+    <!-- VIP 1 -->
+    <div class="vip-card">
+        <div class="vip-body">
+            <div class="vip-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="vip-info">
+                <div class="vip-info-row"><span>الربح اليومي:</span> <span>1.00 USDT</span></div>
+                <div class="vip-info-row"><span>إجمالي الربح:</span> <span>365.00 USDT</span></div>
+            </div>
+        </div>
+        <button class="btn-unlock" onclick="openPaymentModal('VIP1', '3.00')">فتح الآن 3.00 USDT</button>
+    </div>
+
+    <!-- VIP 2 -->
+    <div class="vip-card">
+        <div class="vip-badge">VIP2</div>
+        <div class="vip-body">
+            <div class="vip-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="vip-info">
+                <div class="vip-info-row"><span>المهم اليومية:</span> <span>1</span></div>
+                <div class="vip-info-row"><span>الربح لكل مهمة:</span> <span>5.40</span></div>
+                <div class="vip-info-row"><span>الربح اليومي:</span> <span>5.40 USDT</span></div>
+                <div class="vip-info-row"><span>إجمالي الربح:</span> <span>1,971.00 USDT</span></div>
+            </div>
+        </div>
+        <button class="btn-unlock" onclick="openPaymentModal('VIP2', '16.00')">فتح الآن 16.00 USDT</button>
+    </div>
+
+    <!-- VIP 3 -->
+    <div class="vip-card">
+        <div class="vip-badge">VIP3</div>
+        <div class="vip-body">
+            <div class="vip-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+            <div class="vip-info">
+                <div class="vip-info-row"><span>المهم اليومية:</span> <span>1</span></div>
+                <div class="vip-info-row"><span>الربح لكل مهمة:</span> <span>30.00</span></div>
+                <div class="vip-info-row"><span>الربح اليومي:</span> <span>30.00 USDT</span></div>
+                <div class="vip-info-row"><span>إجمالي الربح:</span> <span>10,950.00 USDT</span></div>
+            </div>
+        </div>
+        <button class="btn-unlock" onclick="openPaymentModal('VIP3', '88.00')">فتح الآن 88.00 USDT</button>
+    </div>
+</div>
+
+<!-- Modal window for USDT Payment -->
+<div id="paymentModal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closePaymentModal()">&times;</span>
+        <h3 id="payTitle">اشتراك VIP</h3>
+        <p style="font-size: 12px; color: #666; margin-top: 5px;">أرسل المبلغ المطلوب عبر شبكة (TRC20)</p>
+
+        <div id="payAmount" style="font-size: 20px; font-weight: bold; color: #d32f2f; margin: 10px 0;">0.00 USDT</div>
+
+        <div style="font-size: 12px; text-align: right; margin-top: 5px;">عنوان محفظة الاستلام:</div>
+        <div class="wallet-box" id="walletAddress">T9xP2kL1aMnoPQRSTuVwXyZ34567890abc</div>
+        <button class="btn-copy" onclick="copyWallet()">نسخ العنوان</button>
+
+        <form onsubmit="submitTransaction(event)">
+            <div class="input-group" style="text-align: right;">
+                <label>رقم العملية (TXID):</label>
+                <input type="text" id="txidInput" class="input-txid" placeholder="ضع TXID الخاص بالعملية هنا" required>
+            </div>
+            <button type="submit" class="btn-submit btn-green">إرسال للتأكيد</button>
+        </form>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/main.js"></script>
+<script>
+    // التحقق من تسجيل الدخول قبل فتح الصفحة
+    if (!localStorage.getItem('isLoggedIn')) {
+        window.location.href = 'register.html';
+    }
+</script>
+
+</body>
+</html>
