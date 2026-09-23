@@ -3,52 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المهام - VirtualMall</title>
+    <title>المهام اليومية - VirtualMall</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-        body { background-color: #cce7ff; min-height: 100vh; padding-bottom: 90px; direction: rtl; }
-        .container { max-width: 480px; margin: 0 auto; padding: 15px; }
-
-        .disabled-card { background: #fff; padding: 40px 20px; border-radius: 20px; text-align: center; margin-top: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-
-        /* شريط التنقل السفلي الثابت */
-        .bottom-nav {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
-            max-width: 480px;
-            margin: 0 auto;
-            background: #ffffff;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 10px 0;
-            border-top: 1px solid #e2e8f0;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
-            z-index: 9999;
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; text-align: center; }
-        .nav-item i { font-size: 18px; margin-bottom: 3px; }
+        body { background-color: #cce7ff; min-height: 100vh; padding: 15px; padding-bottom: 90px; direction: rtl; }
+        .container { max-width: 480px; margin: 0 auto; }
+        .task-card { background: #fff; border-radius: 15px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .task-btn { background: #16a34a; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .task-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #e2e8f0; z-index: 9999; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; flex: 1; }
         .nav-item.active { color: #0284c7; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 style="text-align: center; margin-bottom: 20px;">المهام اليومية</h2>
-
-    <div class="disabled-card">
-        <i class="fa-solid fa-lock" style="font-size: 45px; color: #ef4444; margin-bottom: 15px;"></i>
-        <h3>المهام غير مفعلة!</h3>
-        <p style="color: #64748b; margin: 10px 0 20px; font-size: 13px;">أنت حالياً بمستوى VIP0، يجب ترقية باقتك لتفعيل المهام اليومية.</p>
-        <a href="vip.html" style="background: #0284c7; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 10px; font-weight: bold;">ترقية الباقة الآن</a>
-    </div>
+    <h2 style="margin-bottom: 15px; text-align: center;">المهام اليومية المتاحة</h2>
+    <div id="tasksList"></div>
 </div>
 
-<!-- الشريط السفلي الثابت -->
 <div class="bottom-nav">
     <a href="index.html" class="nav-item"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
     <a href="tasks.html" class="nav-item active"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
@@ -56,5 +31,64 @@
     <a href="vip.html" class="nav-item"><i class="fa-solid fa-crown"></i><span>VIP</span></a>
 </div>
 
+<script>
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) window.location.replace('login.html');
+
+    document.addEventListener("DOMContentLoaded", renderTasks);
+
+    function renderTasks() {
+        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
+        let u = users[currentUser];
+        let container = document.getElementById('tasksList');
+
+        if (!u || u.vip === 'VIP0' || !u.vip) {
+            container.innerHTML = `
+                <div style="background:#fff; padding:30px; text-align:center; border-radius:20px;">
+                    <i class="fa-solid fa-lock" style="font-size:40px; color:#ef4444; margin-bottom:10px;"></i>
+                    <p style="font-weight:bold; color:#334155;">لا توجد مهام مفعلة!</p>
+                    <small style="color:#64748b;">يرجى التوجه لقسم باقات VIP والاشتراك أولاً لتفعيل المهام.</small>
+                </div>`;
+            return;
+        }
+
+        let count = u.taskCount || 2;
+        let profitPerTask = (u.dailyProfit || 2) / count;
+        let html = '';
+
+        for (let i = 1; i <= count; i++) {
+            html += `
+            <div class="task-card">
+                <div>
+                    <b>مهمة تقييم منتج #${i}</b>
+                    <br><small style="color:#16a34a;">الربح: +$${profitPerTask.toFixed(2)}</small>
+                </div>
+                <button class="task-btn" onclick="completeTask(${profitPerTask}, this)">إكمال المهمة</button>
+            </div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    function completeTask(profit, btn) {
+        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
+        let u = users[currentUser];
+
+        u.balance = (u.balance || 0) + profit;
+
+        if (!u.history) u.history = [];
+        u.history.unshift({
+            type: 'ربح مهمة',
+            amount: `+$${profit.toFixed(2)}`,
+            title: 'إكمال مهمة يومية',
+            date: new Date().toLocaleString('ar-EG')
+        });
+
+        localStorage.setItem('usersDB', JSON.stringify(users));
+
+        btn.innerText = 'تمت بنجاح';
+        btn.disabled = true;
+        alert(`تم تنفيذ المهمة وإضافة $${profit.toFixed(2)} إلى رصيدك!`);
+    }
+</script>
 </body>
 </html>
