@@ -7,456 +7,126 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #cce7ff; min-height: 100vh; padding-bottom: 90px; direction: rtl; }
+        .container { max-width: 480px; margin: 0 auto; padding: 15px; }
 
-        body {
-            background-color: #cce7ff;
-            min-height: 100vh;
-            padding-bottom: 90px; /* مسافة لحماية المحتوى من الشريط السفلي */
-            direction: rtl;
-        }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .brand-info { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: bold; }
+        .brand-icon { width: 35px; height: 35px; background: #00b0ff; color: #fff; border-radius: 10px; display: flex; justify-content: center; align-items: center; }
 
-        .container {
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 15px;
-        }
+        .user-card { background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .user-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .vip-badge { background: #fef08a; color: #854d0e; padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; }
+        .balance-container { display: flex; justify-content: space-between; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 10px; }
 
-        /* الشريط العلوي */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 5px;
-            margin-bottom: 15px;
-        }
-
-        .brand-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .brand-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: #0f172a;
-        }
-
-        .brand-icon {
-            width: 35px;
-            height: 35px;
-            background: #00b0ff;
-            color: #fff;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
-        }
-
-        .lang-btn {
-            background: #ffffff;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            color: #334155;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        /* كارت المستخدم */
-        .user-card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            margin-bottom: 20px;
-        }
-
-        .user-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .vip-badge {
-            background: #fef08a;
-            color: #854d0e;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .user-phone {
-            font-size: 16px;
-            font-weight: bold;
-            color: #1e293b;
-        }
-
-        .avatar {
-            width: 45px;
-            height: 45px;
-            background: #fde047;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-            color: #713f12;
-        }
-
-        .balance-container {
-            display: flex;
-            justify-content: space-between;
-            text-align: center;
-            padding-top: 10px;
-            border-top: 1px solid #f1f5f9;
-        }
-
-        .balance-box { flex: 1; }
-        .balance-box .label { display: block; font-size: 12px; color: #64748b; margin-bottom: 5px; }
-        .balance-box .value { font-size: 22px; font-weight: 800; color: #0f172a; }
-
-        /* شبكة أزرار الإجراءات السريعة */
-        .actions-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .action-item {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 15px 10px;
-            text-align: center;
-            color: #334155;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-            cursor: pointer;
-            user-select: none;
-            transition: transform 0.1s ease;
-        }
-
-        .action-item:active { transform: scale(0.92); }
-
-        .action-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
-            margin: 0 auto 8px;
-            pointer-events: none;
-        }
+        .actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .action-item { background: #fff; padding: 15px 5px; border-radius: 15px; text-align: center; cursor: pointer; transition: transform 0.1s; }
+        .action-item:active { transform: scale(0.95); }
+        .action-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; margin: 0 auto 8px; font-size: 18px; }
 
         .bg-deposit { background: #ccfbf1; color: #0d9488; }
         .bg-withdraw { background: #f3e8ff; color: #9333ea; }
         .bg-account { background: #fef9c3; color: #ca8a04; }
         .bg-records { background: #fce7f3; color: #db2777; }
 
-        .action-item span { font-size: 12px; font-weight: 600; pointer-events: none; }
+        .menu-list { background: #fff; border-radius: 20px; overflow: hidden; }
+        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 14px; font-weight: 600; }
 
-        /* قائمة الخيارات */
-        .menu-list {
-            background: #ffffff;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        }
-
-        .menu-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 20px;
-            border-bottom: 1px solid #f1f5f9;
-            color: #334155;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .menu-item-left { display: flex; align-items: center; gap: 12px; }
-
-        .menu-icon {
-            width: 30px;
-            height: 30px;
-            background: #e0f2fe;
-            color: #0284c7;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 14px;
-        }
-
-        /* شريط التنقل السفلي الثابت */
-        .bottom-nav {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
-            max-width: 480px;
-            margin: 0 auto;
-            background: #ffffff;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 10px 0;
-            border-top: 1px solid #e2e8f0;
-            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
-            z-index: 9999;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #64748b;
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: 600;
-            flex: 1;
-            text-align: center;
-        }
-
-        .nav-item.active { color: #0284c7; font-weight: bold; }
+        .bottom-nav { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; max-width: 480px; margin: 0 auto; background: #ffffff; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; border-top: 1px solid #e2e8f0; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); z-index: 9999; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; text-align: center; }
         .nav-item i { font-size: 18px; margin-bottom: 3px; }
+        .nav-item.active { color: #0284c7; font-weight: bold; }
 
-        /* النوافذ المنبثقة (Modals) */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 10000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-box {
-            background: #ffffff;
-            width: 100%;
-            max-width: 400px;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            animation: popIn 0.2s ease;
-        }
-
-        @keyframes popIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #f1f5f9;
-            padding-bottom: 10px;
-        }
-
-        .modal-title { font-size: 16px; font-weight: bold; color: #0f172a; }
-        .close-btn { font-size: 22px; color: #94a3b8; cursor: pointer; line-height: 1; }
-
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-box { background: #fff; width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
+        .close-btn { font-size: 22px; color: #94a3b8; cursor: pointer; }
         .modal-body label { display: block; font-size: 13px; color: #475569; margin-bottom: 6px; }
-        .modal-body input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .btn-modal {
-            width: 100%;
-            padding: 12px;
-            background: #0284c7;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        .modal-body input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; margin-bottom: 15px; font-size: 14px; outline: none; }
+        .btn-modal { width: 100%; padding: 12px; background: #0284c7; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- الشريط العلوي -->
     <div class="top-bar">
         <div class="brand-info">
             <div class="brand-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-            <span class="brand-title">VirtualMall</span>
-        </div>
-
-        <div class="lang-btn">
-            <i class="fa-solid fa-globe"></i>
-            <span>عربي</span>
+            <span>VirtualMall</span>
         </div>
     </div>
 
-    <!-- كارت البيانات والمالية -->
     <div class="user-card">
         <div class="user-header">
-            <div class="vip-badge">
-                <span>VIP1</span> <i class="fa-solid fa-gem"></i>
-            </div>
-            <div class="user-phone">099999999</div>
-            <div class="avatar"><i class="fa-solid fa-user"></i></div>
+            <div class="vip-badge" id="vipLevelDisplay">VIP0 <i class="fa-solid fa-gem"></i></div>
+            <div style="font-weight:bold" id="userPhoneDisplay">099999999</div>
         </div>
-
         <div class="balance-container">
-            <div class="balance-box">
-                <span class="label">مبلغ الإيداع (USDT)</span>
-                <span class="value">0</span>
-            </div>
-            <div class="balance-box">
-                <span class="label">الرصيد الإجمالي (USDT)</span>
-                <span class="value">0.1</span>
-            </div>
+            <div><small style="color:#64748b">مبلغ الإيداع</small><h3 id="depDisplay">$0</h3></div>
+            <div><small style="color:#64748b">الرصيد الإجمالي</small><h3 id="balDisplay">$0.00</h3></div>
         </div>
     </div>
 
-    <!-- الأزرار الرئيسية الاربعة مع استدعام مباشر للنوافذ -->
     <div class="actions-grid">
-        <div class="action-item" onclick="showModal('depositModal')">
-            <div class="action-icon bg-deposit"><i class="fa-solid fa-wallet"></i></div>
-            <span>إيداع</span>
-        </div>
-        <div class="action-item" onclick="showModal('withdrawModal')">
-            <div class="action-icon bg-withdraw"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-            <span>يسحب</span>
-        </div>
-        <div class="action-item" onclick="showModal('accountModal')">
-            <div class="action-icon bg-account"><i class="fa-solid fa-building-columns"></i></div>
-            <span>حساب</span>
-        </div>
-        <div class="action-item" onclick="showModal('recordsModal')">
-            <div class="action-icon bg-records"><i class="fa-solid fa-chart-line"></i></div>
-            <span>سجلات</span>
-        </div>
+        <div class="action-item" onclick="showModal('depositModal')"><div class="action-icon bg-deposit"><i class="fa-solid fa-wallet"></i></div><span>إيداع</span></div>
+        <div class="action-item" onclick="showModal('withdrawModal')"><div class="action-icon bg-withdraw"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>يسحب</span></div>
+        <div class="action-item" onclick="showModal('accountModal')"><div class="action-icon bg-account"><i class="fa-solid fa-building-columns"></i></div><span>حساب</span></div>
+        <div class="action-item" onclick="showModal('recordsModal')"><div class="action-icon bg-records"><i class="fa-solid fa-chart-line"></i></div><span>سجلات</span></div>
     </div>
 
-    <!-- قائمة الخيارات السفلية -->
     <div class="menu-list">
-        <div class="menu-item" onclick="alert('خاصية التحويل ستكون متاحة قريباً')">
-            <div class="menu-item-left">
-                <div class="menu-icon"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
-                <span>تحويل</span>
-            </div>
-            <i class="fa-solid fa-chevron-left" style="color: #cbd5e1; font-size: 12px;"></i>
-        </div>
-
-        <div class="menu-item" onclick="alert('يمكنك تغيير كلمة المرور من صفحة الدخول')">
-            <div class="menu-item-left">
-                <div class="menu-icon" style="background: #f1f5f9; color: #475569;"><i class="fa-solid fa-minus"></i></div>
-                <span>تغيير كلمة المرور</span>
-            </div>
-            <i class="fa-solid fa-chevron-left" style="color: #cbd5e1; font-size: 12px;"></i>
-        </div>
-
         <div class="menu-item" onclick="handleLogout()">
-            <div class="menu-item-left">
-                <div class="menu-icon" style="background: #fef2f2; color: #ef4444;"><i class="fa-solid fa-right-from-bracket"></i></div>
-                <span style="color: #ef4444;">تسجيل الخروج</span>
-            </div>
+            <span style="color: #ef4444;"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</span>
             <i class="fa-solid fa-chevron-left" style="color: #cbd5e1; font-size: 12px;"></i>
         </div>
     </div>
 </div>
 
-<!-- ================= النوافذ المنبثقة ================= -->
-
-<!-- 1. نافذة الإيداع -->
+<!-- نافذة الإيداع مضافاً إليها TXID -->
 <div class="modal-overlay" id="depositModal">
     <div class="modal-box">
         <div class="modal-header">
-            <div class="modal-title">قسم الإيداع (USDT TRC20)</div>
+            <h3 style="font-size:16px;">قسم الإيداع (TRC20)</h3>
             <div class="close-btn" onclick="hideModal('depositModal')">&times;</div>
         </div>
         <div class="modal-body">
-            <label>عنوان محفظة الإيداع الخاصة بك:</label>
-            <input type="text" value="TYx89A9283471...TRC20" readonly style="background: #f8fafc; text-align:center; font-weight:bold;">
+            <label>عنوان المحفظة للتحويل (TRC20):</label>
+            <input type="text" value="TYx89A9283471...TRC20" readonly style="background:#f8fafc; text-align:center; font-weight:bold;">
+            
             <label>المبلغ المراد شحنه ($):</label>
-            <input type="number" placeholder="أدخل المبلغ (مثلاً: 10)">
-            <button class="btn-modal" onclick="alert('تم إرسال طلب الإيداع!'); hideModal('depositModal');">تأكيد طلب الشحن</button>
+            <input type="number" id="depAmount" placeholder="أدخل المبلغ بالدولار">
+            
+            <label>معرف المعاملة (TXID):</label>
+            <input type="text" id="depTXID" placeholder="أدخل رقم أو معرف عملية التحويل TXID">
+            
+            <button class="btn-modal" onclick="submitDeposit()">تقديم طلب الشحن</button>
         </div>
     </div>
 </div>
 
-<!-- 2. نافذة السحب -->
+<!-- باقي النوافذ المنبثقة -->
 <div class="modal-overlay" id="withdrawModal">
     <div class="modal-box">
-        <div class="modal-header">
-            <div class="modal-title">قسم سحب الأرباح</div>
-            <div class="close-btn" onclick="hideModal('withdrawModal')">&times;</div>
-        </div>
-        <div class="modal-body">
-            <label>عنوان محفظتك (USDT TRC20):</label>
-            <input type="text" placeholder="أدخل عنوان المحفظة">
-            <label>المبلغ المراد سحبه ($):</label>
-            <input type="number" placeholder="أدخل المبلغ">
-            <button class="btn-modal" style="background: #9333ea;" onclick="alert('تم تقديم طلب السحب!'); hideModal('withdrawModal');">تأكيد طلب السحب</button>
-        </div>
+        <div class="modal-header"><h3>قسم السحب</h3><div class="close-btn" onclick="hideModal('withdrawModal')">&times;</div></div>
+        <div class="modal-body"><button class="btn-modal" onclick="hideModal('withdrawModal')">إغلاق</button></div>
     </div>
 </div>
 
-<!-- 3. نافذة حسابي -->
 <div class="modal-overlay" id="accountModal">
     <div class="modal-box">
-        <div class="modal-header">
-            <div class="modal-title">تفاصيل الحساب</div>
-            <div class="close-btn" onclick="hideModal('accountModal')">&times;</div>
-        </div>
-        <div class="modal-body">
-            <p style="margin-bottom: 10px;"><b>رقم الهاتف:</b> 099999999</p>
-            <p style="margin-bottom: 10px;"><b>المستوى الحالي:</b> VIP1</p>
-            <p style="margin-bottom: 15px;"><b>حالة الحساب:</b> نشط</p>
-            <button class="btn-modal" onclick="hideModal('accountModal')">إغلاق</button>
-        </div>
+        <div class="modal-header"><h3>تفاصيل الحساب</h3><div class="close-btn" onclick="hideModal('accountModal')">&times;</div></div>
+        <div class="modal-body"><p id="accInfo"></p><br><button class="btn-modal" onclick="hideModal('accountModal')">إغلاق</button></div>
     </div>
 </div>
 
-<!-- 4. نافذة السجلات -->
 <div class="modal-overlay" id="recordsModal">
     <div class="modal-box">
-        <div class="modal-header">
-            <div class="modal-title">سجل العمليات السابقة</div>
-            <div class="close-btn" onclick="hideModal('recordsModal')">&times;</div>
-        </div>
-        <div class="modal-body">
-            <div style="text-align: center; color: #64748b; padding: 20px 0;">
-                لا يوجد سجلات سحب أو إيداع حالياً.
-            </div>
-            <button class="btn-modal" onclick="hideModal('recordsModal')">إغلاق</button>
-        </div>
+        <div class="modal-header"><h3>سجل العمليات</h3><div class="close-btn" onclick="hideModal('recordsModal')">&times;</div></div>
+        <div class="modal-body"><div id="recordsList" style="text-align:center; padding:10px;">لا توجد سجلات</div><button class="btn-modal" onclick="hideModal('recordsModal')">إغلاق</button></div>
     </div>
 </div>
 
-<!-- شريط التنقل السفلي الثابت -->
 <div class="bottom-nav">
     <a href="index.html" class="nav-item active"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
     <a href="tasks.html" class="nav-item"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
@@ -465,21 +135,52 @@
 </div>
 
 <script>
-    // الدوال البرمجية للنوافذ
-    function showModal(modalId) {
-        document.getElementById(modalId).style.display = 'flex';
+    const currentUser = localStorage.getItem('currentUser') || '099999999';
+
+    function initUser() {
+        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
+        if(!users[currentUser]) {
+            users[currentUser] = { phone: currentUser, balance: 0, deposit: 0, vip: 'VIP0', referralCode: 'REF' + Math.floor(1000 + Math.random()*9000), history: [] };
+            localStorage.setItem('usersDB', JSON.stringify(users));
+        }
+        let u = users[currentUser];
+        document.getElementById('userPhoneDisplay').innerText = u.phone;
+        document.getElementById('balDisplay').innerText = '$' + (u.balance || 0).toFixed(2);
+        document.getElementById('depDisplay').innerText = '$' + (u.deposit || 0).toFixed(2);
+        document.getElementById('vipLevelDisplay').innerText = u.vip || 'VIP0';
+        document.getElementById('accInfo').innerText = `رقم الهاتف: ${u.phone} | المستوى: ${u.vip}`;
     }
 
-    function hideModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
+    function showModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function hideModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function submitDeposit() {
+        let amount = parseFloat(document.getElementById('depAmount').value);
+        let txid = document.getElementById('depTXID').value.trim();
+
+        if(!amount || amount <= 0 || !txid) {
+            return alert('يرجى كتابة المبلغ ومعرف المعاملة TXID بشكل صحيح!');
+        }
+
+        let requests = JSON.parse(localStorage.getItem('depositRequests')) || [];
+        requests.push({ id: Date.now(), user: currentUser, amount: amount, txid: txid, address: 'TYx89A9283471...TRC20', status: 'معلق' });
+        localStorage.setItem('depositRequests', JSON.stringify(requests));
+
+        alert('تم تقديم طلب الشحن بنجاح وهو قيد المراجعة الان!');
+        document.getElementById('depAmount').value = '';
+        document.getElementById('depTXID').value = '';
+        hideModal('depositModal');
     }
 
     function handleLogout() {
-        if (confirm('هل ترغب في تسجيل الخروج؟')) {
-            window.location.href = 'login.html';
+        if(confirm('هل تريد تسجيل الخروج؟')) {
+            localStorage.removeItem('currentUser');
+            alert('تم تسجيل الخروج بنجاح!');
+            location.reload(); // لا يعود لصفحة تسجيل الدخول تلقائياً
         }
     }
-</script>
 
+    document.addEventListener("DOMContentLoaded", initUser);
+</script>
 </body>
 </html>
