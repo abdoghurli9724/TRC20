@@ -1,6 +1,6 @@
 // ==================== إعدادات JSONBin ====================
-const JSONBIN_BIN_ID = "ضع_هنا_BIN_ID_الخاص_بك";
-const JSONBIN_API_KEY = "ضع_هنا_MASTER_KEY_الخاص_بك";
+const JSONBIN_BIN_ID = "6aaf174eac6210605ae110f6";
+const JSONBIN_API_KEY = "$2a$10$ivwSTRMoM3LWu6xcGn1TuOwDAt1Od36P/ifB92r0AgPfmP6ZeuEyy";
 
 const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
@@ -41,3 +41,4 @@ async function updateServerData(fullData) {
         console.error("خطأ في حفظ البيانات على JSONBin:", error);
     }
 }
+
