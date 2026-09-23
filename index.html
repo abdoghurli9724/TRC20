@@ -45,6 +45,8 @@
         .modal-body label { display: block; font-size: 13px; color: #475569; margin-bottom: 6px; }
         .modal-body input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; margin-bottom: 15px; font-size: 14px; outline: none; }
         .btn-modal { width: 100%; padding: 12px; background: #0284c7; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -72,11 +74,10 @@
         <div class="action-item" onclick="showModal('depositModal')"><div class="action-icon bg-deposit"><i class="fa-solid fa-wallet"></i></div><span>إيداع</span></div>
         <div class="action-item" onclick="showModal('withdrawModal')"><div class="action-icon bg-withdraw"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>يسحب</span></div>
         <div class="action-item" onclick="showModal('accountModal')"><div class="action-icon bg-account"><i class="fa-solid fa-building-columns"></i></div><span>حساب</span></div>
-        <div class="action-item" onclick="showModal('recordsModal')"><div class="action-icon bg-records"><i class="fa-solid fa-chart-line"></i></div><span>سجلات</span></div>
+        <div class="action-item" onclick="showModal('recordsModal'); loadHistory();"><div class="action-icon bg-records"><i class="fa-solid fa-chart-line"></i></div><span>سجلات</span></div>
     </div>
 
     <div class="menu-list">
-        <!-- زر خيار الأدمن يظهر فقط عند دخول الأدمن -->
         <div class="menu-item" id="adminBtn" style="display: none; background: #fef2f2;" onclick="window.location.href='admin.html'">
             <span style="color: #dc2626;"><i class="fa-solid fa-user-shield"></i> لوحة التحكم (الأدمن)</span>
             <i class="fa-solid fa-chevron-left" style="color: #dc2626; font-size: 12px;"></i>
@@ -99,22 +100,29 @@
         <div class="modal-body">
             <label>عنوان المحفظة للتحويل (TRC20):</label>
             <input type="text" value="TYx89A9283471...TRC20" readonly style="background:#f8fafc; text-align:center; font-weight:bold;">
-            
             <label>المبلغ المراد شحنه ($):</label>
             <input type="number" id="depAmount" placeholder="أدخل المبلغ بالدولار">
-            
             <label>معرف المعاملة (TXID):</label>
-            <input type="text" id="depTXID" placeholder="أدخل رقم أو معرف عملية التحويل TXID">
-            
+            <input type="text" id="depTXID" placeholder="أدخل TXID العملية">
             <button class="btn-modal" onclick="submitDeposit()">تقديم طلب الشحن</button>
         </div>
     </div>
 </div>
 
+<!-- نافذة السحب -->
 <div class="modal-overlay" id="withdrawModal">
     <div class="modal-box">
-        <div class="modal-header"><h3>قسم السحب</h3><div class="close-btn" onclick="hideModal('withdrawModal')">&times;</div></div>
-        <div class="modal-body"><button class="btn-modal" onclick="hideModal('withdrawModal')">إغلاق</button></div>
+        <div class="modal-header">
+            <h3>قسم السحب (USDT TRC20)</h3>
+            <div class="close-btn" onclick="hideModal('withdrawModal')">&times;</div>
+        </div>
+        <div class="modal-body">
+            <label>مبلغ السحب ($):</label>
+            <input type="number" id="withdrawAmount" placeholder="أدخل المبلغ">
+            <label>عنوان محفظتك (USDT TRC20):</label>
+            <input type="text" id="withdrawAddress" placeholder="أدخل عنوان المحفظة">
+            <button class="btn-modal" onclick="submitWithdraw()">تأكيد طلب السحب</button>
+        </div>
     </div>
 </div>
 
@@ -125,10 +133,14 @@
     </div>
 </div>
 
+<!-- نافذة السجلات -->
 <div class="modal-overlay" id="recordsModal">
     <div class="modal-box">
         <div class="modal-header"><h3>سجل العمليات</h3><div class="close-btn" onclick="hideModal('recordsModal')">&times;</div></div>
-        <div class="modal-body"><div id="recordsList" style="text-align:center; padding:10px;">لا توجد سجلات</div><button class="btn-modal" onclick="hideModal('recordsModal')">إغلاق</button></div>
+        <div class="modal-body">
+            <div id="recordsList" style="max-height: 250px; overflow-y: auto;"></div>
+            <br><button class="btn-modal" onclick="hideModal('recordsModal')">إغلاق</button>
+        </div>
     </div>
 </div>
 
@@ -149,7 +161,6 @@
             return;
         }
 
-        // إظهار خيار لوحة التحكم إذا كان المسجل هو الأدمن
         if (isAdmin === 'true' || currentUser === 'admin') {
             document.getElementById('adminBtn').style.display = 'flex';
         }
@@ -160,7 +171,7 @@
     function initUser(currentUser) {
         let users = JSON.parse(localStorage.getItem('usersDB')) || {};
         if(!users[currentUser]) {
-            users[currentUser] = { phone: currentUser, balance: 0, deposit: 0, vip: 'VIP0', referralCode: 'REF' + Math.floor(1000 + Math.random()*9000), history: [] };
+            users[currentUser] = { phone: currentUser, balance: 0, deposit: 0, vip: 'VIP0', history: [] };
             localStorage.setItem('usersDB', JSON.stringify(users));
         }
         let u = users[currentUser];
@@ -187,10 +198,71 @@
         requests.push({ id: Date.now(), user: currentUser, amount: amount, txid: txid, address: 'TYx89A9283471...TRC20', status: 'معلق' });
         localStorage.setItem('depositRequests', JSON.stringify(requests));
 
+        // إضافة سجل معلق للمستخدم
+        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
+        if(!users[currentUser].history) users[currentUser].history = [];
+        users[currentUser].history.unshift({ type: 'إيداع', amount: `+$${amount}`, title: 'طلب شحن قيد المراجعة', date: new Date().toLocaleString('ar-EG') });
+        localStorage.setItem('usersDB', JSON.stringify(users));
+
         alert('تم تقديم طلب الشحن بنجاح وهو قيد المراجعة الان!');
         document.getElementById('depAmount').value = '';
         document.getElementById('depTXID').value = '';
         hideModal('depositModal');
+    }
+
+    function submitWithdraw() {
+        const currentUser = localStorage.getItem('currentUser');
+        let amount = parseFloat(document.getElementById('withdrawAmount').value);
+        let address = document.getElementById('withdrawAddress').value.trim();
+        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
+        let u = users[currentUser];
+
+        if (!amount || amount <= 0 || !address) {
+            return alert('يرجى إدخال المبلغ وعنوان المحفظة بشكل صحيح!');
+        }
+
+        if (u.balance < amount) {
+            return alert('رصيدك المتاح غير كافٍ للسحب!');
+        }
+
+        // خصم المبلغ وإضافة العملية في السجل
+        u.balance -= amount;
+        if(!u.history) u.history = [];
+        u.history.unshift({ type: 'سحب', amount: `-$${amount}`, title: `طلب سحب إلى ${address.substring(0,6)}...`, date: new Date().toLocaleString('ar-EG') });
+
+        localStorage.setItem('usersDB', JSON.stringify(users));
+        alert('تم تقديم طلب السحب بنجاح وسوف يصلك إلى محفظتك قريبًا!');
+        
+        initUser(currentUser);
+        hideModal('withdrawModal');
+    }
+
+    function loadHistory() {
+        const currentUser = localStorage.getItem('currentUser');
+        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
+        let history = users[currentUser]?.history || [];
+        let list = document.getElementById('recordsList');
+
+        if (history.length === 0) {
+            list.innerHTML = '<p style="text-align:center; color:#64748b;">لا توجد سجلات سابقة</p>';
+            return;
+        }
+
+        let html = '';
+        history.forEach(item => {
+            let isPositive = item.amount.includes('+');
+            html += `
+            <div class="history-item">
+                <div>
+                    <b>${item.title}</b><br>
+                    <small style="color:#94a3b8;">${item.date}</small>
+                </div>
+                <div style="font-weight:bold; color: ${isPositive ? '#16a34a' : '#ef4444'};">
+                    ${item.amount}
+                </div>
+            </div>`;
+        });
+        list.innerHTML = html;
     }
 
     function handleLogout() {
