@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحويل - VirtualMall</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+<body>
+<div class="app-container">
+    <div class="top-bar">
+        <a href="profile.html" style="color: #0f172a; text-decoration: none; font-size: 20px;"><i class="fa-solid fa-arrow-right"></i></a>
+        <span class="brand-title">تحويل الأموال الداخلي</span>
+        <div></div>
+    </div>
+
+    <form onsubmit="submitTransfer(event)" class="user-card">
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-size: 13px; color: #475569; margin-bottom: 5px;">من حساب الأرباح إلى حساب الإيداع</label>
+            <input type="number" placeholder="أدخل المبلغ المراد تحويله" required style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; outline: none;">
+        </div>
+        <button type="submit" style="background: #00b0ff; color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold;">تأكيد التحويل</button>
+    </form>
+</div>
+
+<script>
+function submitTransfer(e) {
+    e.preventDefault();
+    alert('تم التحويل الداخلي بنجاح!');
+    window.location.href = 'profile.html';
+}
+</script>
+</body>
+</html>
