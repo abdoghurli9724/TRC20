@@ -15,6 +15,12 @@
         .input-group label { display: block; font-size: 13px; color: #475569; margin-bottom: 6px; }
         .input-group input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; }
         .btn-login { width: 100%; padding: 12px; background: #0284c7; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-register-link { width: 100%; padding: 12px; background: transparent; color: #0284c7; border: 1px solid #0284c7; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        
+        /* النافذة المنبثقة لإنشاء حساب */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-box { background: #fff; width: 100%; max-width: 380px; padding: 25px 20px; border-radius: 20px; position: relative; }
+        .close-btn { position: absolute; top: 15px; left: 15px; font-size: 20px; color: #94a3b8; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -34,6 +40,27 @@
     </div>
 
     <button class="btn-login" onclick="handleLogin()">دخول</button>
+    <button class="btn-register-link" onclick="openRegisterModal()">إنشاء حساب جديد</button>
+</div>
+
+<!-- نافذة إنشاء حساب جديد -->
+<div class="modal-overlay" id="registerModal">
+    <div class="modal-box">
+        <span class="close-btn" onclick="closeRegisterModal()">&times;</span>
+        <h3 style="margin-bottom: 20px; text-align: center; color: #0f172a;">إنشاء حساب جديد</h3>
+        
+        <div class="input-group">
+            <label>اسم المستخدم / رقم الهاتف:</label>
+            <input type="text" id="regPhone" placeholder="أدخل رقم الهاتف أو اسم المستخدم">
+        </div>
+
+        <div class="input-group">
+            <label>كلمة المرور:</label>
+            <input type="password" id="regPass" placeholder="أنشئ كلمة مرور">
+        </div>
+
+        <button class="btn-login" onclick="handleRegister()">تسجيل الحساب</button>
+    </div>
 </div>
 
 <script>
@@ -56,7 +83,7 @@
             return alert('يرجى كتابة اسم المستخدم وكلمة المرور!');
         }
 
-        // التحقق من حساب الأدمن
+        // تسجيل دخول الأدمن
         if (username === 'admin' && password === 'admin123') {
             localStorage.setItem('currentUser', 'admin');
             localStorage.setItem('isAdmin', 'true');
@@ -64,10 +91,62 @@
             return;
         }
 
-        // تسجيل دخول للمستخدم العادي
+        // التحقق من وجود المستخدم في قاعدة البيانات local
+        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
+        
+        if (!users[username]) {
+            return alert('هذا الحساب غير موجود! يرجى اضغط على "إنشاء حساب جديد".');
+        }
+
+        if (users[username].password && users[username].password !== password) {
+            return alert('كلمة المرور غير صحيحة!');
+        }
+
+        // تسجيل دخول مستخدم عادي
         localStorage.setItem('currentUser', username);
         localStorage.setItem('isAdmin', 'false');
         window.location.replace('index.html');
+    }
+
+    function openRegisterModal() {
+        document.getElementById('registerModal').style.display = 'flex';
+    }
+
+    function closeRegisterModal() {
+        document.getElementById('registerModal').style.display = 'none';
+    }
+
+    function handleRegister() {
+        let phone = document.getElementById('regPhone').value.trim();
+        let pass = document.getElementById('regPass').value.trim();
+
+        if (!phone || !pass) {
+            return alert('يرجى إدخال جميع البيانات المطلوب!');
+        }
+
+        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
+
+        if (users[phone]) {
+            return alert('هذا الحساب موجود بالفعل! قم بتسجيل الدخول مباشرة.');
+        }
+
+        // إنشاء الحساب وتخزينه
+        users[phone] = {
+            phone: phone,
+            password: pass,
+            balance: 0,
+            deposit: 0,
+            vip: 'VIP0',
+            referralCode: 'REF' + Math.floor(1000 + Math.random() * 9000),
+            history: []
+        };
+
+        localStorage.setItem('usersDB', JSON.stringify(users));
+        alert('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.');
+        
+        closeRegisterModal();
+        document.getElementById('phoneInput').value = phone;
+        document.getElementById('passInput').value = pass;
     }
 </script>
 
