@@ -1,0 +1,296 @@
+:root {
+    --bg-light-blue: #cce7ff;
+    --card-white: #ffffff;
+    --card-blue-item: #b8e2f2;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --gold-badge: #ffe082;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: #121212;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    direction: rtl;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100vh;
+    background-color: var(--bg-light-blue);
+    position: relative;
+    padding: 15px 15px 80px 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* الشريط العلوي */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.brand-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-box {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #00e676, #00b0ff);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 18px;
+}
+
+.brand-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #0f172a;
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon-btn {
+    font-size: 20px;
+    color: #0f172a;
+    cursor: pointer;
+}
+
+.lang-selector {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #0f172a;
+    cursor: pointer;
+}
+
+/* بطاقة المستخدم */
+.user-card {
+    background: var(--card-white);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    margin-bottom: 25px;
+}
+
+.user-header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.user-avatar-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: #ffcc80;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    overflow: hidden;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.user-email {
+    font-size: 15px;
+    font-weight: bold;
+    color: #0f172a;
+}
+
+.vip-badge {
+    background: var(--gold-badge);
+    color: #5d4037;
+    padding: 4px 14px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #ffe082;
+}
+
+.balances-container {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    padding-top: 10px;
+}
+
+.balance-box {
+    flex: 1;
+}
+
+.balance-title {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.balance-amount {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+/* شبكة الإجراءات السريعة */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.action-icon {
+    width: 65px;
+    height: 65px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.bg-deposit { background: #80cbd2; color: #004d40; }
+.bg-withdraw { background: #d1c4e9; color: #4a148c; }
+.bg-account { background: #ffe082; color: #e65100; }
+.bg-records { background: #f8bbd0; color: #880e4f; }
+
+.action-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+}
+
+/* قائمة الخيارات */
+.menu-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.menu-card {
+    background: var(--card-blue-item);
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.menu-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.menu-icon-box {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: #1e293b;
+}
+
+.menu-text {
+    font-size: 15px;
+    font-weight: bold;
+    color: #0f172a;
+}
+
+.menu-arrow {
+    font-size: 16px;
+    color: #64748b;
+}
+
+/* الشريط السفلي */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    height: 65px;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -3px 10px rgba(0,0,0,0.05);
+    z-index: 100;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.nav-item i {
+    font-size: 20px;
+    margin-bottom: 3px;
+}
+
+.nav-item.active {
+    color: #0f172a;
+    font-weight: bold;
+}
