@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم والإدارة - VirtualMall</title>
+    <!-- مكتبة الأيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0284c7;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px 10px;
+            direction: rtl;
+        }
+
+        .admin-container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h2 {
+            font-size: 22px;
+            color: var(--danger);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-search { background: var(--success); color: #fff; margin-top: 8px; }
+        .btn-save { background: var(--primary); color: #fff; margin-top: 15px; }
+        .btn-back { background: #475569; color: #fff; margin-top: 10px; }
+        .btn-reload { background: #3b82f6; color: #fff; margin-bottom: 15px; font-size: 13px; padding: 8px; }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 25px 0;
+        }
+
+        /* جدول قائمة الأعضاء */
+        .users-table-box {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #0f172a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: right;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: #1e293b;
+            color: var(--primary);
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.03);
+            cursor: pointer;
+        }
+
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <div class="header">
+        <h2><i class="fa-solid fa-user-shield"></i> لوحة تحكم الإدارة</h2>
+        <p>إدارة الحسابات والأرصدة أونلاين عبر JSONBin</p>
+    </div>
+
+    <!-- 1. البحث عن عضو -->
+    <div class="section-title">
+        <i class="fa-solid fa-magnifying-glass"></i> البحث عن حساب عضو
+    </div>
+    
+    <div class="form-group">
+        <label>أدخل اسم المستخدم أو رقم الهاتف:</label>
+        <input type="text" id="searchUser" placeholder="مثال: 099999999">
+        <button type="button" class="btn btn-search" id="searchBtn" onclick="loadUserData()">
+            <i class="fa-solid fa-download"></i> جلب بيانات العضو
+        </button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 2. تعديل البيانات -->
+    <div class="section-title">
+        <i class="fa-solid fa-pen-to-square"></i> تعديل بيانات العضو المحدَّد
+    </div>
+
+    <div class="form-group">
+        <label>إجمالي الرصيد (USDT):</label>
+        <input type="number" id="editBalance" value="0" step="any">
+    </div>
+
+    <div class="form-group">
+        <label>مبلغ الإيداع (USDT):</label>
+        <input type="number" id="editDeposit" value="0" step="any">
+    </div>
+
+    <div class="form-group">
+        <label>تفعيل مستوى الـ VIP:</label>
+        <select id="editVip">
+            <option value="VIP0">VIP0 (عضو جديد)</option>
+            <option value="VIP1">VIP1</option>
+            <option value="VIP2">VIP2</option>
+            <option value="VIP3">VIP3</option>
+            <option value="VIP4">VIP4</option>
+            <option value="VIP5">VIP5</option>
+            <option value="VIP6">VIP6</option>
+            <option value="VIP7">VIP7</option>
+        </select>
+    </div>
+
+    <button type="button" class="btn btn-save" id="saveBtn" onclick="saveUserData()">
+        <i class="fa-solid fa-cloud-arrow-up"></i> حفظ التعديلات أونلاين
+    </button>
+
+    <div class="divider"></div>
+
+    <!-- 3. قائمة جميع الأعضاء -->
+    <div class="section-title">
+        <i class="fa-solid fa-users"></i> قائمة المسجلين بالنظام
+    </div>
+    
+    <button type="button" class="btn btn-reload" onclick="fetchAllUsersList()">
+        <i class="fa-solid fa-rotate"></i> تحديث قائمة الأعضاء
+    </button>
+
+    <div class="users-table-box">
+        <table>
+            <thead>
+                <tr>
+                    <th>المستخدم</th>
+                    <th>الرصيد</th>
+                    <th>الباقة</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                <tr>
+                    <td colspan="3" style="text-align: center; color: var(--text-muted);">اضغط تحديث لجلب القائمة</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button type="button" class="btn btn-back" onclick="window.location.href='index.html'">
+        <i class="fa-solid fa-arrow-right"></i> العودة للرئيسية
+    </button>
+</div>
+
+<!-- 1. تضمين ملف إعدادات JSONBin -->
+<script src="js/config.js"></script>
+
+<script>
+    // حماية الصفحة: التأكد من تسجيل دخول الأدمن فقط
+    if (localStorage.getItem('isAdmin') !== 'true') {
+        alert("غير مصرح لك بدخول هذه الصفحة!");
+        window.location.href = 'index.html';
+    }
+
+    let globalServerData = { usersDB: {} };
+
+    // جلب بيانات عضو محدد
+    async function loadUserData() {
+        const searchBtn = document.getElementById('searchBtn');
+        const phone = document.getElementById('searchUser').value.trim();
+
+        if (!phone) {
+            alert("يرجى إدخال اسم أو رقم العضو أولاً!");
+            return;
+        }
+
+        searchBtn.disabled = true;
+        searchBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري البحث...';
+
+        globalServerData = await fetchServerData();
+        let usersDB = globalServerData.usersDB || {};
+
+        if (usersDB[phone]) {
+            document.getElementById('editBalance').value = usersDB[phone].balance || 0;
+            document.getElementById('editDeposit').value = usersDB[phone].deposit || 0;
+            document.getElementById('editVip').value = usersDB[phone].vipLevel || 'VIP0';
+            alert("تم جلب بيانات العضو " + phone + " بنجاح!");
+        } else {
+            alert("لم يتم العثور على هذا العضو في السيرفر!");
+        }
+
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = '<i class="fa-solid fa-download"></i> جلب بيانات العضو';
+    }
+
+    // حفظ التعديلات على السيرفر السحابي
+    async function saveUserData() {
+        const saveBtn = document.getElementById('saveBtn');
+        const phone = document.getElementById('searchUser').value.trim();
+
+        if (!globalServerData.usersDB || !globalServerData.usersDB[phone]) {
+            alert("يرجى البحث عن عضو موجود أولاً قبل الحفظ!");
+            return;
+        }
+
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ أونلاين...';
+
+        // تحديث البيانات في الكائن البرمجي
+        globalServerData.usersDB[phone].balance = parseFloat(document.getElementById('editBalance').value) || 0;
+        globalServerData.usersDB[phone].deposit = parseFloat(document.getElementById('editDeposit').value) || 0;
+        globalServerData.usersDB[phone].vipLevel = document.getElementById('editVip').value;
+
+        // إرسال التحديث لـ JSONBin
+        await updateServerData(globalServerData);
+
+        alert("تم شحن الحساب وتحديث بيانات العضو بنجاح أونلاين!");
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> حفظ التعديلات أونلاين';
+        
+        // إعادة تحديث الجدول السفلي
+        fetchAllUsersList();
+    }
+
+    // جلب وعرض قائمة جميع المسجلين في جدول
+    async function fetchAllUsersList() {
+        const tbody = document.getElementById('usersTableBody');
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">جاري التحميل...</td></tr>';
+
+        globalServerData = await fetchServerData();
+        let usersDB = globalServerData.usersDB || {};
+
+        tbody.innerHTML = '';
+
+        const userKeys = Object.keys(usersDB);
+        if (userKeys.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">لا يوجد أعضاء مسجلين بعد</td></tr>';
+            return;
+        }
+
+        userKeys.forEach(user => {
+            const tr = document.createElement('tr');
+            tr.onclick = () => {
+                document.getElementById('searchUser').value = user;
+                loadUserData();
+            };
+            tr.innerHTML = `
+                <td><b>${user}</b></td>
+                <td>$${usersDB[user].balance || 0}</td>
+                <td><span class="status-badge">${usersDB[user].vipLevel || 'VIP0'}</span></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+</script>
+
+</body>
+</html>
