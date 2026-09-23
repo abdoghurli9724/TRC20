@@ -60,7 +60,7 @@
     <div class="user-card">
         <div class="user-header">
             <div class="vip-badge" id="vipLevelDisplay">VIP0 <i class="fa-solid fa-gem"></i></div>
-            <div style="font-weight:bold" id="userPhoneDisplay">099999999</div>
+            <div style="font-weight:bold" id="userPhoneDisplay">---</div>
         </div>
         <div class="balance-container">
             <div><small style="color:#64748b">مبلغ الإيداع</small><h3 id="depDisplay">$0</h3></div>
@@ -105,7 +105,6 @@
     </div>
 </div>
 
-<!-- बाकी النوافذ المنبثقة -->
 <div class="modal-overlay" id="withdrawModal">
     <div class="modal-box">
         <div class="modal-header"><h3>قسم السحب</h3><div class="close-btn" onclick="hideModal('withdrawModal')">&times;</div></div>
@@ -135,13 +134,19 @@
 </div>
 
 <script>
-    // التحقق من وجود مسجل دخول، وفي حال عدم وجوده يتم التوجيه مباشرة لصفحة الدخول
-    const currentUser = localStorage.getItem('currentUser');
-    if (!currentUser) {
-        window.location.href = 'login.html';
-    }
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentUser = localStorage.getItem('currentUser');
+        
+        // التحقق من وجود مستخدم؛ إذا لم يوجد يتجه للدخول بدون تعليق
+        if (!currentUser || currentUser === 'null' || currentUser === 'undefined') {
+            window.location.replace('login.html');
+            return;
+        }
 
-    function initUser() {
+        initUser(currentUser);
+    });
+
+    function initUser(currentUser) {
         let users = JSON.parse(localStorage.getItem('usersDB')) || {};
         if(!users[currentUser]) {
             users[currentUser] = { phone: currentUser, balance: 0, deposit: 0, vip: 'VIP0', referralCode: 'REF' + Math.floor(1000 + Math.random()*9000), history: [] };
@@ -159,6 +164,7 @@
     function hideModal(id) { document.getElementById(id).style.display = 'none'; }
 
     function submitDeposit() {
+        const currentUser = localStorage.getItem('currentUser');
         let amount = parseFloat(document.getElementById('depAmount').value);
         let txid = document.getElementById('depTXID').value.trim();
 
@@ -176,16 +182,13 @@
         hideModal('depositModal');
     }
 
-    // دالة تسجيل الخروج المعدلة لتوجيه المستخدم تلقائياً إلى صفحة login.html
     function handleLogout() {
         if(confirm('هل تريد تسجيل الخروج؟')) {
             localStorage.removeItem('currentUser');
             alert('تم تسجيل الخروج بنجاح!');
-            window.location.href = 'login.html';
+            window.location.replace('login.html');
         }
     }
-
-    document.addEventListener("DOMContentLoaded", initUser);
 </script>
 </body>
 </html>
