@@ -24,8 +24,8 @@
     <h2>تسجيل الدخول</h2>
     
     <div class="input-group">
-        <label>رقم الهاتف:</label>
-        <input type="text" id="phoneInput" placeholder="أدخل رقم الهاتف">
+        <label>اسم المستخدم / رقم الهاتف:</label>
+        <input type="text" id="phoneInput" placeholder="أدخل اسم المستخدم أو الرقم">
     </div>
 
     <div class="input-group">
@@ -37,22 +37,36 @@
 </div>
 
 <script>
-    // إذا كان المستخدم مسجلاً بالفعل، يتم توجيهه للرئيسية بدون رفرفة
     document.addEventListener("DOMContentLoaded", function() {
         const currentUser = localStorage.getItem('currentUser');
         if (currentUser && currentUser !== 'null' && currentUser !== 'undefined') {
-            window.location.replace('index.html');
+            if (currentUser === 'admin') {
+                window.location.replace('admin.html');
+            } else {
+                window.location.replace('index.html');
+            }
         }
     });
 
     function handleLogin() {
-        let phone = document.getElementById('phoneInput').value.trim();
-        if (!phone) {
-            return alert('يرجى كتابة رقم الهاتف!');
+        let username = document.getElementById('phoneInput').value.trim();
+        let password = document.getElementById('passInput').value.trim();
+
+        if (!username || !password) {
+            return alert('يرجى كتابة اسم المستخدم وكلمة المرور!');
         }
 
-        // حفظ المستخدم الحالي والتوجيه فوراً
-        localStorage.setItem('currentUser', phone);
+        // التحقق من حساب الأدمن
+        if (username === 'admin' && password === 'admin123') {
+            localStorage.setItem('currentUser', 'admin');
+            localStorage.setItem('isAdmin', 'true');
+            window.location.replace('admin.html');
+            return;
+        }
+
+        // تسجيل دخول للمستخدم العادي
+        localStorage.setItem('currentUser', username);
+        localStorage.setItem('isAdmin', 'false');
         window.location.replace('index.html');
     }
 </script>
