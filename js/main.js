@@ -117,3 +117,13 @@ function submitTransaction(event) {
     document.getElementById('txidInput').value = '';
     closePaymentModal();
 }
+
+// دالة تسجيل الخروج
+function handleLogout() {
+    // مسح بيانات الجلسة من المتصفح
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('currentUser');
+    
+    // التوجيه إلى صفحة تسجيل الدخول
+    window.location.href = 'login.html';
+}
