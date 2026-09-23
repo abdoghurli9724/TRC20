@@ -4,20 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>افتراضية مول - VirtualMall</title>
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Cascading Style Sheet -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <div class="app-container">
-    <!-- Header -->
+    <!-- Header مع زر تسجيل الخروج -->
     <div class="app-header">
         <div class="app-title">
-            <i class="fa-solid fa-cart-shopping"></i> VirtualMall افتراضية مول
+            <i class="fa-solid fa-cart-shopping"></i> VirtualMall
         </div>
-        <div style="font-size: 14px;"><i class="fa-solid fa-globe"></i> عربي</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="userDisplay" style="font-size: 12px; color: #555;"></span>
+            <button onclick="handleLogout()" style="background: #ff5252; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                <i class="fa-solid fa-right-from-bracket"></i> خروج
+            </button>
+        </div>
     </div>
 
     <!-- VIP 1 -->
@@ -63,35 +66,17 @@
     </div>
 </div>
 
-<!-- Modal window for USDT Payment -->
-<div id="paymentModal" class="modal-overlay">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closePaymentModal()">&times;</span>
-        <h3 id="payTitle">اشتراك VIP</h3>
-        <p style="font-size: 12px; color: #666; margin-top: 5px;">أرسل المبلغ المطلوب عبر شبكة (TRC20)</p>
-
-        <div id="payAmount" style="font-size: 20px; font-weight: bold; color: #d32f2f; margin: 10px 0;">0.00 USDT</div>
-
-        <div style="font-size: 12px; text-align: right; margin-top: 5px;">عنوان محفظة الاستلام:</div>
-        <div class="wallet-box" id="walletAddress">T9xP2kL1aMnoPQRSTuVwXyZ34567890abc</div>
-        <button class="btn-copy" onclick="copyWallet()">نسخ العنوان</button>
-
-        <form onsubmit="submitTransaction(event)">
-            <div class="input-group" style="text-align: right;">
-                <label>رقم العملية (TXID):</label>
-                <input type="text" id="txidInput" class="input-txid" placeholder="ضع TXID الخاص بالعملية هنا" required>
-            </div>
-            <button type="submit" class="btn-submit btn-green">إرسال للتأكيد</button>
-        </form>
-    </div>
-</div>
-
-<!-- Scripts -->
 <script src="js/main.js"></script>
 <script>
-    // التحقق من تسجيل الدخول قبل فتح الصفحة
+    // التحقق من أن المستخدم مسجل دخول بالفعل، وإلا تحويله للتسجيل
     if (!localStorage.getItem('isLoggedIn')) {
-        window.location.href = 'register.html';
+        window.location.href = 'login.html';
+    } else {
+        // عرض اسم المستخدم الحالي إن وجد
+        const currentUser = localStorage.getItem('currentUser');
+        if (currentUser) {
+            document.getElementById('userDisplay').innerText = currentUser;
+        }
     }
 </script>
 
