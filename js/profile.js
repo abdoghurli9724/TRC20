@@ -3,38 +3,53 @@ document.addEventListener("DOMContentLoaded", async function () {
     const currentUser = localStorage.getItem('currentUser');
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-    if (!isLoggedIn) {
+    // التحقق من تسجيل الدخول
+    if (!isLoggedIn || !currentUser) {
         window.location.href = 'login.html';
         return;
     }
 
-    if (currentUser) {
-        document.getElementById('userEmail').innerText = currentUser;
-    }
+    // عرض اسم/رقم المستخدم
+    const userEmailEl = document.getElementById('userEmail');
+    if (userEmailEl) userEmailEl.innerText = currentUser;
 
-    // إظهار زر التحكم للأدمن
+    // 1. إذا كان المسجل هو الأدمن
     if (isAdmin) {
+        if (document.getElementById('totalBalance')) document.getElementById('totalBalance').innerText = "∞";
+        if (document.getElementById('depositAmount')) document.getElementById('depositAmount').innerText = "∞";
+        if (document.getElementById('vipLevel')) document.getElementById('vipLevel').innerText = "مدير النظام";
+        
         const adminBtn = document.getElementById('adminBtn');
         if (adminBtn) adminBtn.style.display = 'block';
+        return;
+    }
 
-        document.getElementById('totalBalance').innerText = "∞";
-        document.getElementById('depositAmount').innerText = "∞";
-        document.querySelector('.vip-badge span').innerText = "مُدير النظام";
-    } 
-    // جلب أحدث بيانات للعضو من السيرفر
-    else {
+    // 2. إذا كان مستخدماً عادياً: جلب بياناته أونلاين من JSONBin
+    try {
         let serverData = await fetchServerData();
         let usersDB = serverData.usersDB || {};
         let myData = usersDB[currentUser];
 
         if (myData) {
-            document.getElementById('totalBalance').innerText = myData.balance;
-            document.getElementById('depositAmount').innerText = myData.deposit;
-            document.querySelector('.vip-badge span').innerText = myData.vipLevel;
+            // عرض القيم الحقيقية المسجلة بالحساب
+            document.getElementById('totalBalance').innerText = myData.balance !== undefined ? myData.balance : 0;
+            document.getElementById('depositAmount').innerText = myData.deposit !== undefined ? myData.deposit : 0;
+            document.getElementById('vipLevel').innerText = myData.vipLevel || 'VIP0';
+        } else {
+            // إذا لم تتوفر بيانات (حساب جديد تماماً) -> تصفير الكل
+            document.getElementById('totalBalance').innerText = "0";
+            document.getElementById('depositAmount').innerText = "0";
+            document.getElementById('vipLevel').innerText = "VIP0";
         }
+    } catch (error) {
+        console.error("خطأ في جلب بيانات المستخدم:", error);
+        document.getElementById('totalBalance').innerText = "0";
+        document.getElementById('depositAmount').innerText = "0";
+        document.getElementById('vipLevel').innerText = "VIP0";
     }
 });
 
+// تسجيل الخروج
 function handleLogout() {
     if (confirm('هل أنت تأكد من تسجيل الخروج؟')) {
         localStorage.clear();
