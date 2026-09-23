@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إنشاء حساب جديد - VirtualMall</title>
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Cascading Style Sheet -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -18,19 +16,20 @@
             <h2>إنشاء حساب جديد</h2>
         </div>
 
-        <form onsubmit="event.preventDefault(); localStorage.setItem('isLoggedIn', 'true'); window.location.href='index.html';">
+        <form onsubmit="handleRegister(event)">
             <div class="input-group">
                 <label>البريد الإلكتروني أو رقم الهاتف</label>
-                <input type="text" placeholder="أدخل بياناتك" required>
+                <input type="text" id="regEmail" placeholder="أدخل بياناتك" required>
             </div>
             <div class="input-group">
                 <label>كلمة المرور</label>
-                <input type="password" placeholder="أدخل كلمة المرور" required>
+                <input type="password" id="regPass" placeholder="أدخل كلمة المرور" required>
             </div>
             <div class="input-group">
                 <label>رمز الدعوة (اختياري)</label>
                 <input type="text" placeholder="Invitation Code">
             </div>
+            <div id="statusMsg" style="font-size: 13px; text-align: center; margin-bottom: 10px;"></div>
             <button type="submit" class="btn-submit btn-green">تسجيل حساب جديد</button>
         </form>
 
@@ -40,5 +39,6 @@
     </div>
 </div>
 
+<script src="js/main.js"></script>
 </body>
 </html>
