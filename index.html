@@ -76,6 +76,12 @@
     </div>
 
     <div class="menu-list">
+        <!-- زر خيار الأدمن يظهر فقط عند دخول الأدمن -->
+        <div class="menu-item" id="adminBtn" style="display: none; background: #fef2f2;" onclick="window.location.href='admin.html'">
+            <span style="color: #dc2626;"><i class="fa-solid fa-user-shield"></i> لوحة التحكم (الأدمن)</span>
+            <i class="fa-solid fa-chevron-left" style="color: #dc2626; font-size: 12px;"></i>
+        </div>
+
         <div class="menu-item" onclick="handleLogout()">
             <span style="color: #ef4444;"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</span>
             <i class="fa-solid fa-chevron-left" style="color: #cbd5e1; font-size: 12px;"></i>
@@ -136,11 +142,16 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const currentUser = localStorage.getItem('currentUser');
+        const isAdmin = localStorage.getItem('isAdmin');
         
-        // التحقق من وجود مستخدم؛ إذا لم يوجد يتجه للدخول بدون تعليق
         if (!currentUser || currentUser === 'null' || currentUser === 'undefined') {
             window.location.replace('login.html');
             return;
+        }
+
+        // إظهار خيار لوحة التحكم إذا كان المسجل هو الأدمن
+        if (isAdmin === 'true' || currentUser === 'admin') {
+            document.getElementById('adminBtn').style.display = 'flex';
         }
 
         initUser(currentUser);
@@ -157,7 +168,7 @@
         document.getElementById('balDisplay').innerText = '$' + (u.balance || 0).toFixed(2);
         document.getElementById('depDisplay').innerText = '$' + (u.deposit || 0).toFixed(2);
         document.getElementById('vipLevelDisplay').innerText = u.vip || 'VIP0';
-        document.getElementById('accInfo').innerText = `رقم الهاتف: ${u.phone} | المستوى: ${u.vip}`;
+        document.getElementById('accInfo').innerText = `اسم المستخدم: ${u.phone} | المستوى: ${u.vip}`;
     }
 
     function showModal(id) { document.getElementById(id).style.display = 'flex'; }
@@ -185,6 +196,7 @@
     function handleLogout() {
         if(confirm('هل تريد تسجيل الخروج؟')) {
             localStorage.removeItem('currentUser');
+            localStorage.removeItem('isAdmin');
             alert('تم تسجيل الخروج بنجاح!');
             window.location.replace('login.html');
         }
