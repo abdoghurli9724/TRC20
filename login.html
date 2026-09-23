@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول - VirtualMall</title>
+    <title>تسجيل الدخول / حساب جديد - VirtualMall</title>
     <!-- مكتبة الأيقونات FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -16,7 +16,7 @@
         }
 
         body {
-            background-color: #121212;
+            background-color: #cce7ff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -27,9 +27,7 @@
         .login-container {
             width: 100%;
             max-width: 430px;
-            min-height: 100vh;
-            background-color: #cce7ff;
-            padding: 40px 20px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -37,37 +35,38 @@
 
         .brand-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .brand-logo {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             background: linear-gradient(135deg, #00e676, #00b0ff);
-            border-radius: 16px;
+            border-radius: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             color: #fff;
-            font-size: 30px;
-            margin: 0 auto 15px;
+            font-size: 35px;
+            margin: 0 auto 10px;
+            box-shadow: 0 4px 15px rgba(0, 176, 255, 0.2);
         }
 
         .brand-title {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 26px;
+            font-weight: 800;
             color: #0f172a;
         }
 
         .login-card {
             background: #ffffff;
             border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 25px 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
         }
 
         .card-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             color: #1e293b;
             margin-bottom: 20px;
@@ -114,8 +113,32 @@
             box-shadow: 0 4px 10px rgba(0, 176, 255, 0.3);
         }
 
-        .btn-submit:active {
-            transform: scale(0.98);
+        .btn-submit:disabled {
+            background: #94a3b8;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* تنسيق زر تحويل واجهة التسجيل/الدخول */
+        .toggle-box {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .toggle-link {
+            color: #0284c7;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            margin-right: 5px;
+        }
+
+        .toggle-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -130,9 +153,9 @@
     </div>
 
     <div class="login-card">
-        <div class="card-title">تسجيل الدخول</div>
+        <div class="card-title" id="formTitle">تسجيل الدخول</div>
         
-        <form id="loginForm">
+        <form id="authForm">
             <div class="input-group">
                 <label for="username">اسم المستخدم / رقم الهاتف</label>
                 <input type="text" id="username" class="input-field" placeholder="أدخل اسم المستخدم" required>
@@ -143,74 +166,125 @@
                 <input type="password" id="password" class="input-field" placeholder="أدخل كلمة المرور" required>
             </div>
 
-            <button type="submit" class="btn-submit">دخول</button>
+            <button type="submit" class="btn-submit" id="submitBtn">دخول</button>
         </form>
+
+        <!-- زر التحويل بين إنشاء حساب وتسجيل الدخول -->
+        <div class="toggle-box">
+            <span id="toggleText">ليس لديك حساب؟</span>
+            <a href="#" class="toggle-link" id="toggleBtn" onclick="toggleAuthMode(event)">إنشاء حساب جديد</a>
+        </div>
     </div>
 </div>
 
-<!-- تضمين ملف الإعدادات أولاً -->
+<!-- ملف الإعدادات الموحد -->
 <script src="js/config.js"></script>
 
 <script>
+    let isRegisterMode = false;
+
     document.addEventListener("DOMContentLoaded", function () {
         if (localStorage.getItem('isLoggedIn') === 'true') {
             window.location.href = 'index.html';
         }
 
-        const loginForm = document.getElementById('loginForm');
-        const submitBtn = document.querySelector('.btn-submit');
+        const authForm = document.getElementById('authForm');
+        authForm.addEventListener('submit', handleAuthSubmit);
+    });
 
-        loginForm.addEventListener('submit', async function (e) {
-            e.preventDefault();
+    // التبديل بين واجهة الدخول وواجهة إنشاء حساب
+    function toggleAuthMode(e) {
+        e.preventDefault();
+        isRegisterMode = !isRegisterMode;
 
-            const usernameInput = document.getElementById('username').value.trim();
-            const passwordInput = document.getElementById('password').value.trim();
+        const formTitle = document.getElementById('formTitle');
+        const submitBtn = document.getElementById('submitBtn');
+        const toggleText = document.getElementById('toggleText');
+        const toggleBtn = document.getElementById('toggleBtn');
 
-            if (!usernameInput || !passwordInput) return;
+        if (isRegisterMode) {
+            formTitle.innerText = "إنشاء حساب جديد";
+            submitBtn.innerText = "تسجيل حساب جديد";
+            toggleText.innerText = "لديك حساب بالفعل؟";
+            toggleBtn.innerText = "تسجيل الدخول";
+        } else {
+            formTitle.innerText = "تسجيل الدخول";
+            submitBtn.innerText = "دخول";
+            toggleText.innerText = "ليس لديك حساب؟";
+            toggleBtn.innerText = "إنشاء حساب جديد";
+        }
+    }
 
-            submitBtn.disabled = true;
-            submitBtn.innerText = "جاري التحقق...";
+    // معالجة إرسال النموذج (دخول أو تسجيل)
+    async function handleAuthSubmit(e) {
+        e.preventDefault();
 
-            // 1. تسجيل دخول الأدمن
-            if (usernameInput === ADMIN_USERNAME && passwordInput === ADMIN_PASSWORD) {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('currentUser', usernameInput);
-                localStorage.setItem('isAdmin', 'true');
-                window.location.href = 'index.html';
+        const usernameInput = document.getElementById('username').value.trim();
+        const passwordInput = document.getElementById('password').value.trim();
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (!usernameInput || !passwordInput) return;
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "جاري التحقق...";
+
+        // 1. تسجيل دخول الأدمن
+        if (usernameInput === ADMIN_USERNAME && passwordInput === ADMIN_PASSWORD) {
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('currentUser', usernameInput);
+            localStorage.setItem('isAdmin', 'true');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // 2. معالجة حسابات المستخدمين أونلاين
+        let serverData = await fetchServerData();
+        let usersDB = serverData.usersDB || {};
+
+        if (isRegisterMode) {
+            // وضع إنشاء حساب جديد
+            if (usersDB[usernameInput]) {
+                alert("اسم المستخدم/الرقم مسجل بالفعل! يمكنك تسجيل الدخول.");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "تسجيل حساب جديد";
                 return;
             }
 
-            // 2. جلب بيانات السيرفر للأعضاء العاديين
-            let serverData = await fetchServerData();
-            let usersDB = serverData.usersDB || {};
+            // إضافة العضو الجديد برصيد 0 وباقة VIP0
+            usersDB[usernameInput] = {
+                password: passwordInput,
+                balance: 0,
+                deposit: 0,
+                vipLevel: 'VIP0'
+            };
 
-            // إذا كان عضو جديد -> إنشاؤه برصيد 0
+            serverData.usersDB = usersDB;
+            await updateServerData(serverData);
+            alert("تم إنشاء الحساب بنجاح!");
+
+        } else {
+            // وضع تسجيل الدخول
             if (!usersDB[usernameInput]) {
-                usersDB[usernameInput] = {
-                    password: passwordInput,
-                    balance: 0,
-                    deposit: 0,
-                    vipLevel: 'VIP0'
-                };
-                serverData.usersDB = usersDB;
-                await updateServerData(serverData);
-            } else {
-                // إذا كان عضو مسجل -> فحص كلمة المرور
-                if (usersDB[usernameInput].password !== passwordInput) {
-                    alert("كلمة المرور غير صحيحة!");
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "دخول";
-                    return;
-                }
+                alert("الحساب غير موجود! يرجى اضغط على 'إنشاء حساب جديد' أولاً.");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "دخول";
+                return;
             }
 
-            // حفظ بيانات الجلسة المحلية
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('currentUser', usernameInput);
-            localStorage.setItem('isAdmin', 'false');
-            window.location.href = 'index.html';
-        });
-    });
+            if (usersDB[usernameInput].password !== passwordInput) {
+                alert("كلمة المرور غير صحيحة!");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "دخول";
+                return;
+            }
+        }
+
+        // حفظ بيانات الجلسة والانتقال للرئيسية
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('currentUser', usernameInput);
+        localStorage.setItem('isAdmin', 'false');
+        window.location.href = 'index.html';
+    }
 </script>
 
 </body>
