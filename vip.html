@@ -3,28 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP - VirtualMall</title>
+    <title>باقات VIP - VirtualMall</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-        body { background-color: #cce7ff; min-height: 100vh; padding-bottom: 90px; direction: rtl; }
-        .container { max-width: 480px; margin: 0 auto; padding: 15px; }
-
-        .vip-card { background: #fff; border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .btn-join { background: #0284c7; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .btn-joined { background: #10b981; color: white; }
-
-        .bottom-nav { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; max-width: 480px; margin: 0 auto; background: #ffffff; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; border-top: 1px solid #e2e8f0; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); z-index: 9999; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; text-align: center; }
-        .nav-item i { font-size: 18px; margin-bottom: 3px; }
+        body { background-color: #cce7ff; min-height: 100vh; padding: 15px; padding-bottom: 90px; direction: rtl; }
+        .container { max-width: 480px; margin: 0 auto; }
+        .vip-card { background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .vip-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .vip-title { font-size: 18px; font-weight: bold; color: #0284c7; }
+        .vip-price { font-size: 16px; font-weight: bold; color: #16a34a; }
+        .vip-info { font-size: 13px; color: #475569; margin-bottom: 15px; line-height: 1.6; }
+        .btn-sub { width: 100%; padding: 10px; background: #0284c7; color: #fff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .btn-sub:disabled { background: #94a3b8; cursor: not-allowed; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #e2e8f0; z-index: 9999; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; flex: 1; }
         .nav-item.active { color: #0284c7; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 style="text-align: center; margin-bottom: 20px;">باقات VIP الاشتراكية</h2>
-    <div id="vipContainer"></div>
+    <h2 style="margin-bottom: 15px; text-align: center;">ترقية باقات VIP</h2>
+
+    <div class="vip-card">
+        <div class="vip-header">
+            <span class="vip-title">VIP 1</span>
+            <span class="vip-price">$10.00</span>
+        </div>
+        <div class="vip-info">
+            • الربح اليومي: $2.00<br>
+            • عدد المهام اليومية: 2 مهام
+        </div>
+        <button class="btn-sub" onclick="subscribeVIP('VIP1', 10, 2, 2)">اشترك الآن</button>
+    </div>
+
+    <div class="vip-card">
+        <div class="vip-header">
+            <span class="vip-title">VIP 2</span>
+            <span class="vip-price">$50.00</span>
+        </div>
+        <div class="vip-info">
+            • الربح اليومي: $10.00<br>
+            • عدد المهام اليومية: 4 مهام
+        </div>
+        <button class="btn-sub" onclick="subscribeVIP('VIP2', 50, 10, 4)">اشترك الآن</button>
+    </div>
 </div>
 
 <div class="bottom-nav">
@@ -35,61 +59,44 @@
 </div>
 
 <script>
-    const currentUser = localStorage.getItem('currentUser') || '099999999';
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) window.location.replace('login.html');
 
-    const packages = [
-        { id: 'VIP1', price: 10, dailyProfit: 1.5, taskCount: 2 },
-        { id: 'VIP2', price: 30, dailyProfit: 4.5, taskCount: 3 },
-        { id: 'VIP3', price: 100, dailyProfit: 16.0, taskCount: 4 },
-        { id: 'VIP4', price: 300, dailyProfit: 50.0, taskCount: 5 },
-        { id: 'VIP5', price: 1000, dailyProfit: 180.0, taskCount: 6 }
-    ];
-
-    function renderVIP() {
+    function subscribeVIP(level, price, dailyProfit, taskCount) {
         let users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        let user = users[currentUser] || {};
-        let currentVIP = user.vip || 'VIP0';
+        let u = users[currentUser];
 
-        let html = '';
-        packages.forEach(pkg => {
-            let isCurrent = currentVIP === pkg.id;
-            html += `
-            <div class="vip-card">
-                <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:8px;">
-                    <span>${pkg.id}</span>
-                    <span style="color:#0284c7;">$${pkg.price}</span>
-                </div>
-                <p style="font-size:12px; color:#64748b; margin-bottom:10px;">الربح اليومي: $${pkg.dailyProfit} | عدد المهام: ${pkg.taskCount}</p>
-                <button class="btn-join ${isCurrent ? 'btn-joined' : ''}" onclick="buyVIP('${pkg.id}', ${pkg.price}, ${pkg.taskCount}, ${pkg.dailyProfit})">
-                    ${isCurrent ? 'المستوى مفعل حالياً' : 'انضم الآن'}
-                </button>
-            </div>`;
-        });
-        document.getElementById('vipContainer').innerHTML = html;
-    }
+        if (!u) return alert('حدث خطأ في جلب بيانات الحساب!');
 
-    function buyVIP(vipId, price, taskCount, dailyProfit) {
-        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        let user = users[currentUser];
-
-        if(!user) return alert('خطأ في جلب بيانات الحساب!');
-        if(user.balance < price) {
-            return alert(`رصيدك الحالي ($${user.balance.toFixed(2)}) غير كافٍ لتفعيل ${vipId}! يرجى الإيداع أولاً.`);
+        if ((u.balance || 0) < price) {
+            return alert('رصيدك غير كافٍ للاشتراك في هذه الباقة! قم بالإيداع أولاً.');
         }
 
-        if(confirm(`هل أنت تأكد من ترقية حسابك إلى ${vipId} بسعر $${price}؟`)) {
-            user.balance -= price;
-            user.vip = vipId;
-            user.activeTaskCount = taskCount;
-            user.taskReward = (dailyProfit / taskCount).toFixed(2);
-            
+        if (u.vip === level) {
+            return alert('أنت مشترك بالفعل في هذه الباقة!');
+        }
+
+        if (confirm(`هل أنت تأكد من الاشتراك في ${level} بسعر $${price}؟`)) {
+            // 1. خصم السعر وتحديث باقة المستخدم
+            u.balance -= price;
+            u.vip = level;
+            u.dailyProfit = dailyProfit;
+            u.taskCount = taskCount;
+
+            // 2. تسجيل العملية في سجل الحساب (History)
+            if (!u.history) u.history = [];
+            u.history.unshift({
+                type: 'اشتراك باقة',
+                amount: `-$${price}`,
+                title: `اشتراك في باقة ${level}`,
+                date: new Date().toLocaleString('ar-EG')
+            });
+
             localStorage.setItem('usersDB', JSON.stringify(users));
-            alert(`مبروك! تم تفعيل مستوى ${vipId} وتحديد المهام اليومية بنجاح!`);
-            renderVIP();
+            alert(`تم الاشتراك في ${level} بنجاح! تم فتح المهام الخاصة بك.`);
+            window.location.href = 'tasks.html';
         }
     }
-
-    document.addEventListener("DOMContentLoaded", renderVIP);
 </script>
 </body>
 </html>
