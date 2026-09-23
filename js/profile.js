@@ -1,6 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // جلب اسم المستخدم من التخزين المحلي
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
     const currentUser = localStorage.getItem('currentUser');
+
+    // إذا لم يكن هناك تسجيل دخول ينقله فوراً للوجن
+    if (!isLoggedIn) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // عرض بيانات المستخدم الحالي
     if (currentUser) {
         const userEmailElem = document.getElementById('userEmail');
         if (userEmailElem) {
