@@ -3,105 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المهام اليومية</title>
+    <title>المهام - VirtualMall</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #cce7ff; padding: 15px; font-family: system-ui; direction: rtl; }
-        .task-card { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-task { background: #16a34a; color: #fff; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .disabled-box { background: #fff; padding: 30px; text-align: center; border-radius: 15px; margin-top: 50px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        body { background-color: #cce7ff; min-height: 100vh; padding-bottom: 90px; direction: rtl; }
+        .container { max-width: 480px; margin: 0 auto; padding: 15px; }
+
+        .disabled-card { background: #fff; padding: 40px 20px; border-radius: 20px; text-align: center; margin-top: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+
+        /* شريط التنقل السفلي الثابت */
+        .bottom-nav {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            max-width: 480px;
+            margin: 0 auto;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid #e2e8f0;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            z-index: 9999;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; text-align: center; }
+        .nav-item i { font-size: 18px; margin-bottom: 3px; }
+        .nav-item.active { color: #0284c7; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<h2>المهام اليومية</h2>
-<div id="tasksContainer" style="margin-top: 15px;">جاري التحميل...</div>
+<div class="container">
+    <h2 style="text-align: center; margin-bottom: 20px;">المهام اليومية</h2>
 
-<script src="js/config.js"></script>
-<script>
-    // المهام المخصصة لكل مستوى
-    const taskConfig = {
-        'VIP1': [
-            { id: 1, title: 'إكمال تقييم منتج 1', reward: 1 },
-            { id: 2, title: 'إكمال تقييم منتج 2', reward: 1 }
-        ],
-        'VIP2': [
-            { id: 3, title: 'مراجعة طلب VIP2 - 1', reward: 2.5 },
-            { id: 4, title: 'مراجعة طلب VIP2 - 2', reward: 2.5 }
-        ],
-        'VIP3': [
-            { id: 5, title: 'تأكيد شحنة VIP3 - 1', reward: 6 },
-            { id: 6, title: 'تأكيد شحنة VIP3 - 2', reward: 6 }
-        ]
-    };
+    <div class="disabled-card">
+        <i class="fa-solid fa-lock" style="font-size: 45px; color: #ef4444; margin-bottom: 15px;"></i>
+        <h3>المهام غير مفعلة!</h3>
+        <p style="color: #64748b; margin: 10px 0 20px; font-size: 13px;">أنت حالياً بمستوى VIP0، يجب ترقية باقتك لتفعيل المهام اليومية.</p>
+        <a href="vip.html" style="background: #0284c7; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 10px; font-weight: bold;">ترقية الباقة الآن</a>
+    </div>
+</div>
 
-    document.addEventListener("DOMContentLoaded", async function() {
-        const currentUser = localStorage.getItem('currentUser');
-        let serverData = await fetchServerData();
-        let user = (serverData.usersDB || {})[currentUser];
+<!-- الشريط السفلي الثابت -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
+    <a href="tasks.html" class="nav-item active"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
+    <a href="team.html" class="nav-item"><i class="fa-solid fa-users"></i><span>الفريق</span></a>
+    <a href="vip.html" class="nav-item"><i class="fa-solid fa-crown"></i><span>VIP</span></a>
+</div>
 
-        const container = document.getElementById('tasksContainer');
-
-        // 1. إذا كان VIP0 أو لا يملك باقة
-        if (!user || !user.vipLevel || user.vipLevel === 'VIP0') {
-            container.innerHTML = `
-                <div class="disabled-box">
-                    <i class="fa-solid fa-lock" style="font-size:40px; color:#ef4444; margin-bottom:10px;"></i>
-                    <h3>المهام غير مفعلة!</h3>
-                    <p style="color:#64748b; font-size:13px; margin:10px 0;">يجب عليك الاشتراك في إحدى باقات VIP للبدء بكسب الأرباح.</p>
-                    <a href="vip.html" style="display:inline-block; background:#0284c7; color:#fff; text-decoration:none; padding:10px 20px; border-radius:8px; font-weight:bold;">الذهاب إلى VIP</a>
-                </div>
-            `;
-            return;
-        }
-
-        // 2. التحقق من مرور 24 ساعة على تنفيذ المهام
-        const now = new Date().getTime();
-        const lastTaskTime = user.lastTaskTime || 0;
-        const hoursPassed = (now - lastTaskTime) / (1000 * 60 * 60);
-
-        if (hoursPassed < 24 && user.tasksCompletedToday) {
-            const remainingHours = Math.ceil(24 - hoursPassed);
-            container.innerHTML = `
-                <div class="disabled-box">
-                    <i class="fa-solid fa-clock" style="font-size:40px; color:#f59e0b; margin-bottom:10px;"></i>
-                    <h3>لقد أكملت مهام اليوم!</h3>
-                    <p style="color:#64748b; font-size:13px;">ستتجدد المهام تلقائياً بعد <b>${remainingHours} ساعة</b>.</p>
-                </div>
-            `;
-            return;
-        }
-
-        // 3. عرض المهام الخاصة بمستواه
-        const userTasks = taskConfig[user.vipLevel] || [];
-        container.innerHTML = '';
-
-        userTasks.forEach(task => {
-            container.innerHTML += `
-                <div class="task-card">
-                    <div>
-                        <b>${task.title}</b>
-                        <p style="font-size:12px; color:#16a34a;">الربح: +$${task.reward}</p>
-                    </div>
-                    <button class="btn-task" onclick="completeTask(${task.reward})">تنفيذ</button>
-                </div>
-            `;
-        });
-    });
-
-    async function completeTask(reward) {
-        const currentUser = localStorage.getItem('currentUser');
-        let serverData = await fetchServerData();
-        let user = serverData.usersDB[currentUser];
-
-        user.balance = (parseFloat(user.balance) || 0) + reward;
-        user.tasksCompletedToday = true;
-        user.lastTaskTime = new Date().getTime(); // تسجيل الوقت الحالي للتجديد بعد 24 ساعة
-
-        await updateServerData(serverData);
-        alert(`تمت المهمة بنجاح وتخصيص ربح $${reward} لرصيدك!`);
-        location.reload();
-    }
-</script>
 </body>
 </html>
