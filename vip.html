@@ -3,103 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مستويات الاشتراكات VIP - VirtualMall</title>
+    <title>ترقية VIP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-        body { background-color: #cce7ff; min-height: 100vh; padding-bottom: 70px; direction: rtl; }
-        .header { background: #fff; padding: 15px; text-align: center; font-weight: bold; font-size: 18px; color: #0284c7; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .container { padding: 15px; max-width: 480px; margin: 0 auto; }
-        .vip-card { background: #fff; border-radius: 15px; padding: 15px; margin-bottom: 15px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 2px solid transparent; }
-        .vip-card.active-card { border-color: #eab308; background: #fefce8; }
-        .vip-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .vip-title { font-size: 18px; font-weight: 800; color: #d97706; display: flex; align-items: center; gap: 6px; }
-        .vip-price { font-size: 15px; font-weight: bold; color: #0284c7; }
-        .vip-details { font-size: 13px; color: #475569; line-height: 1.6; margin-bottom: 12px; }
-        .btn-upgrade { width: 100%; padding: 10px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; }
-        .btn-upgrade:disabled { background: #94a3b8; cursor: not-allowed; }
-        /* شريط التنقل السفلي */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #e2e8f0; max-width: 480px; margin: 0 auto; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; }
-        .nav-item.active { color: #0284c7; font-weight: bold; }
-        .nav-item i { font-size: 18px; margin-bottom: 3px; }
+        body { background: #cce7ff; padding: 15px; font-family: system-ui; direction: rtl; }
+        .vip-card { background: #fff; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .vip-header { display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
+        .btn-join { background: #0284c7; color: #fff; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="header">مستويات العضوية (VIP)</div>
-
-<div class="container" id="vipList">
-    <!-- كروت VIP ديناميكية -->
-</div>
-
-<div class="bottom-nav">
-    <a href="index.html" class="nav-item"><i class="fa-solid fa-user"></i>حسابي</a>
-    <a href="tasks.html" class="nav-item"><i class="fa-solid fa-list-check"></i>المهام</a>
-    <a href="team.html" class="nav-item"><i class="fa-solid fa-users"></i>الفريق</a>
-    <a href="vip.html" class="nav-item active"><i class="fa-solid fa-crown"></i>VIP</a>
-</div>
+<h2 style="margin-bottom: 15px; text-align: center;">قائمة باقات VIP</h2>
+<div id="vipList">جاري تحميل الباقات...</div>
 
 <script src="js/config.js"></script>
 <script>
-    const vipPlans = [
-        { level: 'VIP1', price: 20, dailyProfit: 1.5 },
-        { level: 'VIP2', price: 60, dailyProfit: 5.0 },
-        { level: 'VIP3', price: 180, dailyProfit: 15.0 },
-        { level: 'VIP7', price: 1250, dailyProfit: 100.0 }
-    ];
+    const defaultVips = {
+        'VIP1': { price: 20, profit: 2, img: '' },
+        'VIP2': { price: 50, profit: 5, img: '' },
+        'VIP3': { price: 100, profit: 12, img: '' }
+    };
 
-    document.addEventListener("DOMContentLoaded", async function () {
-        const currentUser = localStorage.getItem('currentUser');
-        if (!currentUser) { window.location.href = 'login.html'; return; }
-
+    document.addEventListener("DOMContentLoaded", async function() {
         let serverData = await fetchServerData();
-        let user = (serverData.usersDB || {})[currentUser] || {};
-        let currentVip = user.vipLevel || 'VIP0';
+        let offers = serverData.offers || defaultVips;
+        const container = document.getElementById('vipList');
+        container.innerHTML = '';
 
-        const vipList = document.getElementById('vipList');
-        vipList.innerHTML = '';
-
-        vipPlans.forEach(plan => {
-            const isCurrent = currentVip === plan.level;
-            vipList.innerHTML += `
-                <div class="vip-card ${isCurrent ? 'active-card' : ''}">
+        Object.keys(offers).forEach(vip => {
+            let item = offers[vip];
+            container.innerHTML += `
+                <div class="vip-card">
                     <div class="vip-header">
-                        <div class="vip-title"><i class="fa-solid fa-crown"></i> ${plan.level}</div>
-                        <div class="vip-price">$${plan.price} USDT</div>
+                        <span>${vip}</span>
+                        <span style="color: #0284c7;">$${item.price}</span>
                     </div>
-                    <div class="vip-details">
-                        • الربح اليومي: <b>$${plan.dailyProfit} USDT</b><br>
-                        • عدد المهام: 3 مهام يومياً
-                    </div>
-                    <button class="btn-upgrade" ${isCurrent ? 'disabled' : ''} onclick="upgradeVip('${plan.level}', ${plan.price})">
-                        ${isCurrent ? 'المستوى الحالي ✓' : 'انضم الآن'}
-                    </button>
+                    ${item.img ? `<img src="${item.img}" style="width:100%; border-radius:10px; margin-bottom:10px;">` : ''}
+                    <p style="font-size:13px; color:#64748b; margin-bottom:10px;">الربح اليومي: <b>$${item.profit}</b></p>
+                    <button class="btn-join" onclick="buyVip('${vip}', ${item.price})">انضم الآن</button>
                 </div>
             `;
         });
     });
 
-    async function upgradeVip(level, price) {
+    async function buyVip(vipLevel, price) {
         const currentUser = localStorage.getItem('currentUser');
         let serverData = await fetchServerData();
-        let user = (serverData.usersDB || {})[currentUser];
+        let user = serverData.usersDB[currentUser];
 
-        if (!user) return;
+        if (!user) return alert('حدث خطأ، أعد تسجيل الدخول!');
 
         if ((user.balance || 0) < price) {
-            alert(`رصيدك غير كافٍ! تحتاج إلى $${price} USDT للترقية.`);
-            return;
+            return alert('رصيدك غير كافٍ لتفعيل هذه الباقة! يرجى الشحن أولاً.');
         }
 
-        if (confirm(`هل أنت تأكد من الترقية إلى ${level} مقابل $${price} USDT؟`)) {
+        if (confirm(`هل تريد خصم $${price} لتفعيل مستوى ${vipLevel}؟`)) {
             user.balance -= price;
-            user.vipLevel = level;
-            serverData.usersDB[currentUser] = user;
+            user.vipLevel = vipLevel;
+            user.lastTaskDate = null; // إعادة تعيين المهام للتجديد
 
             await updateServerData(serverData);
-            alert(`مبروك! تم ترقية حسابك إلى ${level} بنجاح.`);
-            location.reload();
+            alert(`مبروك! تم تفعيل مستوى ${vipLevel} بنجاح.`);
+            window.location.href = 'tasks.html';
         }
     }
 </script>
