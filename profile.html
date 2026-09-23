@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الملف الشخصي - VirtualMall</title>
-    <!-- FontAwesome للأيقونات -->
+    <!-- مكتبة الأيقونات FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- ملف CSS المنفصل لهذا القسم -->
+    <!-- ربط ملف CSS المنفصل -->
     <link rel="stylesheet" href="css/profile.css">
 </head>
 <body>
@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <!-- بطاقة حساب المستخدم والبيانات المالية -->
+    <!-- بطاقة المستخدم والبيانات المالية -->
     <div class="user-card">
         <div class="user-header-info">
             <div class="user-avatar-box">
@@ -55,54 +55,42 @@
         </div>
     </div>
 
-    <!-- أزرار الإجراءات السريعة (إيداع، يسحب، حساب، سجلات) -->
+    <!-- الأزرار السريعة -->
     <div class="quick-actions-grid">
-        <a href="deposit.html" class="action-item" style="text-decoration: none;">
-            <div class="action-icon bg-deposit">
-                <i class="fa-solid fa-wallet"></i>
-            </div>
+        <a href="deposit.html" class="action-item">
+            <div class="action-icon bg-deposit"><i class="fa-solid fa-wallet"></i></div>
             <span class="action-label">إيداع</span>
         </a>
 
-        <a href="withdraw.html" class="action-item" style="text-decoration: none;">
-            <div class="action-icon bg-withdraw">
-                <i class="fa-solid fa-hand-holding-dollar"></i>
-            </div>
+        <a href="withdraw.html" class="action-item">
+            <div class="action-icon bg-withdraw"><i class="fa-solid fa-hand-holding-dollar"></i></div>
             <span class="action-label">يسحب</span>
         </a>
 
-        <a href="account.html" class="action-item" style="text-decoration: none;">
-            <div class="action-icon bg-account">
-                <i class="fa-solid fa-landmark"></i>
-            </div>
+        <a href="account.html" class="action-item">
+            <div class="action-icon bg-account"><i class="fa-solid fa-landmark"></i></div>
             <span class="action-label">حساب</span>
         </a>
 
-        <a href="records.html" class="action-item" style="text-decoration: none;">
-            <div class="action-icon bg-records">
-                <i class="fa-solid fa-chart-line"></i>
-            </div>
+        <a href="records.html" class="action-item">
+            <div class="action-icon bg-records"><i class="fa-solid fa-chart-line"></i></div>
             <span class="action-label">سجلات</span>
         </a>
     </div>
 
-    <!-- القائمة الرئيسية (تحويل، تغيير كلمة المرور، تسجيل الخروج) -->
+    <!-- القائمة الرئيسية -->
     <div class="menu-section">
-        <a href="transfer.html" class="menu-card" style="text-decoration: none;">
+        <a href="transfer.html" class="menu-card">
             <div class="menu-left">
-                <div class="menu-icon-box">
-                    <i class="fa-solid fa-right-left"></i>
-                </div>
+                <div class="menu-icon-box"><i class="fa-solid fa-right-left"></i></div>
                 <span class="menu-text">تحويل</span>
             </div>
             <i class="fa-solid fa-chevron-left menu-arrow"></i>
         </a>
 
-        <a href="change-password.html" class="menu-card" style="text-decoration: none;">
+        <a href="change-password.html" class="menu-card">
             <div class="menu-left">
-                <div class="menu-icon-box">
-                    <i class="fa-solid fa-square-minus"></i>
-                </div>
+                <div class="menu-icon-box"><i class="fa-solid fa-square-minus"></i></div>
                 <span class="menu-text">تغيير كلمة المرور</span>
             </div>
             <i class="fa-solid fa-chevron-left menu-arrow"></i>
@@ -110,9 +98,7 @@
 
         <div class="menu-card" onclick="handleLogout()">
             <div class="menu-left">
-                <div class="menu-icon-box">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                </div>
+                <div class="menu-icon-box"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
                 <span class="menu-text">تسجيل الخروج</span>
             </div>
             <i class="fa-solid fa-chevron-left menu-arrow"></i>
@@ -144,14 +130,8 @@
     </div>
 </div>
 
-<!-- ربط البرمجة بملف JS المنفصل -->
+<!-- ربط ملف JavaScript المنفصل -->
 <script src="js/profile.js"></script>
-<script>
-    // التحقق من تسجيل الدخول عند فتح الواجهة
-    if (!localStorage.getItem('isLoggedIn')) {
-        window.location.href = 'login.html';
-    }
-</script>
 
 </body>
 </html>
