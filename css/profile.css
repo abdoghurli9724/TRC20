@@ -169,7 +169,7 @@ body {
     color: #0f172a;
 }
 
-/* شبكة الإجراءات السريعة */
+/* الأزرار السريعة */
 .quick-actions-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -208,7 +208,7 @@ body {
     color: #334155;
 }
 
-/* قائمة الخيارات */
+/* القائمة الرئيسية */
 .menu-section {
     display: flex;
     flex-direction: column;
