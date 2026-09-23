@@ -3,82 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>افتراضية مول - VirtualMall</title>
+    <title>حسابي - VirtualMall</title>
+    <!-- مكتبة الأيقونات FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <!-- ربط ملف التنسيق -->
+    <link rel="stylesheet" href="css/profile.css">
 </head>
 <body>
 
 <div class="app-container">
-    <!-- Header مع زر تسجيل الخروج -->
-    <div class="app-header">
-        <div class="app-title">
-            <i class="fa-solid fa-cart-shopping"></i> VirtualMall
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <div class="brand-info">
+            <div class="logo-box"><i class="fa-solid fa-cart-shopping"></i></div>
+            <span class="brand-title">VirtualMall</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span id="userDisplay" style="font-size: 12px; color: #555;"></span>
-            <button onclick="handleLogout()" style="background: #ff5252; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                <i class="fa-solid fa-right-from-bracket"></i> خروج
-            </button>
+        <div class="top-actions">
+            <i class="fa-regular fa-camera icon-btn"></i>
+            <i class="fa-solid fa-magnifying-glass icon-btn"></i>
+            <div class="lang-selector">
+                <i class="fa-solid fa-globe"></i>
+                <span>عربي</span>
+            </div>
         </div>
     </div>
 
-    <!-- VIP 1 -->
-    <div class="vip-card">
-        <div class="vip-body">
-            <div class="vip-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-            <div class="vip-info">
-                <div class="vip-info-row"><span>الربح اليومي:</span> <span>1.00 USDT</span></div>
-                <div class="vip-info-row"><span>إجمالي الربح:</span> <span>365.00 USDT</span></div>
+    <!-- بطاقة المستخدم والبيانات المالية -->
+    <div class="user-card">
+        <div class="user-header-info">
+            <div class="user-avatar-box">
+                <div class="avatar">
+                    <i class="fa-solid fa-user-ninja" style="color: #5d4037;"></i>
+                </div>
+                <span class="user-email" id="userEmail">virvip@gmail.com</span>
+            </div>
+            <div class="vip-badge">
+                <i class="fa-regular fa-gem"></i>
+                <span>VIP7</span>
             </div>
         </div>
-        <button class="btn-unlock" onclick="openPaymentModal('VIP1', '3.00')">فتح الآن 3.00 USDT</button>
+
+        <div class="balances-container">
+            <div class="balance-box">
+                <div class="balance-title">(USDT) مبلغ الايداع</div>
+                <div class="balance-amount" id="depositAmount">1250</div>
+            </div>
+            <div class="balance-box">
+                <div class="balance-title">(USDT) الرصيد الاجمالي</div>
+                <div class="balance-amount" id="totalBalance">3500</div>
+            </div>
+        </div>
     </div>
 
-    <!-- VIP 2 -->
-    <div class="vip-card">
-        <div class="vip-badge">VIP2</div>
-        <div class="vip-body">
-            <div class="vip-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-            <div class="vip-info">
-                <div class="vip-info-row"><span>المهم اليومية:</span> <span>1</span></div>
-                <div class="vip-info-row"><span>الربح لكل مهمة:</span> <span>5.40</span></div>
-                <div class="vip-info-row"><span>الربح اليومي:</span> <span>5.40 USDT</span></div>
-                <div class="vip-info-row"><span>إجمالي الربح:</span> <span>1,971.00 USDT</span></div>
-            </div>
-        </div>
-        <button class="btn-unlock" onclick="openPaymentModal('VIP2', '16.00')">فتح الآن 16.00 USDT</button>
+    <!-- الأزرار السريعة -->
+    <div class="quick-actions-grid">
+        <a href="deposit.html" class="action-item">
+            <div class="action-icon bg-deposit"><i class="fa-solid fa-wallet"></i></div>
+            <span class="action-label">إيداع</span>
+        </a>
+
+        <a href="withdraw.html" class="action-item">
+            <div class="action-icon bg-withdraw"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+            <span class="action-label">يسحب</span>
+        </a>
+
+        <a href="account.html" class="action-item">
+            <div class="action-icon bg-account"><i class="fa-solid fa-landmark"></i></div>
+            <span class="action-label">حساب</span>
+        </a>
+
+        <a href="records.html" class="action-item">
+            <div class="action-icon bg-records"><i class="fa-solid fa-chart-line"></i></div>
+            <span class="action-label">سجلات</span>
+        </a>
     </div>
 
-    <!-- VIP 3 -->
-    <div class="vip-card">
-        <div class="vip-badge">VIP3</div>
-        <div class="vip-body">
-            <div class="vip-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-            <div class="vip-info">
-                <div class="vip-info-row"><span>المهم اليومية:</span> <span>1</span></div>
-                <div class="vip-info-row"><span>الربح لكل مهمة:</span> <span>30.00</span></div>
-                <div class="vip-info-row"><span>الربح اليومي:</span> <span>30.00 USDT</span></div>
-                <div class="vip-info-row"><span>إجمالي الربح:</span> <span>10,950.00 USDT</span></div>
+    <!-- القائمة الرئيسية -->
+    <div class="menu-section">
+        <a href="transfer.html" class="menu-card">
+            <div class="menu-left">
+                <div class="menu-icon-box"><i class="fa-solid fa-right-left"></i></div>
+                <span class="menu-text">تحويل</span>
             </div>
+            <i class="fa-solid fa-chevron-left menu-arrow"></i>
+        </a>
+
+        <a href="change-password.html" class="menu-card">
+            <div class="menu-left">
+                <div class="menu-icon-box"><i class="fa-solid fa-square-minus"></i></div>
+                <span class="menu-text">تغيير كلمة المرور</span>
+            </div>
+            <i class="fa-solid fa-chevron-left menu-arrow"></i>
+        </a>
+
+        <div class="menu-card" onclick="handleLogout()">
+            <div class="menu-left">
+                <div class="menu-icon-box"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+                <span class="menu-text">تسجيل الخروج</span>
+            </div>
+            <i class="fa-solid fa-chevron-left menu-arrow"></i>
         </div>
-        <button class="btn-unlock" onclick="openPaymentModal('VIP3', '88.00')">فتح الآن 88.00 USDT</button>
+    </div>
+
+    <!-- شريط التنقل السفلي -->
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <i class="fa-solid fa-user"></i>
+            <span>حسابي</span>
+        </a>
+        <a href="tasks.html" class="nav-item">
+            <i class="fa-solid fa-list-check"></i>
+            <span>المهام</span>
+        </a>
+        <a href="team.html" class="nav-item">
+            <i class="fa-solid fa-users"></i>
+            <span>الفريق</span>
+        </a>
+        <a href="vip-levels.html" class="nav-item">
+            <i class="fa-solid fa-crown"></i>
+            <span>VIP</span>
+        </a>
     </div>
 </div>
 
-<script src="js/main.js"></script>
-<script>
-    // التحقق من أن المستخدم مسجل دخول بالفعل، وإلا تحويله للتسجيل
-    if (!localStorage.getItem('isLoggedIn')) {
-        window.location.href = 'login.html';
-    } else {
-        // عرض اسم المستخدم الحالي إن وجد
-        const currentUser = localStorage.getItem('currentUser');
-        if (currentUser) {
-            document.getElementById('userDisplay').innerText = currentUser;
-        }
-    }
-</script>
+<!-- ربط ملف JavaScript المنفصل -->
+<script src="js/profile.js"></script>
 
 </body>
 </html>
