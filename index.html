@@ -83,7 +83,7 @@
     </div>
 </div>
 
-<!-- نافذة الإيداع مضافاً إليها TXID -->
+<!-- نافذة الإيداع -->
 <div class="modal-overlay" id="depositModal">
     <div class="modal-box">
         <div class="modal-header">
@@ -105,7 +105,7 @@
     </div>
 </div>
 
-<!-- باقي النوافذ المنبثقة -->
+<!-- बाकी النوافذ المنبثقة -->
 <div class="modal-overlay" id="withdrawModal">
     <div class="modal-box">
         <div class="modal-header"><h3>قسم السحب</h3><div class="close-btn" onclick="hideModal('withdrawModal')">&times;</div></div>
@@ -135,7 +135,11 @@
 </div>
 
 <script>
-    const currentUser = localStorage.getItem('currentUser') || '099999999';
+    // التحقق من وجود مسجل دخول، وفي حال عدم وجوده يتم التوجيه مباشرة لصفحة الدخول
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) {
+        window.location.href = 'login.html';
+    }
 
     function initUser() {
         let users = JSON.parse(localStorage.getItem('usersDB')) || {};
@@ -172,11 +176,12 @@
         hideModal('depositModal');
     }
 
+    // دالة تسجيل الخروج المعدلة لتوجيه المستخدم تلقائياً إلى صفحة login.html
     function handleLogout() {
         if(confirm('هل تريد تسجيل الخروج؟')) {
             localStorage.removeItem('currentUser');
             alert('تم تسجيل الخروج بنجاح!');
-            location.reload(); // لا يعود لصفحة تسجيل الدخول تلقائياً
+            window.location.href = 'login.html';
         }
     }
 
