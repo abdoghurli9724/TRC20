@@ -3,71 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ترقية VIP</title>
+    <title>VIP - VirtualMall</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #cce7ff; padding: 15px; font-family: system-ui; direction: rtl; }
-        .vip-card { background: #fff; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .vip-header { display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
-        .btn-join { background: #0284c7; color: #fff; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        body { background-color: #cce7ff; min-height: 100vh; padding-bottom: 90px; direction: rtl; }
+        .container { max-width: 480px; margin: 0 auto; padding: 15px; }
+
+        .vip-card { background: #fff; border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .btn-join { background: #0284c7; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* شريط التنقل السفلي الثابت */
+        .bottom-nav {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            max-width: 480px;
+            margin: 0 auto;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid #e2e8f0;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            z-index: 9999;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; text-align: center; }
+        .nav-item i { font-size: 18px; margin-bottom: 3px; }
+        .nav-item.active { color: #0284c7; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<h2 style="margin-bottom: 15px; text-align: center;">قائمة باقات VIP</h2>
-<div id="vipList">جاري تحميل الباقات...</div>
+<div class="container">
+    <h2 style="text-align: center; margin-bottom: 20px;">باقات VIP</h2>
 
-<script src="js/config.js"></script>
-<script>
-    const defaultVips = {
-        'VIP1': { price: 20, profit: 2, img: '' },
-        'VIP2': { price: 50, profit: 5, img: '' },
-        'VIP3': { price: 100, profit: 12, img: '' }
-    };
+    <div class="vip-card">
+        <div style="display:flex; justify-style:space-between; font-weight:bold; margin-bottom:10px;">
+            <span>VIP1</span>
+            <span style="color:#0284c7">$20</span>
+        </div>
+        <p style="font-size:12px; color:#64748b; margin-bottom:10px;">الربح اليومي: $2.00</p>
+        <button class="btn-join" onclick="alert('تأكيد الانضمام')">انضم الآن</button>
+    </div>
+</div>
 
-    document.addEventListener("DOMContentLoaded", async function() {
-        let serverData = await fetchServerData();
-        let offers = serverData.offers || defaultVips;
-        const container = document.getElementById('vipList');
-        container.innerHTML = '';
+<!-- الشريط السفلي الثابت -->
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
+    <a href="tasks.html" class="nav-item"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
+    <a href="team.html" class="nav-item"><i class="fa-solid fa-users"></i><span>الفريق</span></a>
+    <a href="vip.html" class="nav-item active"><i class="fa-solid fa-crown"></i><span>VIP</span></a>
+</div>
 
-        Object.keys(offers).forEach(vip => {
-            let item = offers[vip];
-            container.innerHTML += `
-                <div class="vip-card">
-                    <div class="vip-header">
-                        <span>${vip}</span>
-                        <span style="color: #0284c7;">$${item.price}</span>
-                    </div>
-                    ${item.img ? `<img src="${item.img}" style="width:100%; border-radius:10px; margin-bottom:10px;">` : ''}
-                    <p style="font-size:13px; color:#64748b; margin-bottom:10px;">الربح اليومي: <b>$${item.profit}</b></p>
-                    <button class="btn-join" onclick="buyVip('${vip}', ${item.price})">انضم الآن</button>
-                </div>
-            `;
-        });
-    });
-
-    async function buyVip(vipLevel, price) {
-        const currentUser = localStorage.getItem('currentUser');
-        let serverData = await fetchServerData();
-        let user = serverData.usersDB[currentUser];
-
-        if (!user) return alert('حدث خطأ، أعد تسجيل الدخول!');
-
-        if ((user.balance || 0) < price) {
-            return alert('رصيدك غير كافٍ لتفعيل هذه الباقة! يرجى الشحن أولاً.');
-        }
-
-        if (confirm(`هل تريد خصم $${price} لتفعيل مستوى ${vipLevel}؟`)) {
-            user.balance -= price;
-            user.vipLevel = vipLevel;
-            user.lastTaskDate = null; // إعادة تعيين المهام للتجديد
-
-            await updateServerData(serverData);
-            alert(`مبروك! تم تفعيل مستوى ${vipLevel} بنجاح.`);
-            window.location.href = 'tasks.html';
-        }
-    }
-</script>
 </body>
 </html>
