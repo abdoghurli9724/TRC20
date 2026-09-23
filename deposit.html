@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إيداع - VirtualMall</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+<body>
+<div class="app-container">
+    <div class="top-bar">
+        <a href="profile.html" style="color: #0f172a; text-decoration: none; font-size: 20px;"><i class="fa-solid fa-arrow-right"></i></a>
+        <span class="brand-title">شحن الرصيد (إيداع)</span>
+        <div></div>
+    </div>
+
+    <div class="user-card" style="text-align: center;">
+        <p style="color: #64748b; font-size: 14px; margin-bottom: 10px;">عملة الإيداع المفضلة: <strong>USDT (TRC20)</strong></p>
+        <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px; word-break: break-all;">
+            <span id="walletAddress" style="font-weight: bold; font-size: 14px; color: #0f172a;">TY83jXkLzP2mN9vBqWsRt1uE4zC7vA9xL</span>
+        </div>
+        <button onclick="copyWallet()" style="background: #00b0ff; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold;">
+            <i class="fa-regular fa-copy"></i> نسخ عنوان المحفظة
+        </button>
+    </div>
+
+    <form onsubmit="submitDeposit(event)" class="user-card">
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-size: 13px; color: #475569; margin-bottom: 5px;">رقم المعاملة (TXID)</label>
+            <input type="text" id="txidInput" placeholder="أدخل رقم العملية بعد التحويل" required style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; outline: none;">
+        </div>
+        <button type="submit" style="background: #00e676; color: #004d40; border: none; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold;">تأكيد الإيداع</button>
+    </form>
+</div>
+
+<script>
+function copyWallet() {
+    const address = document.getElementById('walletAddress').innerText;
+    navigator.clipboard.writeText(address);
+    alert('تم نسخ عنوان المحفظة بنجاح!');
+}
+function submitDeposit(e) {
+    e.preventDefault();
+    alert('تم إرسال رقم المعاملة للمراجعة والتدقيق.');
+    window.location.href = 'profile.html';
+}
+</script>
+</body>
+</html>
