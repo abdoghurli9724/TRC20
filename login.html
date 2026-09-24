@@ -6,149 +6,405 @@
     <title>تسجيل الدخول - VirtualMall</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-        body { background-color: #cce7ff; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; direction: rtl; }
-        .login-card { background: #ffffff; width: 100%; max-width: 400px; padding: 30px 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; }
-        .brand-icon { width: 60px; height: 60px; background: #00b0ff; color: #fff; border-radius: 15px; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px; font-size: 28px; }
-        h2 { margin-bottom: 20px; color: #0f172a; font-size: 22px; }
-        .input-group { text-align: right; margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 13px; color: #475569; margin-bottom: 6px; }
-        .input-group input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; }
-        .btn-login { width: 100%; padding: 12px; background: #0284c7; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .btn-register-link { width: 100%; padding: 12px; background: transparent; color: #0284c7; border: 1px solid #0284c7; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* النافذة المنبثقة لإنشاء حساب */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-box { background: #fff; width: 100%; max-width: 380px; padding: 25px 20px; border-radius: 20px; position: relative; }
-        .close-btn { position: absolute; top: 15px; left: 15px; font-size: 20px; color: #94a3b8; cursor: pointer; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* خلفية ديكورية متحرّكة */
+        .bg-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(14,165,233,0.3) 0%, rgba(0,0,0,0) 70%);
+            top: -50px;
+            right: -50px;
+            border-radius: 50%;
+            z-index: 0;
+            animation: pulse 6s infinite alternate;
+        }
+
+        .bg-glow-2 {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(168,85,247,0.2) 0%, rgba(0,0,0,0) 70%);
+            bottom: -80px;
+            left: -80px;
+            border-radius: 50%;
+            z-index: 0;
+            animation: pulse 8s infinite alternate-reverse;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.2); opacity: 0.9; }
+        }
+
+        /* كرت التصميم الزجاجي */
+        .auth-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 420px;
+            padding: 35px 25px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+            position: relative;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .brand-icon {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            color: #fff;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 12px;
+            font-size: 30px;
+            box-shadow: 0 10px 20px rgba(2, 132, 199, 0.3);
+        }
+
+        .brand-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-header p {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        /* أزرار التبويب */
+        .tab-switcher {
+            display: flex;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 5px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        }
+
+        /* الحقول */
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i.input-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 13px 42px 13px 40px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        }
+
+        .toggle-password {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* نظام الإشعارات العائمة Toast */
+        #toastBox {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100000;
+        }
+
+        .toast {
+            background: #1e293b;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border-right: 4px solid #38bdf8;
+            animation: slideDown 0.3s ease forwards;
+            font-size: 14px;
+        }
+
+        .toast.success { border-right-color: #10b981; }
+        .toast.error { border-right-color: #ef4444; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-<div class="login-card">
-    <div class="brand-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-    <h2>تسجيل الدخول</h2>
-    
-    <div class="input-group">
-        <label>اسم المستخدم / رقم الهاتف:</label>
-        <input type="text" id="phoneInput" placeholder="أدخل اسم المستخدم أو الرقم">
+<div class="bg-glow"></div>
+<div class="bg-glow-2"></div>
+
+<div id="toastBox"></div>
+
+<div class="auth-card">
+    <div class="brand-header">
+        <div class="brand-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+        <h2>VirtualMall</h2>
+        <p>منصة التداول والمهام الإفتراضية</p>
     </div>
 
-    <div class="input-group">
-        <label>كلمة المرور:</label>
-        <input type="password" id="passInput" placeholder="أدخل كلمة المرور">
+    <div class="tab-switcher">
+        <button class="tab-btn active" id="loginTabBtn" onclick="switchTab('login')">تسجيل الدخول</button>
+        <button class="tab-btn" id="registerTabBtn" onclick="switchTab('register')">حساب جديد</button>
     </div>
 
-    <button class="btn-login" onclick="handleLogin()">دخول</button>
-    <button class="btn-register-link" onclick="openRegisterModal()">إنشاء حساب جديد</button>
-</div>
-
-<!-- نافذة إنشاء حساب جديد -->
-<div class="modal-overlay" id="registerModal">
-    <div class="modal-box">
-        <span class="close-btn" onclick="closeRegisterModal()">&times;</span>
-        <h3 style="margin-bottom: 20px; text-align: center; color: #0f172a;">إنشاء حساب جديد</h3>
-        
-        <div class="input-group">
-            <label>اسم المستخدم / رقم الهاتف:</label>
-            <input type="text" id="regPhone" placeholder="أدخل رقم الهاتف أو اسم المستخدم">
+    <!-- نموذج تسجيل الدخول -->
+    <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
+        <div class="form-group">
+            <label>اسم المستخدم / رقم الهاتف</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-user input-icon"></i>
+                <input type="text" id="loginUser" placeholder="أدخل اسم المستخدم" required>
+            </div>
         </div>
 
-        <div class="input-group">
-            <label>كلمة المرور:</label>
-            <input type="password" id="regPass" placeholder="أنشئ كلمة مرور">
+        <div class="form-group">
+            <label>كلمة المرور</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-lock input-icon"></i>
+                <input type="password" id="loginPass" placeholder="أدخل كلمة المرور" required>
+                <i class="fa-solid fa-eye toggle-password" onclick="togglePass('loginPass', this)"></i>
+            </div>
         </div>
 
-        <button class="btn-login" onclick="handleRegister()">تسجيل الحساب</button>
-    </div>
+        <button type="submit" class="btn-submit">دخول إلى الحساب <i class="fa-solid fa-arrow-left"></i></button>
+    </form>
+
+    <!-- نموذج إنشاء حساب جديد -->
+    <form id="registerForm" style="display: none;" onsubmit="event.preventDefault(); handleRegister();">
+        <div class="form-group">
+            <label>اسم المستخدم / رقم الهاتف</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-phone input-icon"></i>
+                <input type="text" id="regUser" placeholder="أدخل رقم الهاتف أو الاسم" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>كلمة المرور</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-lock input-icon"></i>
+                <input type="password" id="regPass" placeholder="أنشئ كلمة مرور معقدة" required>
+                <i class="fa-solid fa-eye toggle-password" onclick="togglePass('regPass', this)"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>كود الدعوة (اختياري)</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-ticket input-icon"></i>
+                <input type="text" id="regRef" placeholder="أدخل كود الدعوة">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">إنشاء الحساب الآن <i class="fa-solid fa-user-plus"></i></button>
+    </form>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const currentUser = localStorage.getItem('currentUser');
         if (currentUser && currentUser !== 'null' && currentUser !== 'undefined') {
-            if (currentUser === 'admin') {
-                window.location.replace('admin.html');
-            } else {
-                window.location.replace('index.html');
-            }
+            window.location.replace(currentUser === 'admin' ? 'admin.html' : 'index.html');
+        }
+
+        // قراءة كود الدعوة من الرابط تلقائياً
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        if (refCode) {
+            switchTab('register');
+            document.getElementById('regRef').value = refCode;
+            showToast('تم تطبيق كود الدعوة تلقائياً!', 'success');
         }
     });
 
-    function handleLogin() {
-        let username = document.getElementById('phoneInput').value.trim();
-        let password = document.getElementById('passInput').value.trim();
+    function showToast(msg, type = 'info') {
+        const toastBox = document.getElementById('toastBox');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        let icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info');
+        toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${msg}</span>`;
+        toastBox.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+    }
 
-        if (!username || !password) {
-            return alert('يرجى كتابة اسم المستخدم وكلمة المرور!');
+    function switchTab(tab) {
+        if (tab === 'login') {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginTabBtn').classList.add('active');
+            document.getElementById('registerTabBtn').classList.remove('active');
+        } else {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('registerTabBtn').classList.add('active');
+            document.getElementById('loginTabBtn').classList.remove('active');
         }
+    }
 
-        // تسجيل دخول الأدمن
+    function togglePass(id, icon) {
+        const input = document.getElementById(id);
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+
+    function handleLogin() {
+        let username = document.getElementById('loginUser').value.trim();
+        let password = document.getElementById('loginPass').value.trim();
+
         if (username === 'admin' && password === 'admin123') {
             localStorage.setItem('currentUser', 'admin');
             localStorage.setItem('isAdmin', 'true');
-            window.location.replace('admin.html');
+            showToast('تم تسجيل دخول الأدمن بنجاح!', 'success');
+            setTimeout(() => window.location.replace('admin.html'), 1000);
             return;
         }
 
-        // التحقق من وجود المستخدم في قاعدة البيانات local
         let users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        
-        if (!users[username]) {
-            return alert('هذا الحساب غير موجود! يرجى اضغط على "إنشاء حساب جديد".');
-        }
+        if (!users[username]) return showToast('هذا الحساب غير موجود! يرجى إنشاء حساب جديد.', 'error');
+        if (users[username].password && users[username].password !== password) return showToast('كلمة المرور غير صحيحة!', 'error');
 
-        if (users[username].password && users[username].password !== password) {
-            return alert('كلمة المرور غير صحيحة!');
-        }
-
-        // تسجيل دخول مستخدم عادي
         localStorage.setItem('currentUser', username);
         localStorage.setItem('isAdmin', 'false');
-        window.location.replace('index.html');
-    }
-
-    function openRegisterModal() {
-        document.getElementById('registerModal').style.display = 'flex';
-    }
-
-    function closeRegisterModal() {
-        document.getElementById('registerModal').style.display = 'none';
+        showToast('تم تسجيل الدخول بنجاح!', 'success');
+        setTimeout(() => window.location.replace('index.html'), 1000);
     }
 
     function handleRegister() {
-        let phone = document.getElementById('regPhone').value.trim();
-        let pass = document.getElementById('regPass').value.trim();
-
-        if (!phone || !pass) {
-            return alert('يرجى إدخال جميع البيانات المطلوب!');
-        }
+        let username = document.getElementById('regUser').value.trim();
+        let password = document.getElementById('regPass').value.trim();
+        let refCode = document.getElementById('regRef').value.trim();
 
         let users = JSON.parse(localStorage.getItem('usersDB')) || {};
+        if (users[username]) return showToast('هذا الحساب موجود بالفعل! قم بتسجيل الدخول.', 'error');
 
-        if (users[phone]) {
-            return alert('هذا الحساب موجود بالفعل! قم بتسجيل الدخول مباشرة.');
-        }
-
-        // إنشاء الحساب وتخزينه
-        users[phone] = {
-            phone: phone,
-            password: pass,
+        users[username] = {
+            phone: username,
+            password: password,
             balance: 0,
             deposit: 0,
             vip: 'VIP0',
-            referralCode: 'REF' + Math.floor(1000 + Math.random() * 9000),
+            referredBy: refCode || null,
+            referralCode: 'REF' + Math.floor(10000 + Math.random() * 90000),
             history: []
         };
 
         localStorage.setItem('usersDB', JSON.stringify(users));
-        alert('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.');
-        
-        closeRegisterModal();
-        document.getElementById('phoneInput').value = phone;
-        document.getElementById('passInput').value = pass;
+        showToast('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.', 'success');
+        switchTab('login');
+        document.getElementById('loginUser').value = username;
+        document.getElementById('loginPass').value = password;
     }
 </script>
-
 </body>
 </html>
