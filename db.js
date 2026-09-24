@@ -1,7 +1,7 @@
 // db.js - إدارة البيانات السحابية والمحلية بالتزامن
 
-const API_URL = "https://api.jsonbin.io/v3/b/YOUR_BIN_ID"; // استبدل بـ BIN ID الخاص بك إن وجد
-const API_KEY = "$2a$10$YOUR_API_KEY"; // استبدل بـ API Key الخاص بك إن وجد
+const API_URL = "https://api.jsonbin.io/v3/b/6ab55304ac6210605af17b83"; // استبدل بـ BIN ID الخاص بك إن وجد
+const API_KEY = "$2a$10$ivwSTRMoM3LWu6xcGn1TuOwDAt1Od36P/ifB92r0AgPfmP6ZeuEyy"; // استبدل بـ API Key الخاص بك إن وجد
 
 // الهيكل الابتدائي لقاعدة البيانات
 const initialDB = {
