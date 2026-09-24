@@ -7,118 +7,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            min-height: 100vh;
-            padding-bottom: 90px;
-        }
-
-        .container {
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 15px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 10px 0;
-        }
-
+        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; padding-bottom: 90px; }
+        .container { max-width: 480px; margin: 0 auto; padding: 15px; }
+        .header { text-align: center; margin-bottom: 20px; padding: 10px 0; }
         .header h2 { font-size: 22px; color: #38bdf8; font-weight: 700; }
         .header p { font-size: 13px; color: #94a3b8; margin-top: 5px; }
-
-        /* بطاقة VIP */
-        .vip-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 15px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .vip-card.active-plan {
-            border: 2px solid #38bdf8;
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
-        }
-
-        .vip-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .vip-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
+        .vip-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9)); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 20px; margin-bottom: 15px; position: relative; overflow: hidden; }
+        .vip-card.active-plan { border: 2px solid #38bdf8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+        .vip-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .vip-title { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: bold; }
         .vip-title i { color: #f59e0b; font-size: 20px; }
-
-        .vip-price {
-            font-size: 18px;
-            font-weight: bold;
-            color: #10b981;
-        }
-
-        .vip-details {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            background: rgba(15, 23, 42, 0.6);
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            font-size: 13px;
-        }
-
+        .vip-price { font-size: 18px; font-weight: bold; color: #10b981; }
+        .vip-details { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 12px; margin-bottom: 15px; font-size: 13px; }
         .detail-item { color: #cbd5e1; }
         .detail-item span { color: #38bdf8; font-weight: bold; display: block; margin-top: 2px; }
-
-        .btn-join {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-join.current {
-            background: rgba(56, 189, 248, 0.15);
-            color: #38bdf8;
-            border: 1px solid #38bdf8;
-            cursor: default;
-        }
-
-        .btn-join.upgrade {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto;
-            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); display: flex;
-            justify-content: space-around; align-items: center; padding: 12px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 9999;
-        }
+        .btn-join { width: 100%; padding: 12px; border: none; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .btn-join.current { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #38bdf8; cursor: default; }
+        .btn-join.upgrade { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); display: flex; justify-content: space-around; align-items: center; padding: 12px 0; border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 9999; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; }
         .nav-item i { font-size: 19px; margin-bottom: 4px; }
         .nav-item.active { color: #38bdf8; }
-
         #toastBox { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: #1e293b; color: #fff; padding: 12px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-right: 4px solid #38bdf8; font-size: 14px; }
         .toast.success { border-right-color: #10b981; }
@@ -134,8 +43,7 @@
         <h2>مستويات العضوية (VIP)</h2>
         <p>قم بزيادة أرباحك اليومية عبر ترقية باقتك الاستثمارية</p>
     </div>
-
-    <div id="vipContainer"></div>
+    <div id="vipContainer">جاري التحميل...</div>
 </div>
 
 <div class="bottom-nav">
@@ -145,6 +53,7 @@
     <a href="vip.html" class="nav-item active"><i class="fa-solid fa-crown"></i><span>VIP</span></a>
 </div>
 
+<script src="db.js"></script>
 <script>
     const vipPlans = [
         { level: 'VIP0', price: 0, dailyProfit: 0.50, tasks: 2, taskReward: 0.25 },
@@ -154,10 +63,10 @@
         { level: 'VIP4', price: 500, dailyProfit: 90.00, tasks: 6, taskReward: 15.00 }
     ];
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", async function() {
         const currentUser = localStorage.getItem('currentUser');
         if (!currentUser) return window.location.replace('login.html');
-        renderVIPs();
+        await renderVIPs();
     });
 
     function showToast(msg, type = 'info') {
@@ -170,10 +79,10 @@
         setTimeout(() => toast.remove(), 3500);
     }
 
-    function renderVIPs() {
+    async function renderVIPs() {
         const currentUser = localStorage.getItem('currentUser');
-        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        let userVip = users[currentUser]?.vip || 'VIP0';
+        const db = await getCloudDB();
+        let userVip = db.usersDB?.[currentUser]?.vip || 'VIP0';
 
         const container = document.getElementById('vipContainer');
         container.innerHTML = '';
@@ -185,10 +94,7 @@
 
             card.innerHTML = `
                 <div class="vip-header">
-                    <div class="vip-title">
-                        <i class="fa-solid fa-crown"></i>
-                        <span>${plan.level}</span>
-                    </div>
+                    <div class="vip-title"><i class="fa-solid fa-crown"></i><span>${plan.level}</span></div>
                     <div class="vip-price">${plan.price === 0 ? 'مجاني' : '$' + plan.price}</div>
                 </div>
                 <div class="vip-details">
@@ -205,22 +111,24 @@
         });
     }
 
-    function buyVIP(level, price) {
+    async function buyVIP(level, price) {
         const currentUser = localStorage.getItem('currentUser');
-        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        let u = users[currentUser];
+        showToast('جاري تنفيذ الترقية في السحابة...', 'info');
+
+        let db = await getCloudDB();
+        let u = db.usersDB[currentUser];
 
         if (u.vip === level) return showToast('أنت مشترك بالفعل في هذه الباقة!', 'info');
-        if (u.balance < price) return showToast(`رصيدك المتاح ($${u.balance.toFixed(2)}) غير كافٍ للترقية! قم بالشحن أولاً.`, 'error');
+        if (u.balance < price) return showToast(`رصيدك المتاح ($${u.balance.toFixed(2)}) غير كافٍ!`, 'error');
 
         u.balance -= price;
         u.vip = level;
         if (!u.history) u.history = [];
         u.history.unshift({ type: 'ترقية', amount: `-$${price}`, title: `ترقية الحساب إلى ${level}`, date: new Date().toLocaleString('ar-EG') });
 
-        localStorage.setItem('usersDB', JSON.stringify(users));
-        showToast(`تهانينا! تم ترقية حسابك بنجاح إلى ${level}`, 'success');
-        renderVIPs();
+        await updateCloudDB(db);
+        showToast(`تهانينا! تم ترقية حسابك سحابياً إلى ${level}`, 'success');
+        await renderVIPs();
     }
 </script>
 </body>
