@@ -5,53 +5,367 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الصفحة الرئيسية - VirtualMall</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #cce7ff; min-height: 100vh; padding-bottom: 90px; direction: rtl; }
-        .container { max-width: 480px; margin: 0 auto; padding: 15px; }
-
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .brand-info { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: bold; }
-        .brand-icon { width: 35px; height: 35px; background: #00b0ff; color: #fff; border-radius: 10px; display: flex; justify-content: center; align-items: center; }
-
-        .user-card { background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .user-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .vip-badge { background: #fef08a; color: #854d0e; padding: 4px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; }
-        .balance-container { display: flex; justify-content: space-between; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 10px; }
-
-        .actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .action-item { background: #fff; padding: 15px 5px; border-radius: 15px; text-align: center; cursor: pointer; transition: transform 0.1s; }
-        .action-item:active { transform: scale(0.95); }
-        .action-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; margin: 0 auto 8px; font-size: 18px; }
-
-        .bg-deposit { background: #ccfbf1; color: #0d9488; }
-        .bg-withdraw { background: #f3e8ff; color: #9333ea; }
-        .bg-account { background: #fef9c3; color: #ca8a04; }
-        .bg-records { background: #fce7f3; color: #db2777; }
-
-        .menu-list { background: #fff; border-radius: 20px; overflow: hidden; }
-        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 14px; font-weight: 600; }
-
-        .bottom-nav { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; max-width: 480px; margin: 0 auto; background: #ffffff; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; border-top: 1px solid #e2e8f0; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); z-index: 9999; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; text-align: center; }
-        .nav-item i { font-size: 18px; margin-bottom: 3px; }
-        .nav-item.active { color: #0284c7; font-weight: bold; }
-
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-box { background: #fff; width: 100%; max-width: 400px; border-radius: 20px; padding: 20px; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
-        .close-btn { font-size: 22px; color: #94a3b8; cursor: pointer; }
-        .modal-body label { display: block; font-size: 13px; color: #475569; margin-bottom: 6px; }
-        .modal-body input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; margin-bottom: 15px; font-size: 14px; outline: none; }
-        .btn-modal { width: 100%; padding: 12px; background: #0284c7; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            padding-bottom: 90px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        /* شريط التنبيهات والأرباح المتحرك */
+        .ticker-wrap {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 8px 12px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .ticker-title {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .ticker-text {
+            font-size: 12px;
+            color: #cbd5e1;
+            white-space: nowrap;
+            animation: marquee 15s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* شريط أعلى الصفحة */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .brand-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            color: #fff;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+        }
+
+        /* كارت الرصيد الزجاجي VIP */
+        .user-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .vip-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .balance-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 15px;
+        }
+
+        .balance-item small {
+            color: #94a3b8;
+            font-size: 12px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .balance-item h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        /* شاشة الأزرار السريعة */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .action-item {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 16px 8px;
+            border-radius: 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-item:active {
+            transform: scale(0.92);
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 8px;
+            font-size: 20px;
+        }
+
+        .action-item span {
+            font-size: 12px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .bg-deposit { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .bg-withdraw { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+        .bg-account { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .bg-records { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
+
+        /* القوائم */
+        .menu-list {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        /* شريط الملاحة السفلية الاحترافي */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 480px;
+            margin: 0 auto;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 12px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 9999;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .nav-item i {
+            font-size: 19px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: #38bdf8;
+        }
+
+        /* النوافذ المنبثقة Modals */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 24px;
+            padding: 25px 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 12px;
+        }
+
+        .close-btn {
+            font-size: 22px;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        .modal-body label {
+            display: block;
+            font-size: 13px;
+            color: #cbd5e1;
+            margin-bottom: 6px;
+        }
+
+        .modal-body input {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .btn-modal {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* زر الدعم العائم */
+        .support-btn {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #0088cc, #006699);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            box-shadow: 0 8px 20px rgba(0, 136, 204, 0.4);
+            cursor: pointer;
+            z-index: 999;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 13px;
+        }
+
+        #toastBox { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: #1e293b; color: #fff; padding: 12px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-right: 4px solid #38bdf8; font-size: 14px; }
+        .toast.success { border-right-color: #10b981; }
+        .toast.error { border-right-color: #ef4444; }
     </style>
 </head>
 <body>
 
+<div id="toastBox"></div>
+
+<a href="https://t.me/" target="_blank" class="support-btn" title="خدمة العملاء">
+    <i class="fa-brands fa-telegram"></i>
+</a>
+
 <div class="container">
+
     <div class="top-bar">
         <div class="brand-info">
             <div class="brand-icon"><i class="fa-solid fa-cart-shopping"></i></div>
@@ -59,33 +373,47 @@
         </div>
     </div>
 
+    <!-- شريط أرباح حية -->
+    <div class="ticker-wrap">
+        <span class="ticker-title">سحب جديد</span>
+        <div class="ticker-text">المستخدم 9639**** قام للتو بسحب $120.00 بنجاح عبر USDT TRC20 🚀</div>
+    </div>
+
+    <!-- بطاقة الرصيد -->
     <div class="user-card">
         <div class="user-header">
-            <div class="vip-badge" id="vipLevelDisplay">VIP0 <i class="fa-solid fa-gem"></i></div>
-            <div style="font-weight:bold" id="userPhoneDisplay">---</div>
+            <div class="vip-badge" id="vipLevelDisplay"><i class="fa-solid fa-crown"></i> VIP0</div>
+            <div style="font-weight:bold; color:#cbd5e1;" id="userPhoneDisplay">---</div>
         </div>
         <div class="balance-container">
-            <div><small style="color:#64748b">مبلغ الإيداع</small><h3 id="depDisplay">$0</h3></div>
-            <div><small style="color:#64748b">الرصيد الإجمالي</small><h3 id="balDisplay">$0.00</h3></div>
+            <div class="balance-item">
+                <small>إجمالي الإيداع</small>
+                <h3 id="depDisplay" style="color:#10b981;">$0.00</h3>
+            </div>
+            <div class="balance-item" style="text-align: left;">
+                <small>الرصيد المتاح</small>
+                <h3 id="balDisplay">$0.00</h3>
+            </div>
         </div>
     </div>
 
+    <!-- الإجراءات السريعة -->
     <div class="actions-grid">
         <div class="action-item" onclick="showModal('depositModal')"><div class="action-icon bg-deposit"><i class="fa-solid fa-wallet"></i></div><span>إيداع</span></div>
         <div class="action-item" onclick="showModal('withdrawModal')"><div class="action-icon bg-withdraw"><i class="fa-solid fa-hand-holding-dollar"></i></div><span>يسحب</span></div>
-        <div class="action-item" onclick="showModal('accountModal')"><div class="action-icon bg-account"><i class="fa-solid fa-building-columns"></i></div><span>حساب</span></div>
-        <div class="action-item" onclick="showModal('recordsModal'); loadHistory();"><div class="action-icon bg-records"><i class="fa-solid fa-chart-line"></i></div><span>سجلات</span></div>
+        <div class="action-item" onclick="showModal('accountModal')"><div class="action-icon bg-account"><i class="fa-solid fa-user-gear"></i></div><span>حسابي</span></div>
+        <div class="action-item" onclick="showModal('recordsModal'); loadHistory();"><div class="action-icon bg-records"><i class="fa-solid fa-clock-rotate-left"></i></div><span>سجلات</span></div>
     </div>
 
+    <!-- قائمة القوائم الإضافية -->
     <div class="menu-list">
-        <div class="menu-item" id="adminBtn" style="display: none; background: #fef2f2;" onclick="window.location.href='admin.html'">
-            <span style="color: #dc2626;"><i class="fa-solid fa-user-shield"></i> لوحة التحكم (الأدمن)</span>
-            <i class="fa-solid fa-chevron-left" style="color: #dc2626; font-size: 12px;"></i>
+        <div class="menu-item" id="adminBtn" style="display: none; background: rgba(239, 68, 68, 0.1);" onclick="window.location.href='admin.html'">
+            <span style="color: #ef4444;"><i class="fa-solid fa-user-shield"></i> لوحة الإدارة (الأدمن)</span>
+            <i class="fa-solid fa-chevron-left" style="color: #ef4444; font-size: 12px;"></i>
         </div>
-
         <div class="menu-item" onclick="handleLogout()">
-            <span style="color: #ef4444;"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</span>
-            <i class="fa-solid fa-chevron-left" style="color: #cbd5e1; font-size: 12px;"></i>
+            <span style="color: #f87171;"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</span>
+            <i class="fa-solid fa-chevron-left" style="color: #64748b; font-size: 12px;"></i>
         </div>
     </div>
 </div>
@@ -94,17 +422,17 @@
 <div class="modal-overlay" id="depositModal">
     <div class="modal-box">
         <div class="modal-header">
-            <h3 style="font-size:16px;">قسم الإيداع (TRC20)</h3>
+            <h3>قسم الإيداع (USDT TRC20)</h3>
             <div class="close-btn" onclick="hideModal('depositModal')">&times;</div>
         </div>
         <div class="modal-body">
-            <label>عنوان المحفظة للتحويل (TRC20):</label>
-            <input type="text" value="TYx89A9283471...TRC20" readonly style="background:#f8fafc; text-align:center; font-weight:bold;">
+            <label>عنوان المحفظة الرسمية للتحويل:</label>
+            <input type="text" value="TYx89A9283471USDTTRC20Official" readonly style="background:#0f172a; text-align:center; font-weight:bold; color:#38bdf8;">
             <label>المبلغ المراد شحنه ($):</label>
-            <input type="number" id="depAmount" placeholder="أدخل المبلغ بالدولار">
+            <input type="number" id="depAmount" placeholder="أدخل المبلغ مثل 10">
             <label>معرف المعاملة (TXID):</label>
-            <input type="text" id="depTXID" placeholder="أدخل TXID العملية">
-            <button class="btn-modal" onclick="submitDeposit()">تقديم طلب الشحن</button>
+            <input type="text" id="depTXID" placeholder="أدخل رمز التحويل TXID">
+            <button class="btn-modal" onclick="submitDeposit()">تأكيد وإرسال طلب الشحن</button>
         </div>
     </div>
 </div>
@@ -118,22 +446,21 @@
         </div>
         <div class="modal-body">
             <label>مبلغ السحب ($):</label>
-            <input type="number" id="withdrawAmount" placeholder="أدخل المبلغ">
+            <input type="number" id="withdrawAmount" placeholder="المبلغ المطلوبة">
             <label>عنوان محفظتك (USDT TRC20):</label>
             <input type="text" id="withdrawAddress" placeholder="أدخل عنوان المحفظة">
-            <button class="btn-modal" onclick="submitWithdraw()">تأكيد طلب السحب</button>
+            <button class="btn-modal" onclick="submitWithdraw()">إرسال طلب السحب</button>
         </div>
     </div>
 </div>
 
 <div class="modal-overlay" id="accountModal">
     <div class="modal-box">
-        <div class="modal-header"><h3>تفاصيل الحساب</h3><div class="close-btn" onclick="hideModal('accountModal')">&times;</div></div>
-        <div class="modal-body"><p id="accInfo"></p><br><button class="btn-modal" onclick="hideModal('accountModal')">إغلاق</button></div>
+        <div class="modal-header"><h3>معلومات الحساب</h3><div class="close-btn" onclick="hideModal('accountModal')">&times;</div></div>
+        <div class="modal-body"><p id="accInfo" style="line-height: 1.8; color: #cbd5e1;"></p><br><button class="btn-modal" onclick="hideModal('accountModal')">إغلاق</button></div>
     </div>
 </div>
 
-<!-- نافذة السجلات -->
 <div class="modal-overlay" id="recordsModal">
     <div class="modal-box">
         <div class="modal-header"><h3>سجل العمليات</h3><div class="close-btn" onclick="hideModal('recordsModal')">&times;</div></div>
@@ -144,8 +471,9 @@
     </div>
 </div>
 
+<!-- Bottom Navigation -->
 <div class="bottom-nav">
-    <a href="index.html" class="nav-item active"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
+    <a href="index.html" class="nav-item active"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
     <a href="tasks.html" class="nav-item"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
     <a href="team.html" class="nav-item"><i class="fa-solid fa-users"></i><span>الفريق</span></a>
     <a href="vip.html" class="nav-item"><i class="fa-solid fa-crown"></i><span>VIP</span></a>
@@ -155,10 +483,9 @@
     document.addEventListener("DOMContentLoaded", function() {
         const currentUser = localStorage.getItem('currentUser');
         const isAdmin = localStorage.getItem('isAdmin');
-        
-        if (!currentUser || currentUser === 'null' || currentUser === 'undefined') {
-            window.location.replace('login.html');
-            return;
+
+        if (!currentUser || currentUser === 'null') {
+            return window.location.replace('login.html');
         }
 
         if (isAdmin === 'true' || currentUser === 'admin') {
@@ -168,9 +495,19 @@
         initUser(currentUser);
     });
 
+    function showToast(msg, type = 'info') {
+        const toastBox = document.getElementById('toastBox');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        let icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info');
+        toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${msg}</span>`;
+        toastBox.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+    }
+
     function initUser(currentUser) {
         let users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        if(!users[currentUser]) {
+        if (!users[currentUser]) {
             users[currentUser] = { phone: currentUser, balance: 0, deposit: 0, vip: 'VIP0', history: [] };
             localStorage.setItem('usersDB', JSON.stringify(users));
         }
@@ -178,8 +515,8 @@
         document.getElementById('userPhoneDisplay').innerText = u.phone;
         document.getElementById('balDisplay').innerText = '$' + (u.balance || 0).toFixed(2);
         document.getElementById('depDisplay').innerText = '$' + (u.deposit || 0).toFixed(2);
-        document.getElementById('vipLevelDisplay').innerText = u.vip || 'VIP0';
-        document.getElementById('accInfo').innerText = `اسم المستخدم: ${u.phone} | المستوى: ${u.vip}`;
+        document.getElementById('vipLevelDisplay').innerHTML = `<i class="fa-solid fa-crown"></i> ${u.vip || 'VIP0'}`;
+        document.getElementById('accInfo').innerHTML = `<b>اسم المستخدم:</b> ${u.phone}<br><b>المستوى الحالي:</b> ${u.vip || 'VIP0'}<br><b>كود الدعوة:</b> ${u.referralCode || 'لا يوجد'}`;
     }
 
     function showModal(id) { document.getElementById(id).style.display = 'flex'; }
@@ -190,23 +527,18 @@
         let amount = parseFloat(document.getElementById('depAmount').value);
         let txid = document.getElementById('depTXID').value.trim();
 
-        if(!amount || amount <= 0 || !txid) {
-            return alert('يرجى كتابة المبلغ ومعرف المعاملة TXID بشكل صحيح!');
-        }
+        if (!amount || amount <= 0 || !txid) return showToast('يرجى ملء كافة البيانات المطلوبة!', 'error');
 
         let requests = JSON.parse(localStorage.getItem('depositRequests')) || [];
-        requests.push({ id: Date.now(), user: currentUser, amount: amount, txid: txid, address: 'TYx89A9283471...TRC20', status: 'معلق' });
+        requests.push({ id: Date.now(), user: currentUser, amount: amount, txid: txid, status: 'معلق' });
         localStorage.setItem('depositRequests', JSON.stringify(requests));
 
-        // إضافة سجل معلق للمستخدم
         let users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        if(!users[currentUser].history) users[currentUser].history = [];
+        if (!users[currentUser].history) users[currentUser].history = [];
         users[currentUser].history.unshift({ type: 'إيداع', amount: `+$${amount}`, title: 'طلب شحن قيد المراجعة', date: new Date().toLocaleString('ar-EG') });
         localStorage.setItem('usersDB', JSON.stringify(users));
 
-        alert('تم تقديم طلب الشحن بنجاح وهو قيد المراجعة الان!');
-        document.getElementById('depAmount').value = '';
-        document.getElementById('depTXID').value = '';
+        showToast('تم تقديم طلب الشحن بنجاح وهو قيد المراجعة الان!', 'success');
         hideModal('depositModal');
     }
 
@@ -217,22 +549,15 @@
         let users = JSON.parse(localStorage.getItem('usersDB')) || {};
         let u = users[currentUser];
 
-        if (!amount || amount <= 0 || !address) {
-            return alert('يرجى إدخال المبلغ وعنوان المحفظة بشكل صحيح!');
-        }
+        if (!amount || amount <= 0 || !address) return showToast('يرجى كتابة كافة البيانات بشكل صحيح!', 'error');
+        if (u.balance < amount) return showToast('رصيدك المتاح غير كافٍ للقيام بهذه العملية!', 'error');
 
-        if (u.balance < amount) {
-            return alert('رصيدك المتاح غير كافٍ للسحب!');
-        }
-
-        // خصم المبلغ وإضافة العملية في السجل
         u.balance -= amount;
-        if(!u.history) u.history = [];
+        if (!u.history) u.history = [];
         u.history.unshift({ type: 'سحب', amount: `-$${amount}`, title: `طلب سحب إلى ${address.substring(0,6)}...`, date: new Date().toLocaleString('ar-EG') });
 
         localStorage.setItem('usersDB', JSON.stringify(users));
-        alert('تم تقديم طلب السحب بنجاح وسوف يصلك إلى محفظتك قريبًا!');
-        
+        showToast('تم تقديم طلب السحب بنجاح!', 'success');
         initUser(currentUser);
         hideModal('withdrawModal');
     }
@@ -243,35 +568,21 @@
         let history = users[currentUser]?.history || [];
         let list = document.getElementById('recordsList');
 
-        if (history.length === 0) {
-            list.innerHTML = '<p style="text-align:center; color:#64748b;">لا توجد سجلات سابقة</p>';
-            return;
-        }
+        if (history.length === 0) return list.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد سجلات بعد</p>';
 
         let html = '';
         history.forEach(item => {
             let isPositive = item.amount.includes('+');
-            html += `
-            <div class="history-item">
-                <div>
-                    <b>${item.title}</b><br>
-                    <small style="color:#94a3b8;">${item.date}</small>
-                </div>
-                <div style="font-weight:bold; color: ${isPositive ? '#16a34a' : '#ef4444'};">
-                    ${item.amount}
-                </div>
-            </div>`;
+            html += `<div class="history-item"><div><b>${item.title}</b><br><small style="color:#64748b;">${item.date}</small></div><div style="font-weight:bold; color:${isPositive ? '#10b981' : '#ef4444'};">${item.amount}</div></div>`;
         });
         list.innerHTML = html;
     }
 
     function handleLogout() {
-        if(confirm('هل تريد تسجيل الخروج؟')) {
-            localStorage.removeItem('currentUser');
-            localStorage.removeItem('isAdmin');
-            alert('تم تسجيل الخروج بنجاح!');
-            window.location.replace('login.html');
-        }
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('isAdmin');
+        showToast('تم تسجيل الخروج بنجاح!', 'success');
+        setTimeout(() => window.location.replace('login.html'), 800);
     }
 </script>
 </body>
