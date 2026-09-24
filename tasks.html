@@ -3,28 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المهام اليومية - VirtualMall</title>
+    <title>مركز المهام والتقييم - VirtualMall</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; padding-bottom: 90px; }
+        body { background-color: #0b1120; color: #f8fafc; min-height: 100vh; padding-bottom: 90px; }
         .container { max-width: 480px; margin: 0 auto; padding: 15px; }
-        .timer-box { background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8)); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 15px; text-align: center; margin-bottom: 20px; }
+
+        /* شريط التوقيت العالي الاحترافية */
+        .timer-box { 
+            background: linear-gradient(135deg, #1e293b, #0f172a); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 16px; padding: 15px; text-align: center; margin-bottom: 20px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
         .timer-box p { font-size: 12px; color: #94a3b8; }
-        .timer-box h3 { font-size: 20px; color: #38bdf8; margin-top: 4px; font-weight: bold; }
-        .task-card { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 18px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; }
-        .task-img { width: 60px; height: 60px; background: #0f172a; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: #38bdf8; flex-shrink: 0; }
-        .task-info { flex: 1; }
-        .task-info h4 { font-size: 14px; margin-bottom: 4px; color: #f8fafc; }
-        .task-info p { font-size: 12px; color: #10b981; font-weight: bold; }
-        .btn-complete { background: linear-gradient(135deg, #38bdf8, #0284c7); color: #fff; border: none; padding: 10px 16px; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; }
-        .btn-complete.done { background: rgba(100, 116, 139, 0.2); color: #64748b; cursor: default; }
+        .timer-box h3 { font-size: 22px; color: #38bdf8; margin-top: 4px; font-weight: 800; letter-spacing: 1px; }
+
+        /* بطاقة المنتج الاحترافية */
+        .task-card { 
+            background: rgba(30, 41, 59, 0.6); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 20px; padding: 15px; margin-bottom: 16px; 
+            display: flex; gap: 15px; align-items: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .task-card:hover { border-color: rgba(56, 189, 248, 0.3); }
+
+        /* صورة المنتج الحقيقية */
+        .product-img { 
+            width: 90px; height: 90px; border-radius: 14px; 
+            object-fit: cover; flex-shrink: 0; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: #0f172a;
+        }
+
+        .task-details { flex: 1; min-width: 0; }
+        .product-title { font-size: 14px; font-weight: 700; color: #f8fafc; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-desc { font-size: 11px; color: #94a3b8; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .rating { color: #f59e0b; font-size: 10px; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+        .rating span { color: #cbd5e1; font-size: 11px; }
+
+        .task-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
+        .reward-tag { color: #10b981; font-weight: 800; font-size: 14px; }
+
+        /* زر تنفيذ المهمة */
+        .btn-complete { 
+            background: linear-gradient(135deg, #38bdf8, #0284c7); 
+            color: #fff; border: none; padding: 9px 16px; 
+            border-radius: 10px; font-size: 12px; font-weight: 700; 
+            cursor: pointer; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+            transition: all 0.2s ease;
+        }
+        .btn-complete:active { transform: scale(0.96); }
+        .btn-complete.done { 
+            background: rgba(100, 116, 139, 0.2); 
+            color: #64748b; border: 1px solid rgba(255, 255, 255, 0.05); 
+            box-shadow: none; cursor: default; 
+        }
+
+        /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); display: flex; justify-content: space-around; align-items: center; padding: 12px 0; border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 9999; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; }
         .nav-item i { font-size: 19px; margin-bottom: 4px; }
         .nav-item.active { color: #38bdf8; }
-        #toastBox { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: #1e293b; color: #fff; padding: 12px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-right: 4px solid #38bdf8; font-size: 14px; }
+
+        /* Toast Notifications */
+        #toastBox { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px; }
+        .toast { background: #1e293b; color: #fff; padding: 12px 16px; border-radius: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-right: 4px solid #38bdf8; font-size: 13px; }
         .toast.success { border-right-color: #10b981; }
         .toast.error { border-right-color: #ef4444; }
     </style>
@@ -35,10 +83,11 @@
 
 <div class="container">
     <div class="timer-box">
-        <p>تتم إعادة تعيين المهام اليومية خلال:</p>
+        <p><i class="fa-solid fa-clock"></i> توقيت تجديد الطلبات والمهام اليومية</p>
         <h3 id="countdown">08:42:15</h3>
     </div>
-    <div id="tasksContainer">جاري تحميل المهام...</div>
+    
+    <div id="tasksContainer">جاري تحميل المنتجات السحابية...</div>
 </div>
 
 <div class="bottom-nav">
@@ -58,13 +107,50 @@
         'VIP4': { count: 6, reward: 15.00 }
     };
 
+    // قائمة منتجات واقعية مع صور عالية الجودة ووصف احترافي
     const products = [
-        { name: 'ساعة ذكية مقاومة للماء', icon: 'fa-stopwatch' },
-        { name: 'سماعات أذن لاسلكية', icon: 'fa-headphones' },
-        { name: 'حقيبة ظهر للكمبيوتر', icon: 'fa-bag-shopping' },
-        { name: 'نظارات شمسية قطبية', icon: 'fa-glasses' },
-        { name: 'حذاء رياضي خفيف', icon: 'fa-shoe-prints' },
-        { name: 'كاميرا تصوير بدقة 4K', icon: 'fa-camera' }
+        { 
+            name: 'ساعة Smart Watch Ultra 2 Pro', 
+            desc: 'شاشة AMOLED مقاس 2.02 بوصة مع تتبع المؤشرات الحيوية ومقاومة للماء IP68.',
+            image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400&auto=format&fit=crop&q=80',
+            rating: 4.9,
+            reviews: 128
+        },
+        { 
+            name: 'سماعات Sony WH-1000XM5 اللاسلكية', 
+            desc: 'تقنية إلغاء الضوضاء المتقدمة، بطارية تدوم حتى 30 ساعة مع صوت عالي الدقة Hi-Res.',
+            image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80',
+            rating: 5.0,
+            reviews: 310
+        },
+        { 
+            name: 'نظارات Ray-Ban Meta الذكية', 
+            desc: 'كاميرا فائقة الدقة بوضوح 12 ميجابكسل، مكبرات صوت مدمجة مع نظام صوتي مفتوح.',
+            image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&auto=format&fit=crop&q=80',
+            rating: 4.8,
+            reviews: 95
+        },
+        { 
+            name: 'حذاء Nike Air Max Flyknit الرياضي', 
+            desc: 'وسادة هواء للأنشطة الرياضية اليومية وتصميم مريح بجودة خامات ممتازة.',
+            image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&auto=format&fit=crop&q=80',
+            rating: 4.7,
+            reviews: 450
+        },
+        { 
+            name: 'كاميرا Canon EOS R6 Mark II', 
+            desc: 'مستشعر فول فريم بدقة 24.2 ميجابكسل مع إمكانية تصوير فيديو 4K بسرعات فائقة.',
+            image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&auto=format&fit=crop&q=80',
+            rating: 4.9,
+            reviews: 88
+        },
+        { 
+            name: 'عطر Sauvage Elixir للرجال 100ml', 
+            desc: 'تركيبة عطرية فريدة تمزج بين التوابل المركزة وجوهر خشب الصندل الدافيء.',
+            image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&auto=format&fit=crop&q=80',
+            rating: 4.9,
+            reviews: 620
+        }
     ];
 
     document.addEventListener("DOMContentLoaded", async function() {
@@ -103,14 +189,25 @@
             let card = document.createElement('div');
             card.className = 'task-card';
             card.innerHTML = `
-                <div class="task-img"><i class="fa-solid ${prod.icon}"></i></div>
-                <div class="task-info">
-                    <h4>${prod.name}</h4>
-                    <p>+$${config.reward.toFixed(2)}</p>
+                <img src="${prod.image}" alt="${prod.name}" class="product-img">
+                <div class="task-details">
+                    <div class="product-title">${prod.name}</div>
+                    <div class="product-desc">${prod.desc}</div>
+                    <div class="rating">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star-half-stroke"></i>
+                        <span>${prod.rating} (${prod.reviews})</span>
+                    </div>
+                    <div class="task-footer">
+                        <div class="reward-tag">+$${config.reward.toFixed(2)}</div>
+                        <button class="btn-complete ${isDone ? 'done' : ''}" onclick="completeTask(${i}, ${config.reward})" ${isDone ? 'disabled' : ''}>
+                            ${isDone ? '<i class="fa-solid fa-check"></i> تم التقييم' : 'تقييم المنتج'}
+                        </button>
+                    </div>
                 </div>
-                <button class="btn-complete ${isDone ? 'done' : ''}" onclick="completeTask(${i}, ${config.reward})" ${isDone ? 'disabled' : ''}>
-                    ${isDone ? 'مكتمل 🟢' : 'إكمال المهمة'}
-                </button>
             `;
             container.appendChild(card);
         }
@@ -118,7 +215,7 @@
 
     async function completeTask(index, reward) {
         const currentUser = localStorage.getItem('currentUser');
-        showToast('جاري إرسال الطلب للسحابة...', 'info');
+        showToast('جاري معالجة الطلب في السحابة...', 'info');
 
         let db = await getCloudDB();
         let u = db.usersDB[currentUser];
@@ -130,10 +227,10 @@
         u.balance += reward;
 
         if (!u.history) u.history = [];
-        u.history.unshift({ type: 'مهمة', amount: `+$${reward.toFixed(2)}`, title: 'مكافأة إكمال مهمة يومية', date: new Date().toLocaleString('ar-EG') });
+        u.history.unshift({ type: 'مهمة', amount: `+$${reward.toFixed(2)}`, title: 'عمولة تقييم منتج', date: new Date().toLocaleString('ar-EG') });
 
         await updateCloudDB(db);
-        showToast(`تم إكمال المهمة إضافة +$${reward.toFixed(2)} في السحابة!`, 'success');
+        showToast(`تم تقييم المنتج وإضافة +$${reward.toFixed(2)} لحسابك!`, 'success');
         await renderTasks();
     }
 
