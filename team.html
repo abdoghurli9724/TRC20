@@ -3,72 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الفريق - VirtualMall</title>
+    <title>فريقي والعمولات - VirtualMall</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-        body { background-color: #cce7ff; min-height: 100vh; padding-bottom: 90px; direction: rtl; }
-        .container { max-width: 480px; margin: 0 auto; padding: 15px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            padding-bottom: 90px;
+        }
 
-        .card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .ref-input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; margin: 8px 0; text-align: center; font-weight: bold; }
-        .btn-copy { background: #0284c7; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 15px;
+        }
 
-        .bottom-nav { position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; width: 100% !important; max-width: 480px; margin: 0 auto; background: #ffffff; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; border-top: 1px solid #e2e8f0; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); z-index: 9999; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; text-align: center; }
-        .nav-item i { font-size: 18px; margin-bottom: 3px; }
-        .nav-item.active { color: #0284c7; font-weight: bold; }
+        /* كارت كود الدعوة */
+        .invite-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .invite-title { font-size: 14px; color: #94a3b8; margin-bottom: 8px; }
+        .ref-code { font-size: 26px; font-weight: 800; color: #38bdf8; letter-spacing: 2px; margin-bottom: 15px; }
+
+        .btn-copy {
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        }
+
+        /* شبكة أداء الفريق */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px 10px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .stat-box small { font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px; }
+        .stat-box h4 { font-size: 16px; color: #10b981; }
+
+        .team-levels {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px;
+        }
+
+        .level-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 13px;
+        }
+
+        .level-item:last-child { border-bottom: none; }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto;
+            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); display: flex;
+            justify-content: space-around; align-items: center; padding: 12px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 9999;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; }
+        .nav-item i { font-size: 19px; margin-bottom: 4px; }
+        .nav-item.active { color: #38bdf8; }
+
+        #toastBox { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: #1e293b; color: #fff; padding: 12px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-right: 4px solid #38bdf8; font-size: 14px; }
+        .toast.success { border-right-color: #10b981; }
+        .toast.error { border-right-color: #ef4444; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2 style="text-align: center; margin-bottom: 20px;">صفحة دعوة الأصدقاء والفريق</h2>
+<div id="toastBox"></div>
 
-    <div class="card">
-        <h3>رمز الدعوة الخاص بك</h3>
-        <input type="text" id="refCodeBox" class="ref-input" readonly>
+<div class="container">
+    <div class="invite-card">
+        <div class="invite-title">كود الدعوة الخاص بك</div>
+        <div class="ref-code" id="myRefCode">------</div>
+        <button class="btn-copy" onclick="copyRefLink()"><i class="fa-solid fa-copy"></i> نسخ رابط الدعوة</button>
     </div>
 
-    <div class="card">
-        <h3>رابط الدعوة المباشر</h3>
-        <input type="text" id="refLinkBox" class="ref-input" readonly>
-        <button class="btn-copy" onclick="copyLink()">نسخ رابط الدعوة</button>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <small>أعضاء الفريق</small>
+            <h4 id="teamCount">0</h4>
+        </div>
+        <div class="stat-box">
+            <small>إجمالي العمولات</small>
+            <h4 id="teamEarnings">$0.00</h4>
+        </div>
+        <div class="stat-box">
+            <small>إعادة الشحن</small>
+            <h4 id="teamDeposit">$0.00</h4>
+        </div>
+    </div>
+
+    <div class="team-levels">
+        <h4 style="margin-bottom: 12px; color: #cbd5e1; font-size: 14px;">تفاصيل المستويات</h4>
+        <div class="level-item">
+            <span>المستوى 1 (عمولة 10%)</span>
+            <span style="color: #38bdf8; font-weight: bold;" id="lvl1Count">0 أعضاء</span>
+        </div>
+        <div class="level-item">
+            <span>المستوى 2 (عمولة 5%)</span>
+            <span style="color: #38bdf8; font-weight: bold;" id="lvl2Count">0 أعضاء</span>
+        </div>
+        <div class="level-item">
+            <span>المستوى 3 (عمولة 2%)</span>
+            <span style="color: #38bdf8; font-weight: bold;" id="lvl3Count">0 أعضاء</span>
+        </div>
     </div>
 </div>
 
 <div class="bottom-nav">
-    <a href="index.html" class="nav-item"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
     <a href="tasks.html" class="nav-item"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
     <a href="team.html" class="nav-item active"><i class="fa-solid fa-users"></i><span>الفريق</span></a>
     <a href="vip.html" class="nav-item"><i class="fa-solid fa-crown"></i><span>VIP</span></a>
 </div>
 
 <script>
-    const currentUser = localStorage.getItem('currentUser') || '099999999';
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentUser = localStorage.getItem('currentUser');
+        if (!currentUser) return window.location.replace('login.html');
+        loadTeamData();
+    });
 
-    function initTeam() {
+    function showToast(msg, type = 'info') {
+        const toastBox = document.getElementById('toastBox');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        let icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info');
+        toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${msg}</span>`;
+        toastBox.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+    }
+
+    function loadTeamData() {
+        const currentUser = localStorage.getItem('currentUser');
         let users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        let user = users[currentUser] || {};
+        let u = users[currentUser] || {};
 
-        if(!user.referralCode) {
-            user.referralCode = 'REF' + Math.floor(1000 + Math.random() * 9000);
-            users[currentUser] = user;
-            localStorage.setItem('usersDB', JSON.stringify(users));
-        }
+        let code = u.referralCode || ('REF' + Math.floor(10000 + Math.random() * 90000));
+        u.referralCode = code;
+        localStorage.setItem('usersDB', JSON.stringify(users));
 
-        document.getElementById('refCodeBox').value = user.referralCode;
-        document.getElementById('refLinkBox').value = window.location.origin + '/register.html?ref=' + user.referralCode;
+        document.getElementById('myRefCode').innerText = code;
+
+        // حساب عدد المدعوين
+        let count = 0;
+        Object.keys(users).forEach(key => {
+            if (users[key].referredBy === code) count++;
+        });
+
+        document.getElementById('teamCount').innerText = count;
+        document.getElementById('lvl1Count').innerText = `${count} أعضاء`;
     }
 
-    function copyLink() {
-        let copyText = document.getElementById("refLinkBox");
-        copyText.select();
-        document.execCommand("copy");
-        alert("تم نسخ رابط الدعوة الخاص بك بنجاح!");
+    function copyRefLink() {
+        let code = document.getElementById('myRefCode').innerText;
+        let link = `${window.location.origin}/login.html?ref=${code}`;
+        navigator.clipboard.writeText(link).then(() => {
+            showToast('تم نسخ رابط الدعوة بنجاح!', 'success');
+        });
     }
-
-    document.addEventListener("DOMContentLoaded", initTeam);
 </script>
 </body>
 </html>
