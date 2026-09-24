@@ -1,8 +1,8 @@
 // db.js - الربط بقاعدة البيانات السحابية JSONbin.io
 
 const JSONBIN_CONFIG = {
-    apiKey: '$2a$10$YOUR_MASTER_KEY_HERE', // ضع Master Key الخاص بك هنا
-    binId: 'YOUR_BIN_ID_HERE',             // ضع Bin ID الخاص بك هنا
+    apiKey: '$2a$10$ivwSTRMoM3LWu6xcGn1TuOwDAt1Od36P/ifB92r0AgPfmP6ZeuEyy', // ضع Master Key الخاص بك هنا
+    binId: '6aaf174eac6210605ae110f6',             // ضع Bin ID الخاص بك هنا
     url: 'https://api.jsonbin.io/v3/b'
 };
 
