@@ -6,88 +6,209 @@
     <title>المهام اليومية - VirtualMall</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-        body { background-color: #cce7ff; min-height: 100vh; padding: 15px; padding-bottom: 90px; direction: rtl; }
-        .container { max-width: 480px; margin: 0 auto; }
-        .task-card { background: #fff; border-radius: 15px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .task-btn { background: #16a34a; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .task-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #e2e8f0; z-index: 9999; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; flex: 1; }
-        .nav-item.active { color: #0284c7; font-weight: bold; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            padding-bottom: 90px;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .timer-box {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .timer-box p { font-size: 12px; color: #94a3b8; }
+        .timer-box h3 { font-size: 20px; color: #38bdf8; margin-top: 4px; font-weight: bold; }
+
+        /* كارت المهمة */
+        .task-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .task-img {
+            width: 60px;
+            height: 60px;
+            background: #0f172a;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #38bdf8;
+            flex-shrink: 0;
+        }
+
+        .task-info { flex: 1; }
+        .task-info h4 { font-size: 14px; margin-bottom: 4px; color: #f8fafc; }
+        .task-info p { font-size: 12px; color: #10b981; font-weight: bold; }
+
+        .btn-complete {
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-complete:active { transform: scale(0.95); }
+        .btn-complete.done { background: rgba(100, 116, 139, 0.2); color: #64748b; cursor: default; }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto;
+            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); display: flex;
+            justify-content: space-around; align-items: center; padding: 12px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 9999;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; }
+        .nav-item i { font-size: 19px; margin-bottom: 4px; }
+        .nav-item.active { color: #38bdf8; }
+
+        #toastBox { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: #1e293b; color: #fff; padding: 12px 20px; border-radius: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-right: 4px solid #38bdf8; font-size: 14px; }
+        .toast.success { border-right-color: #10b981; }
+        .toast.error { border-right-color: #ef4444; }
     </style>
 </head>
 <body>
 
+<div id="toastBox"></div>
+
 <div class="container">
-    <h2 style="margin-bottom: 15px; text-align: center;">المهام اليومية المتاحة</h2>
-    <div id="tasksList"></div>
+    <div class="timer-box">
+        <p>تتم إعادة تعيين المهام اليومية خلال:</p>
+        <h3 id="countdown">08:42:15</h3>
+    </div>
+
+    <div id="tasksContainer"></div>
 </div>
 
 <div class="bottom-nav">
-    <a href="index.html" class="nav-item"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
     <a href="tasks.html" class="nav-item active"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
     <a href="team.html" class="nav-item"><i class="fa-solid fa-users"></i><span>الفريق</span></a>
     <a href="vip.html" class="nav-item"><i class="fa-solid fa-crown"></i><span>VIP</span></a>
 </div>
 
 <script>
-    const currentUser = localStorage.getItem('currentUser');
-    if (!currentUser) window.location.replace('login.html');
+    const vipConfig = {
+        'VIP0': { count: 2, reward: 0.25 },
+        'VIP1': { count: 5, reward: 0.50 },
+        'VIP2': { count: 5, reward: 1.60 },
+        'VIP3': { count: 5, reward: 5.00 },
+        'VIP4': { count: 6, reward: 15.00 }
+    };
 
-    document.addEventListener("DOMContentLoaded", renderTasks);
+    const products = [
+        { name: 'ساعة ذكية مقاومة للماء', icon: 'fa-stopwatch' },
+        { name: 'سماعات أذن لاسلكية', icon: 'fa-headphones' },
+        { name: 'حقيبة ظهر للكمبيوتر', icon: 'fa-bag-shopping' },
+        { name: 'نظارات شمسية قطبية', icon: 'fa-glasses' },
+        { name: 'حذاء رياضي خفيف', icon: 'fa-shoe-prints' },
+        { name: 'كاميرا تصوير بدقة 4K', icon: 'fa-camera' }
+    ];
 
-    function renderTasks() {
-        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
-        let u = users[currentUser];
-        let container = document.getElementById('tasksList');
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentUser = localStorage.getItem('currentUser');
+        if (!currentUser) return window.location.replace('login.html');
+        
+        startTimer();
+        renderTasks();
+    });
 
-        if (!u || u.vip === 'VIP0' || !u.vip) {
-            container.innerHTML = `
-                <div style="background:#fff; padding:30px; text-align:center; border-radius:20px;">
-                    <i class="fa-solid fa-lock" style="font-size:40px; color:#ef4444; margin-bottom:10px;"></i>
-                    <p style="font-weight:bold; color:#334155;">لا توجد مهام مفعلة!</p>
-                    <small style="color:#64748b;">يرجى التوجه لقسم باقات VIP والاشتراك أولاً لتفعيل المهام.</small>
-                </div>`;
-            return;
-        }
-
-        let count = u.taskCount || 2;
-        let profitPerTask = (u.dailyProfit || 2) / count;
-        let html = '';
-
-        for (let i = 1; i <= count; i++) {
-            html += `
-            <div class="task-card">
-                <div>
-                    <b>مهمة تقييم منتج #${i}</b>
-                    <br><small style="color:#16a34a;">الربح: +$${profitPerTask.toFixed(2)}</small>
-                </div>
-                <button class="task-btn" onclick="completeTask(${profitPerTask}, this)">إكمال المهمة</button>
-            </div>`;
-        }
-        container.innerHTML = html;
+    function showToast(msg, type = 'info') {
+        const toastBox = document.getElementById('toastBox');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        let icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info');
+        toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${msg}</span>`;
+        toastBox.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
     }
 
-    function completeTask(profit, btn) {
+    function renderTasks() {
+        const currentUser = localStorage.getItem('currentUser');
+        let users = JSON.parse(localStorage.getItem('usersDB')) || {};
+        let u = users[currentUser] || {};
+        let vip = u.vip || 'VIP0';
+        let completed = u.completedTasks || [];
+
+        let config = vipConfig[vip] || vipConfig['VIP0'];
+        const container = document.getElementById('tasksContainer');
+        container.innerHTML = '';
+
+        for (let i = 0; i < config.count; i++) {
+            let isDone = completed.includes(i);
+            let prod = products[i % products.length];
+
+            let card = document.createElement('div');
+            card.className = 'task-card';
+            card.innerHTML = `
+                <div class="task-img"><i class="fa-solid ${prod.icon}"></i></div>
+                <div class="task-info">
+                    <h4>${prod.name}</h4>
+                    <p>+$${config.reward.toFixed(2)}</p>
+                </div>
+                <button class="btn-complete ${isDone ? 'done' : ''}" onclick="completeTask(${i}, ${config.reward})" ${isDone ? 'disabled' : ''}>
+                    ${isDone ? 'مكتمل 🟢' : 'إكمال المهمة'}
+                </button>
+            `;
+            container.appendChild(card);
+        }
+    }
+
+    function completeTask(index, reward) {
+        const currentUser = localStorage.getItem('currentUser');
         let users = JSON.parse(localStorage.getItem('usersDB')) || {};
         let u = users[currentUser];
 
-        u.balance = (u.balance || 0) + profit;
+        if (!u.completedTasks) u.completedTasks = [];
+        if (u.completedTasks.includes(index)) return;
+
+        u.completedTasks.push(index);
+        u.balance += reward;
 
         if (!u.history) u.history = [];
-        u.history.unshift({
-            type: 'ربح مهمة',
-            amount: `+$${profit.toFixed(2)}`,
-            title: 'إكمال مهمة يومية',
-            date: new Date().toLocaleString('ar-EG')
-        });
+        u.history.unshift({ type: 'مهمة', amount: `+$${reward.toFixed(2)}`, title: 'مكافأة إكمال مهمة يومية', date: new Date().toLocaleString('ar-EG') });
 
         localStorage.setItem('usersDB', JSON.stringify(users));
+        showToast(`تم إكمال المهمة وإضافة +$${reward.toFixed(2)} إلى رصيدك!`, 'success');
+        renderTasks();
+    }
 
-        btn.innerText = 'تمت بنجاح';
-        btn.disabled = true;
-        alert(`تم تنفيذ المهمة وإضافة $${profit.toFixed(2)} إلى رصيدك!`);
+    function startTimer() {
+        setInterval(() => {
+            let now = new Date();
+            let hours = 23 - now.getHours();
+            let mins = 59 - now.getMinutes();
+            let secs = 59 - now.getSeconds();
+            document.getElementById('countdown').innerText = 
+                `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }, 1000);
     }
 </script>
 </body>
