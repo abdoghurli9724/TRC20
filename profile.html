@@ -6,7 +6,7 @@
   <title>VirtualMall - المركز الشخصي</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   
-  <!-- استبدال مكتبة FontAwesome بمكتبة Bootstrap Icons المجانية والمستقرة -->
+  <!-- مكتبة Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="profile.css">
 </head>
@@ -15,11 +15,11 @@
   <!-- Header Bar -->
   <header class="header-bar">
     <div class="brand-logo">
-      <i class="fa-solid fa-user-gear" style="color: var(--accent-blue);"></i>
+      <i class="bi bi-person-gear" style="color: var(--accent-blue);"></i>
       المركز <span>الشخصي</span>
     </div>
     <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
     </a>
   </header>
 
@@ -30,7 +30,7 @@
       <div style="display: flex; align-items: center; justify-content: space-between;">
         <div style="display: flex; align-items: center; gap: 12px;">
           <div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
-            <i class="fa-solid fa-user"></i>
+            <i class="bi bi-person-fill"></i>
           </div>
           <div>
             <div id="profileUsername" style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">جاري التحميل...</div>
@@ -40,7 +40,7 @@
           </div>
         </div>
         <div style="background-color: rgba(245, 158, 11, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">
-          <i class="fa-solid fa-crown"></i> <span id="profileVip">VIP0</span>
+          <i class="bi bi-award-fill"></i> <span id="profileVip">VIP0</span>
         </div>
       </div>
     </div>
@@ -53,10 +53,10 @@
       <!-- Quick Action Buttons -->
       <div style="display: flex; gap: 12px; margin-top: 16px;">
         <a href="recharge.html" style="flex: 1; text-align: center; padding: 10px; background-color: var(--accent-blue); color: #ffffff; border-radius: var(--radius-md); text-decoration: none; font-weight: 700; font-size: 0.85rem;">
-          <i class="fa-solid fa-wallet" style="margin-left: 4px;"></i>إيداع
+          <i class="bi bi-wallet-fill" style="margin-left: 4px;"></i>إيداع
         </a>
         <a href="withdraw.html" style="flex: 1; text-align: center; padding: 10px; background-color: rgba(245, 158, 11, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); border-radius: var(--radius-md); text-decoration: none; font-weight: 700; font-size: 0.85rem;">
-          <i class="fa-solid fa-hand-holding-dollar" style="margin-left: 4px;"></i>سحب
+          <i class="bi bi-cash-coin" style="margin-left: 4px;"></i>سحب
         </a>
       </div>
     </div>
@@ -85,48 +85,48 @@
     <div class="card-box" style="padding: 0; margin-bottom: 24px; overflow: hidden;">
       <a href="account.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none;">
         <div style="display: flex; align-items: center; gap: 12px;">
-          <i class="fa-solid fa-sliders" style="color: var(--accent-blue); width: 20px;"></i>
+          <i class="bi bi-sliders" style="color: var(--accent-blue); width: 20px;"></i>
           <span>إعدادات الحساب وكلمة المرور</span>
         </div>
-        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+        <i class="bi bi-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
       </a>
 
       <a href="transfer.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none;">
         <div style="display: flex; align-items: center; gap: 12px;">
-          <i class="fa-solid fa-arrow-right-arrow-left" style="color: var(--accent-blue); width: 20px;"></i>
+          <i class="bi bi-arrow-left-right" style="color: var(--accent-blue); width: 20px;"></i>
           <span>التحويل الداخلي</span>
         </div>
-        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+        <i class="bi bi-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
       </a>
 
       <a href="records.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none;">
         <div style="display: flex; align-items: center; gap: 12px;">
-          <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-gold); width: 20px;"></i>
+          <i class="bi bi-clock-history" style="color: var(--accent-gold); width: 20px;"></i>
           <span>سجل المعاملات المالية</span>
         </div>
-        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+        <i class="bi bi-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
       </a>
 
       <a href="team.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none;">
         <div style="display: flex; align-items: center; gap: 12px;">
-          <i class="fa-solid fa-users" style="color: var(--accent-purple); width: 20px;"></i>
+          <i class="bi bi-people-fill" style="color: var(--accent-purple); width: 20px;"></i>
           <span>تقرير وإحصائيات الفريق</span>
         </div>
-        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+        <i class="bi bi-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
       </a>
 
       <a href="vip.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; color: var(--text-primary); text-decoration: none;">
         <div style="display: flex; align-items: center; gap: 12px;">
-          <i class="fa-solid fa-crown" style="color: var(--accent-gold); width: 20px;"></i>
+          <i class="bi bi-award-fill" style="color: var(--accent-gold); width: 20px;"></i>
           <span>مستويات قاعات الـ VIP</span>
         </div>
-        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+        <i class="bi bi-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
       </a>
     </div>
 
     <!-- Logout Action Button -->
     <button id="profileLogoutBtn" style="width: 100%; padding: 14px; background-color: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); border-radius: var(--radius-md); font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer;">
-      <i class="fa-solid fa-right-from-bracket"></i>
+      <i class="bi bi-box-arrow-right"></i>
       تسجيل الخروج
     </button>
 
@@ -135,19 +135,19 @@
   <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
       <span>الرئيسية</span>
     </a>
     <a href="tasks.html" class="nav-item">
-      <i class="fa-solid fa-list-check"></i>
+      <i class="bi bi-check2-square"></i>
       <span>المهام</span>
     </a>
     <a href="team.html" class="nav-item">
-      <i class="fa-solid fa-users"></i>
+      <i class="bi bi-people-fill"></i>
       <span>الفريق</span>
     </a>
     <a href="vip.html" class="nav-item">
-      <i class="fa-solid fa-crown"></i>
+      <i class="bi bi-award-fill"></i>
       <span>VIP</span>
     </a>
   </nav>
@@ -159,7 +159,6 @@
   <script>
     let currentUserObj = null;
 
-    // Load User Details from JSONBin Cloud Database
     window.addEventListener('DOMContentLoaded', async () => {
       const activeUsername = localStorage.getItem('currentUser');
       if (!activeUsername) {
@@ -174,12 +173,10 @@
           return;
         }
 
-        // Populate User Info
         document.getElementById('profileUsername').innerText = currentUserObj.username;
         document.getElementById('profileRefCode').innerText = currentUserObj.referralCode || '-----';
         document.getElementById('profileVip').innerText = currentUserObj.vip || 'VIP0';
 
-        // Balance & Totals
         const balance = parseFloat(currentUserObj.balance || 0);
         const todayEarnings = parseFloat(currentUserObj.todayEarnings || 0);
         const teamCommissions = parseFloat(currentUserObj.teamCommissions || 0);
@@ -197,7 +194,6 @@
       }
     });
 
-    // Handle Logout Event
     document.getElementById('profileLogoutBtn').addEventListener('click', () => {
       if (confirm('هل أنت تأكد من رغبتك في تسجيل الخروج؟')) {
         logoutUser();
