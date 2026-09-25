@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VirtualMall - سجل المعاملات المالية</title>
   <link rel="stylesheet" href="profile.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 
   <!-- Header Bar -->
   <header class="header-bar">
     <div class="brand-logo">
-      <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-blue);"></i>
+      <i class="bi bi-clock-history" style="color: var(--accent-blue);"></i>
       سجل <span>المعاملات</span>
     </div>
     <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
     </a>
   </header>
 
@@ -45,19 +45,19 @@
   <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
       <span>الرئيسية</span>
     </a>
     <a href="tasks.html" class="nav-item">
-      <i class="fa-solid fa-list-check"></i>
+      <i class="bi bi-check2-square"></i>
       <span>المهام</span>
     </a>
     <a href="team.html" class="nav-item">
-      <i class="fa-solid fa-users"></i>
+      <i class="bi bi-people-fill"></i>
       <span>الفريق</span>
     </a>
     <a href="vip.html" class="nav-item">
-      <i class="fa-solid fa-crown"></i>
+      <i class="bi bi-award-fill"></i>
       <span>VIP</span>
     </a>
   </nav>
@@ -104,7 +104,7 @@
       if (!records || records.length === 0) {
         container.innerHTML = `
           <div class="card-box" style="text-align: center; color: var(--text-muted); padding: 32px 16px;">
-            <i class="fa-solid fa-receipt" style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4;"></i>
+            <i class="bi bi-receipt" style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; display: inline-block;"></i>
             <div>لا يوجد أي سجل معاملات في الوقت الحالي</div>
           </div>
         `;
@@ -126,23 +126,23 @@
           statusBadge = '<span style="background-color: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); padding: 2px 8px; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: 700;">مرفوض</span>';
         }
 
-        let iconClass = 'fa-circle-dollar-to-slot';
+        let iconClass = 'bi-wallet2';
         let iconColor = 'var(--accent-blue)';
 
         if (item.type === 'deposit') {
-          iconClass = 'fa-wallet';
+          iconClass = 'bi-wallet-fill';
           iconColor = 'var(--accent-green)';
         } else if (item.type === 'withdraw') {
-          iconClass = 'fa-hand-holding-dollar';
+          iconClass = 'bi-cash-coin';
           iconColor = 'var(--accent-gold)';
         } else if (item.type === 'task') {
-          iconClass = 'fa-list-check';
+          iconClass = 'bi-check2-square';
           iconColor = 'var(--accent-blue)';
         } else if (item.type === 'upgrade') {
-          iconClass = 'fa-crown';
+          iconClass = 'bi-award-fill';
           iconColor = 'var(--accent-purple)';
         } else if (item.type === 'transfer_in' || item.type === 'transfer_out') {
-          iconClass = 'fa-arrow-right-arrow-left';
+          iconClass = 'bi-arrow-left-right';
           iconColor = 'var(--accent-blue)';
         }
 
@@ -151,7 +151,7 @@
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
               <div style="display: flex; align-items: center; gap: 10px;">
                 <div style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--bg-main); display: flex; justify-content: center; align-items: center; border: 1px solid var(--border-color);">
-                  <i class="fa-solid ${iconClass}" style="color: ${iconColor};"></i>
+                  <i class="bi ${iconClass}" style="color: ${iconColor}; font-size: 1rem;"></i>
                 </div>
                 <div>
                   <div style="font-weight: 700; color: var(--text-primary); font-size: 0.9rem;">${item.title || 'معاملة مالية'}</div>
