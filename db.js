@@ -37,11 +37,11 @@ const DEFAULT_DATABASE = {
   depositRequests: [],
   withdrawRequests: [],
   vipPackages: [
-    { id: "VIP0", name: "عضوية VIP0 (تجريبي)", price: 0, tasks: 2, taskProfit: 0.25, dailyIncome: 0.50, monthlyIncome: 15.00, yearlyIncome: 180.00 },
-    { id: "VIP1", name: "عضوية VIP1 الاحترافية", price: 20, tasks: 6, taskProfit: 3.50, dailyIncome: 21.00, monthlyIncome: 630.00, yearlyIncome: 7560.00 },
-    { id: "VIP2", name: "عضوية VIP2 الذهبية", price: 50, tasks: 6, taskProfit: 5.00, dailyIncome: 30.00, monthlyIncome: 900.00, yearlyIncome: 10800.00 },
-    { id: "VIP3", name: "عضوية VIP3 الماسية", price: 100, tasks: 10, taskProfit: 8.00, dailyIncome: 80.00, monthlyIncome: 2400.00, yearlyIncome: 28800.00 },
-    { id: "VIP7", name: "عضوية VIP 7", price: 200, tasks: 5, taskProfit: 5.00, dailyIncome: 25.00, monthlyIncome: 450.00, yearlyIncome: 5400.00 }
+    { id: "VIP0", name: "عضوية VIP0 (تجريبي)", price: 0, tasks: 2, taskProfit: 0.25, dailyIncome: 0.50, monthlyIncome: 15.00, yearlyIncome: 180.00, referralCommission: 0.10 },
+    { id: "VIP1", name: "عضوية VIP1 الاحترافية", price: 20, tasks: 6, taskProfit: 3.50, dailyIncome: 21.00, monthlyIncome: 630.00, yearlyIncome: 7560.00, referralCommission: 0.10 },
+    { id: "VIP2", name: "عضوية VIP2 الذهبية", price: 50, tasks: 6, taskProfit: 5.00, dailyIncome: 30.00, monthlyIncome: 900.00, yearlyIncome: 10800.00, referralCommission: 0.10 },
+    { id: "VIP3", name: "عضوية VIP3 الماسية", price: 100, tasks: 10, taskProfit: 8.00, dailyIncome: 80.00, monthlyIncome: 2400.00, yearlyIncome: 28800.00, referralCommission: 0.10 },
+    { id: "VIP7", name: "عضوية VIP 7", price: 200, tasks: 5, taskProfit: 5.00, dailyIncome: 25.00, monthlyIncome: 450.00, yearlyIncome: 5400.00, referralCommission: 0.10 }
   ],
   systemStats: {
     totalVolume: 5000.00,
