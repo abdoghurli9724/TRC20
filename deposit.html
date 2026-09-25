@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VirtualMall - إيداع الرصيد</title>
   <link rel="stylesheet" href="profile.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 
   <!-- Header Bar -->
   <header class="header-bar">
     <div class="brand-logo">
-      <i class="fa-solid fa-wallet" style="color: var(--accent-green);"></i>
+      <i class="bi bi-wallet2" style="color: var(--accent-green);"></i>
       إيداع <span>الرصيد</span>
     </div>
     <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
     </a>
   </header>
 
@@ -24,7 +24,7 @@
     
     <!-- Network Alert -->
     <div style="background-color: rgba(59, 130, 246, 0.15); border: 1px solid var(--accent-blue); padding: 12px; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-primary); margin-bottom: 20px; text-align: center;">
-      <i class="fa-solid fa-circle-info" style="color: var(--accent-blue); margin-left: 6px;"></i>
+      <i class="bi bi-info-circle-fill" style="color: var(--accent-blue); margin-left: 6px;"></i>
       يرجى التحويل حصراً عبر شبكة <strong>TRC20 (USDT)</strong> لضمان وصول الإيداع بنجاح.
     </div>
 
@@ -43,7 +43,7 @@
         <div style="display: flex; gap: 8px;">
           <input type="text" id="walletAddress" class="form-input" readonly value="T9xY1z8Q2wE4rR6tY8uI0oP1aS3dF5gH7j" style="direction: ltr; font-size: 0.8rem; text-align: center;">
           <button class="submit-btn" style="width: auto; padding: 0 16px; font-size: 0.85rem;" onclick="copyWalletAddress()">
-            <i class="fa-solid fa-copy"></i> نسخ
+            <i class="bi bi-copy"></i> نسخ
           </button>
         </div>
       </div>
@@ -55,7 +55,7 @@
     <!-- Deposit Form -->
     <form id="depositForm" class="card-box">
       <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-        <i class="fa-solid fa-paper-plane" style="color: var(--accent-green); margin-left: 6px;"></i>تأكيد طلب الإيداع
+        <i class="bi bi-send-fill" style="color: var(--accent-green); margin-left: 6px;"></i>تأكيد طلب الإيداع
       </h3>
 
       <div class="form-group">
@@ -79,19 +79,19 @@
   <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
       <span>الرئيسية</span>
     </a>
     <a href="tasks.html" class="nav-item">
-      <i class="fa-solid fa-list-check"></i>
+      <i class="bi bi-check2-square"></i>
       <span>المهام</span>
     </a>
     <a href="team.html" class="nav-item">
-      <i class="fa-solid fa-users"></i>
+      <i class="bi bi-people-fill"></i>
       <span>الفريق</span>
     </a>
     <a href="vip.html" class="nav-item">
-      <i class="fa-solid fa-crown"></i>
+      <i class="bi bi-award-fill"></i>
       <span>VIP</span>
     </a>
   </nav>
