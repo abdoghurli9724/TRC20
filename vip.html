@@ -230,49 +230,56 @@
         showToast('الرجاء الانتظار...', 'info');
 
         try {
-            let db = await getCloudDB();
-            if (!db.usersDB[currentUser]) {
-                db.usersDB[currentUser] = { balance: 0, vip: 'VIP0', completedTasks: [], history: [] };
-            }
-
-            let u = db.usersDB[currentUser];
-            let currentBalance = parseFloat(u.balance) || 0;
-
-            // التأكد من رصيد حساب المستخدم
-            if (currentBalance < price) {
-                showToast(`رصيدك غير كافٍ! يجب عليك شحن رصيد في الموقع أولاً. الرصيد الحالي: $${currentBalance.toFixed(2)}`, 'error');
-                return;
-            }
-
-            await new Promise(res => setTimeout(res, 1200));
-
-            // اقتطاع السعر وتفعيل الرتبة
-            u.balance = currentBalance - price;
-            u.vip = levelKey;
-
-            // إعداد تاريخ الصلاحية لمدة سنة كاملة من تاريخ اليوم
-            let expiryDate = new Date();
-            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-            u.vipExpiry = expiryDate.toISOString();
-
-            if (!u.history) u.history = [];
-            u.history.unshift({
-                type: 'ترقية',
-                amount: `-$${price.toFixed(2)}`,
-                title: `اشتراك في رتبة ${levelKey} (صالحة لمدة سنة)`,
-                date: new Date().toLocaleString('ar-EG')
-            });
-
-            await updateCloudDB(db);
-
-            showToast(`تم الاشتراك بنجاح! تم تفعيل رتبة ${levelKey} لمدة سنة كاملة.`, 'success');
-            await renderVipLevels();
-
-        } catch (err) {
-            console.error(err);
-            showToast('حدث خطأ أثناء معالجة الطلب، حاول مجدداً', 'error');
+        let db = await getCloudDB();
+        if (!db || !db.usersDB || !db.usersDB[currentUser]) {
+            showToast('حدث خطأ في تحميل بيانات حسابك، أعد المحاولة', 'error');
+            return;
         }
+
+        let u = db.usersDB[currentUser];
+
+        // تحويل الرصيد إلى رقم برمجياً بشكل صارم
+        let currentBalance = Number(u.balance);
+        if (isNaN(currentBalance)) {
+            currentBalance = 0;
+        }
+
+        // فحص حاسم للرصيد
+        if (currentBalance < price) {
+            showToast(`رصيدك غير كافٍ! يجب عليك شحن رصيدك أولاً. الرصيد الحالي: $${currentBalance.toFixed(2)}`, 'error');
+            return; // الخروج المباشر دون تنفيذ الترقية
+        }
+
+        await new Promise(res => setTimeout(res, 1200));
+
+        // اقتطاع السعر وتفعيل الرتبة
+        u.balance = currentBalance - price;
+        u.vip = levelKey;
+
+        // إعداد تاريخ الصلاحية لمدة سنة كاملة
+        let expiryDate = new Date();
+        expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+        u.vipExpiry = expiryDate.toISOString();
+
+        if (!u.history) u.history = [];
+        u.history.unshift({
+            type: 'ترقية',
+            amount: `-$${price.toFixed(2)}`,
+            title: `اشتراك في رتبة ${levelKey} (صالحة لمدة سنة)`,
+            date: new Date().toLocaleString('ar-EG')
+        });
+
+        await updateCloudDB(db);
+
+        showToast(`تم الاشتراك بنجاح! تم تفعيل رتبة ${levelKey} لمدة سنة كاملة.`, 'success');
+        await renderVipLevels();
+
+    } catch (err) {
+        console.error(err);
+        showToast('حدث خطأ أثناء معالجة الطلب، حاول مجدداً', 'error');
     }
+}
+
 </script>
 </body>
 </html>
