@@ -1,35 +1,254 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحويل - VirtualMall</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/profile.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VirtualMall - التحويل الداخلي</title>
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<div class="app-container">
-    <div class="top-bar">
-        <a href="profile.html" style="color: #0f172a; text-decoration: none; font-size: 20px;"><i class="fa-solid fa-arrow-right"></i></a>
-        <span class="brand-title">تحويل الأموال الداخلي</span>
-        <div></div>
+
+  <!-- Header Bar -->
+  <header class="header-bar">
+    <div class="brand-logo">
+      <i class="fa-solid fa-arrow-right-arrow-left" style="color: var(--accent-blue);"></i>
+      التحويل <span>الداخلي</span>
+    </div>
+    <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
+      <i class="fa-solid fa-house"></i>
+    </a>
+  </header>
+
+  <main style="max-width: 500px; margin: 20px auto 80px auto; padding: 0 16px;">
+
+    <!-- Balance Summary Card -->
+    <div class="balance-card" style="margin-bottom: 20px;">
+      <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">الرصيد المتاح للتحويل</div>
+      <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-green);" id="displayAvailableBalance">$0.00</div>
     </div>
 
-    <form onsubmit="submitTransfer(event)" class="user-card">
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-size: 13px; color: #475569; margin-bottom: 5px;">من حساب الأرباح إلى حساب الإيداع</label>
-            <input type="number" placeholder="أدخل المبلغ المراد تحويله" required style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; outline: none;">
-        </div>
-        <button type="submit" style="background: #00b0ff; color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold;">تأكيد التحويل</button>
-    </form>
-</div>
+    <!-- Alert Box -->
+    <div id="alertBox" style="display: none; padding: 12px; border-radius: var(--radius-md); margin-bottom: 16px; font-size: 0.85rem; text-align: center;"></div>
 
-<script>
-function submitTransfer(e) {
-    e.preventDefault();
-    alert('تم التحويل الداخلي بنجاح!');
-    window.location.href = 'profile.html';
-}
-</script>
+    <!-- Transfer Form -->
+    <form id="transferForm" class="card-box">
+      <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+        <i class="fa-solid fa-paper-plane" style="color: var(--accent-blue); margin-left: 6px;"></i>تفاصيل تحويل الرصيد
+      </h3>
+
+      <!-- Receiver Username / Phone -->
+      <div class="form-group">
+        <label class="form-label" for="receiverInput">اسم المستخدم / رقم المستلم:</label>
+        <input type="text" id="receiverInput" class="form-input" placeholder="أدخل اسم المستخدم أو رقم المستلم" required>
+      </div>
+
+      <!-- Amount -->
+      <div class="form-group">
+        <label class="form-label" for="transferAmount">المبلغ المراد تحويله (USD / USDT):</label>
+        <input type="number" id="transferAmount" class="form-input" min="1" step="any" placeholder="الحد الأدنى للتحويل $1" required>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label class="form-label" for="securityPassword">كلمة مرور حسابك للتأكيد:</label>
+        <input type="password" id="securityPassword" class="form-input" placeholder="أدخل كلمة المرور لتأكيد التحويل" required>
+      </div>
+
+      <button type="submit" id="submitBtn" class="submit-btn" style="background-color: var(--accent-blue);">
+        <span id="btnText">تأكيد تحويل الرصيد الآن</span>
+        <span id="btnSpinner" class="spinner" style="display: none;"></span>
+      </button>
+    </form>
+
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <i class="fa-solid fa-house"></i>
+      <span>الرئيسية</span>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <i class="fa-solid fa-list-check"></i>
+      <span>المهام</span>
+    </a>
+    <a href="team.html" class="nav-item">
+      <i class="fa-solid fa-users"></i>
+      <span>الفريق</span>
+    </a>
+    <a href="vip.html" class="nav-item">
+      <i class="fa-solid fa-crown"></i>
+      <span>VIP</span>
+    </a>
+  </nav>
+
+  <!-- Database Script -->
+  <script src="db.js"></script>
+
+  <!-- Transfer Logic Script -->
+  <script>
+    let currentUserObj = null;
+
+    // Verify Active Session and Load Balance
+    window.addEventListener('DOMContentLoaded', async () => {
+      const activeUsername = localStorage.getItem('currentUser');
+      if (!activeUsername) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      try {
+        currentUserObj = await getCurrentUser();
+        if (!currentUserObj) {
+          logoutUser();
+          return;
+        }
+
+        document.getElementById('displayAvailableBalance').innerText = '$' + parseFloat(currentUserObj.balance || 0).toFixed(2);
+
+      } catch (error) {
+        console.error('Error loading transfer page:', error);
+      }
+    });
+
+    // Alert Display Helper
+    function showAlert(message, type) {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.style.display = 'block';
+      alertBox.innerText = message;
+      if (type === 'error') {
+        alertBox.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
+        alertBox.style.color = 'var(--accent-red)';
+        alertBox.style.border = '1px solid var(--accent-red)';
+      } else {
+        alertBox.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+        alertBox.style.color = 'var(--accent-green)';
+        alertBox.style.border = '1px solid var(--accent-green)';
+      }
+    }
+
+    // Submit Transfer Handler
+    document.getElementById('transferForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const receiverUsername = document.getElementById('receiverInput').value.trim();
+      const amount = parseFloat(document.getElementById('transferAmount').value);
+      const password = document.getElementById('securityPassword').value;
+
+      const currentBalance = parseFloat(currentUserObj.balance || 0);
+
+      // Input Validation Rules
+      if (!receiverUsername) {
+        showAlert('يرجى تحديد حساب المستلم', 'error');
+        return;
+      }
+
+      if (receiverUsername === currentUserObj.username) {
+        showAlert('لا يمكنك تحويل الرصيد إلى حسابك الشخصي!', 'error');
+        return;
+      }
+
+      if (isNaN(amount) || amount < 1) {
+        showAlert('الحد الأدنى للتحويل الداخلي هو $1.00', 'error');
+        return;
+      }
+
+      if (amount > currentBalance) {
+        showAlert(`رصيدك المتاح ($${currentBalance.toFixed(2)}) لا يكفي لإتمام هذه العملية`, 'error');
+        return;
+      }
+
+      if (password !== currentUserObj.password) {
+        showAlert('كلمة المرور غير صحيحة', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+
+      submitBtn.disabled = true;
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline-block';
+
+      try {
+        const db = await getCloudDB();
+
+        // Sender Index
+        const senderIndex = db.users.findIndex(u => u.username === currentUserObj.username);
+        // Receiver Index
+        const receiverIndex = db.users.findIndex(u => u.username === receiverUsername);
+
+        if (receiverIndex === -1) {
+          showAlert('المستلم غير موجود، يرجى التأكد من اسم المستخدم', 'error');
+          submitBtn.disabled = false;
+          btnText.style.display = 'inline';
+          btnSpinner.style.display = 'none';
+          return;
+        }
+
+        if (senderIndex !== -1) {
+          const sender = db.users[senderIndex];
+          const receiver = db.users[receiverIndex];
+
+          // Deduct from Sender & Add to Receiver
+          sender.balance = parseFloat(sender.balance || 0) - amount;
+          receiver.balance = parseFloat(receiver.balance || 0) + amount;
+
+          if (!sender.history) sender.history = [];
+          if (!receiver.history) receiver.history = [];
+
+          const timestamp = new Date().toLocaleString('ar-EG');
+          const txId = generateTransactionId();
+
+          // Add transaction to Sender history
+          sender.history.unshift({
+            id: txId,
+            type: "transfer_out",
+            title: `تحويل داخلي إلى (${receiver.username})`,
+            amount: -amount,
+            status: "completed",
+            date: timestamp
+          });
+
+          // Add transaction to Receiver history
+          receiver.history.unshift({
+            id: txId,
+            type: "transfer_in",
+            title: `تحويل داخلي من (${sender.username})`,
+            amount: amount,
+            status: "completed",
+            date: timestamp
+          });
+
+          // Sync Changes to JSONBin Cloud
+          const success = await updateCloudDB(db);
+
+          if (success) {
+            currentUserObj = sender;
+            document.getElementById('displayAvailableBalance').innerText = '$' + sender.balance.toFixed(2);
+            showAlert(`تم تحويل $${amount.toFixed(2)} بنجاح إلى الحساب (${receiver.username})!`, 'success');
+            document.getElementById('transferForm').reset();
+
+            setTimeout(() => {
+              window.location.href = 'records.html';
+            }, 2000);
+          } else {
+            showAlert('حدث خطأ أثناء المزامنة مع السحابة، يرجى المحاولة ثانية', 'error');
+            submitBtn.disabled = false;
+            btnText.style.display = 'inline';
+            btnSpinner.style.display = 'none';
+          }
+        }
+      } catch (error) {
+        console.error('Transfer Error:', error);
+        showAlert('فشل الاتصال بالسيرفر، يرجى المحاولة لاحقاً', 'error');
+        submitBtn.disabled = false;
+        btnText.style.display = 'inline';
+        btnSpinner.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>
