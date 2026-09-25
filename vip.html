@@ -225,7 +225,6 @@
         if (db && db.vipPackages && db.vipPackages.length > 0) {
           cloudVipLevels = db.vipPackages;
         } else {
-          // الباقات الافتراضية مع احتساب الإيراد السنوية (الإيراد الشهري مضروب بـ 12 أو القيمة المخصصة)
           cloudVipLevels = [
             { id: "VIP0", name: "عضوية VIP0 (تجريبي)", price: 0, tasks: 2, taskProfit: 0.25, dailyIncome: 0.50, monthlyIncome: 15.00, annualIncome: 180.00 },
             { id: "VIP1", name: "عضوية VIP1 الاحترافية", price: 120, tasks: 4, taskProfit: 1.25, dailyIncome: 5.00, monthlyIncome: 150.00, annualIncome: 1800.00 },
@@ -266,7 +265,6 @@
         const headerClasses = ["vip-0", "vip-1", "vip-2", "vip-3", "vip-4", "vip-5"];
         const headerClass = headerClasses[index % headerClasses.length];
 
-        // احتساب إيرادات السنة تلقائياً إذا لم تكن معرفة مسبقاً (الإيراد الشهري × 12)
         const monthlyInc = parseFloat(level.monthlyIncome || 0);
         const annualInc = level.annualIncome ? parseFloat(level.annualIncome) : (monthlyInc * 12);
 
@@ -321,29 +319,34 @@
       let refundAmount = 0;
       let isWithinFirstMonth = false;
 
-      // فحص إذا كان المستخدم في فترة الشهر الأول (أقل من أو يساوي 30 يوماً من تاريخ التفعيل)
-      if (currentUserObj.vipStartDate && currentVip !== "VIP0") {
-        const startDate = new Date(currentUserObj.vipStartDate);
-        const now = new Date();
-        const diffDays = (now - startDate) / (1000 * 60 * 60 * 24);
+      // البحث عن بيانات الباقة الحالية للمستخدم لمعرفة سعرها السابق واحتساب الفارق أو الاسترداد
+      const currentPkg = cloudVipLevels.find(p => p.id === currentVip || p.name === currentVip);
 
-        if (diffDays <= 30) {
-          isWithinFirstMonth = true;
-          const currentPkg = cloudVipLevels.find(p => p.id === currentVip);
-          if (currentPkg && currentPkg.price) {
-            // إيراد الشهر الأول (سعر الباقة السنوية ÷ 12)
-            refundAmount = parseFloat(currentPkg.price) / 12;
+      if (currentVip !== "VIP0" && currentPkg && currentPkg.price) {
+        // إذا كان لدى المستخدم تاريخ بدء اشتراك، نتحقق إن كان ضمن أول 30 يوماً
+        if (currentUserObj.vipStartDate) {
+          const startDate = new Date(currentUserObj.vipStartDate);
+          const now = new Date();
+          const diffDays = (now - startDate) / (1000 * 60 * 60 * 24);
+
+          if (diffDays <= 30) {
+            isWithinFirstMonth = true;
+            // استرداد جزء من الشهر الأول أو خصم قيمة الاشتراك القديم كاملاً كخصم ترقية
+            refundAmount = parseFloat(currentPkg.price); 
           }
+        } else {
+          // في حال لم يكن التاريخ مخزناً مسبقاً، نخصم سعر الباقة القديمة كقيمة مستردة/محسوبة لتسهيل الترقية
+          refundAmount = parseFloat(currentPkg.price);
         }
       }
 
-      // التكلفة الفعلية المطلوبة بعد خصم قيمة الشهر الأول المسترد
+      // التكلفة الفعلية للترقية بعد خصم قيمة الاشتراك السابق
       const finalCost = Math.max(0, targetPrice - refundAmount);
 
       if (currentDeposit < finalCost) {
         showCustomModal(
           "تنبيه الرصيد",
-          `إجمالي الإيداع لديك ($${currentDeposit.toFixed(2)}) لا يكفي للترقية إلى ${targetVipId} (المطلوب بعد خصم الشهر الأول: $${finalCost.toFixed(2)}). هل ترغب بفتح صفحة الإيداع الآن؟`,
+          `إجمالي الإيداع لديك ($${currentDeposit.toFixed(2)}) لا يكفي للترقية إلى ${targetVipId} (المطلوب بعد احتساب خصم الباقة السابقة: $${finalCost.toFixed(2)}). هل ترغب بفتح صفحة الإيداع الآن؟`,
           "💡",
           true,
           "نعم، فتح الإيداع",
@@ -355,8 +358,8 @@
       }
 
       let confirmMessage = `هل أنت متأكد من الترقية إلى مستوى ${targetVipId} مقابل خصم $${targetPrice} من رصيد الإيداع؟`;
-      if (isWithinFirstMonth && refundAmount > 0) {
-        confirmMessage = `أنت في الشهر الأول لاشتراكك الحالي (${currentVip}). سيتم إرجاع/خصم إيراد الشهر الأول بقيمة $${refundAmount.toFixed(2)}، لتصبح التكلفة الفعلية للترقية $${finalCost.toFixed(2)}. هل تريد المتابعة؟`;
+      if (refundAmount > 0) {
+        confirmMessage = `لدى اشتراك سابق (${currentVip}) بقيمة $${refundAmount}، سيتم خصمها من سعر الباقة الجديدة لتصبح التكلفة الفعلية للترقية $${finalCost.toFixed(2)}. هل تريد المتابعة؟`;
       }
 
       showCustomModal(
@@ -389,11 +392,11 @@
                 date: new Date().toLocaleString('ar-EG')
               });
 
-              if (isWithinFirstMonth && refundAmount > 0) {
+              if (refundAmount > 0) {
                 user.history.unshift({
                   id: generateTransactionId(),
                   type: "refund",
-                  title: `استرداد إيراد الشهر الأول من ${currentVip}`,
+                  title: `خصم قيمة الاشتراك السابق (${currentVip})`,
                   amount: refundAmount,
                   status: "completed",
                   date: new Date().toLocaleString('ar-EG')
