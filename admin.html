@@ -135,7 +135,7 @@
       }
 
       const db = await getCloudDB();
-      const usersList = db.users || (Array.isArray(db) ? db : []) || [];
+      const usersList = db.users || [];
       const depositReqs = db.depositRequests || [];
       const withdrawReqs = db.withdrawRequests || [];
 
@@ -204,7 +204,7 @@
         usersList.forEach(u => {
           usersTbody.innerHTML += `
             <tr>
-              <td>${u.username || 'غير معروف'}</td>
+              <td>${u.username}</td>
               <td>${(u.balance || 0).toFixed(2)} USDT</td>
               <td>${u.vip || 'VIP0'}</td>
               <td>
