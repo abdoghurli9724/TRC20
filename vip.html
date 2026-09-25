@@ -4,10 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VirtualMall - مستويات VIP والترقية</title>
-  <!-- ربط خط كيرو العربي ومكتبة الأيقونات الحديثة وملف التصميم الموحد -->
+  <!-- خط كيرو العربي -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- مكتبة الأيقونات (تمنع ظهور علامة X) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- ملف التصميم الموحد -->
   <link rel="stylesheet" href="profile.css">
+  
   <style>
     /* تصميم النافذة المنبثقة المخصصة المتناسقة مع الموقع */
     .vip-modal-overlay {
@@ -238,7 +241,6 @@
 
         modal.style.display = 'flex';
 
-        // تنظيف الأحداث القديمة للأزرار
         const newConfirmBtn = confirmBtn.cloneNode(true);
         const newCancelBtn = cancelBtn.cloneNode(true);
         confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
@@ -338,7 +340,6 @@
 
       const currentTotalDeposit = parseFloat(currentUserObj.totalDeposit || 0);
 
-      // إذا لم يكفي إجمالي الإيداع، تظهر النافذة المخصصة الأنيقة
       if (currentTotalDeposit < price) {
         showCustomModal(
           "تنبيه الرصيد",
@@ -353,7 +354,6 @@
         return;
       }
 
-      // نافذة تأكيد الترقية المخصصة
       showCustomModal(
         "تأكيد الترقية",
         `هل أنت متأكد من الترقية إلى مستوى ${targetVipId} مقابل خصم $${price} من إجمالي الإيداع؟`,
