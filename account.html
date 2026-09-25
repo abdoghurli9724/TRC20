@@ -1,34 +1,249 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الحساب - VirtualMall</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/profile.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VirtualMall - إعدادات الحساب</title>
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<div class="app-container">
-    <div class="top-bar">
-        <a href="profile.html" style="color: #0f172a; text-decoration: none; font-size: 20px;"><i class="fa-solid fa-arrow-right"></i></a>
-        <span class="brand-title">تفاصيل الحساب</span>
-        <div></div>
+
+  <!-- Header Bar -->
+  <header class="header-bar">
+    <div class="brand-logo">
+      <i class="fa-solid fa-sliders" style="color: var(--accent-blue);"></i>
+      إعدادات <span>الحساب</span>
+    </div>
+    <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
+      <i class="fa-solid fa-house"></i>
+    </a>
+  </header>
+
+  <main style="max-width: 500px; margin: 20px auto 80px auto; padding: 0 16px;">
+
+    <!-- User Profile Header Card -->
+    <div class="card-box" style="text-align: center; margin-bottom: 20px; padding: 24px 16px;">
+      <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); display: flex; justify-content: center; align-items: center; margin: 0 auto 12px auto; font-size: 2rem; color: #ffffff; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <h2 id="displayUsername" style="font-size: 1.2rem; color: var(--text-primary); margin-bottom: 4px;">جاري التحميل...</h2>
+      <div style="display: inline-block; background-color: rgba(245, 158, 11, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;" id="displayVipBadge">
+        <i class="fa-solid fa-crown"></i> <span id="vipText">VIP0</span>
+      </div>
     </div>
 
-    <div class="user-card">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
-            <span style="color: #64748b;">حساب السحب:</span>
-            <span style="font-weight: bold;">3500.00 USDT</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
-            <span style="color: #64748b;">حساب الشحن الأساسي:</span>
-            <span style="font-weight: bold;">1250.00 USDT</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
-            <span style="color: #64748b;">إجمالي الدخل المكتسب:</span>
-            <span style="font-weight: bold; color: #2e7d32;">+ 4750.00 USDT</span>
-        </div>
+    <!-- Account Quick Overview Grid -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+      <div class="card-box" style="text-align: center; padding: 12px;">
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px;">إجمالي الإيداع</div>
+        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green);" id="displayTotalDeposit">$0.00</div>
+      </div>
+      <div class="card-box" style="text-align: center; padding: 12px;">
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px;">كود الدعوة</div>
+        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-gold);" id="displayRefCode">-----</div>
+      </div>
     </div>
-</div>
+
+    <!-- Change Password Form -->
+    <div class="card-box" style="margin-bottom: 20px;">
+      <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+        <i class="fa-solid fa-key" style="color: var(--accent-blue); margin-left: 6px;"></i>تغيير كلمة المرور
+      </h3>
+
+      <div id="alertBox" style="display: none; padding: 10px; border-radius: var(--radius-sm); margin-bottom: 12px; font-size: 0.85rem; text-align: center;"></div>
+
+      <form id="changePasswordForm">
+        <div class="form-group">
+          <label class="form-label" for="oldPassword">كلمة المرور الحالية:</label>
+          <input type="password" id="oldPassword" class="form-input" placeholder="أدخل كلمة المرور الحالية" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="newPassword">كلمة المرور الجديدة:</label>
+          <input type="password" id="newPassword" class="form-input" placeholder="أدخل كلمة المرور الجديدة (6 أرقام/حروف على الأقل)" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirmNewPassword">تأكيد كلمة المرور الجديدة:</label>
+          <input type="password" id="confirmNewPassword" class="form-input" placeholder="أعد كتابة كلمة المرور الجديدة" required>
+        </div>
+
+        <button type="submit" id="submitBtn" class="submit-btn">
+          <span id="btnText">تحديث كلمة المرور</span>
+          <span id="btnSpinner" class="spinner" style="display: none;"></span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Quick Navigation Links List -->
+    <div class="card-box" style="padding: 0; margin-bottom: 24px; overflow: hidden;">
+      <a href="transfer.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-arrow-right-arrow-left" style="color: var(--accent-blue); width: 20px;"></i>
+          <span>التحويل الداخلي للرصيد</span>
+        </div>
+        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+      </a>
+
+      <a href="records.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-gold); width: 20px;"></i>
+          <span>سجل المعاملات المالية</span>
+        </div>
+        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+      </a>
+
+      <a href="team.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; color: var(--text-primary); text-decoration: none;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-users" style="color: var(--accent-green); width: 20px;"></i>
+          <span>مركز إحصائيات الفريق</span>
+        </div>
+        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+      </a>
+    </div>
+
+    <!-- Logout Button -->
+    <button id="accountLogoutBtn" style="width: 100%; padding: 14px; background-color: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); border-radius: var(--radius-md); font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer;">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      تسجيل الخروج من الحساب
+    </button>
+
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <i class="fa-solid fa-house"></i>
+      <span>الرئيسية</span>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <i class="fa-solid fa-list-check"></i>
+      <span>المهام</span>
+    </a>
+    <a href="team.html" class="nav-item">
+      <i class="fa-solid fa-users"></i>
+      <span>الفريق</span>
+    </a>
+    <a href="vip.html" class="nav-item">
+      <i class="fa-solid fa-crown"></i>
+      <span>VIP</span>
+    </a>
+  </nav>
+
+  <!-- Database Script -->
+  <script src="db.js"></script>
+
+  <!-- Account Logic Script -->
+  <script>
+    let currentUserObj = null;
+
+    // Load User Data
+    window.addEventListener('DOMContentLoaded', async () => {
+      const activeUsername = localStorage.getItem('currentUser');
+      if (!activeUsername) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      try {
+        currentUserObj = await getCurrentUser();
+        if (!currentUserObj) {
+          logoutUser();
+          return;
+        }
+
+        document.getElementById('displayUsername').innerText = currentUserObj.username;
+        document.getElementById('vipText').innerText = currentUserObj.vip || 'VIP0';
+        document.getElementById('displayTotalDeposit').innerText = '$' + parseFloat(currentUserObj.totalDeposit || 0).toFixed(2);
+        document.getElementById('displayRefCode').innerText = currentUserObj.referralCode || '-----';
+
+      } catch (error) {
+        console.error('Error loading account page:', error);
+      }
+    });
+
+    // Alert Helper
+    function showAlert(message, type) {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.style.display = 'block';
+      alertBox.innerText = message;
+      if (type === 'error') {
+        alertBox.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
+        alertBox.style.color = 'var(--accent-red)';
+        alertBox.style.border = '1px solid var(--accent-red)';
+      } else {
+        alertBox.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+        alertBox.style.color = 'var(--accent-green)';
+        alertBox.style.border = '1px solid var(--accent-green)';
+      }
+    }
+
+    // Change Password Form Submission
+    document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const oldPassword = document.getElementById('oldPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+      if (oldPassword !== currentUserObj.password) {
+        showAlert('كلمة المرور الحالية غير صحيحة', 'error');
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        showAlert('كلمة المرور الجديدة يجب أن تحتوي على 6 خانات على الأقل', 'error');
+        return;
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        showAlert('كلمتا المرور الجديدة والتأكيد غير متطابقتين', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+
+      submitBtn.disabled = true;
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline-block';
+
+      try {
+        const db = await getCloudDB();
+        const userIndex = db.users.findIndex(u => u.username === currentUserObj.username);
+
+        if (userIndex !== -1) {
+          db.users[userIndex].password = newPassword;
+
+          // Update Cloud Storage
+          const success = await updateCloudDB(db);
+
+          if (success) {
+            currentUserObj.password = newPassword;
+            showAlert('تم تحديث كلمة المرور بنجاح في السحابة!', 'success');
+            document.getElementById('changePasswordForm').reset();
+          } else {
+            showAlert('حدث خطأ أثناء تحديث البيانات في السحابة، حاول ثانية', 'error');
+          }
+        }
+      } catch (error) {
+        console.error('Password Change Error:', error);
+        showAlert('فشل الاتصال بالسيرفر، يرجى المحاولة لاحقاً', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        btnText.style.display = 'inline';
+        btnSpinner.style.display = 'none';
+      }
+    });
+
+    // Logout Button Event
+    document.getElementById('accountLogoutBtn').addEventListener('click', () => {
+      if (confirm('هل أنت تأكد من رغبتك في تسجيل الخروج؟')) {
+        logoutUser();
+      }
+    });
+  </script>
 </body>
 </html>
