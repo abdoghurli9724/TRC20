@@ -4,45 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VirtualMall - مستويات VIP والترقية</title>
-  <link rel="stylesheet" href="profile.css">
+  <!-- ربط خط كيرو العربي ومكتبة الأيقونات الحديثة وملف التصميم الموحد -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="profile.css">
 </head>
 <body>
 
   <!-- Header Bar -->
-  <header class="header-bar">
-    <div class="brand-logo">
+  <header class="app-header">
+    <div class="logo-area">
       <i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i>
       عضويات <span>VIP</span>
     </div>
-    <div class="vip-badge" id="currentVipBadge">
+    <div class="vip-badge" id="currentVipBadge" style="background: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px;">
       <i class="fa-solid fa-crown"></i>
       <span id="headerVipText">VIP0</span>
     </div>
   </header>
 
-  <!-- Info Banner -->
-  <div style="margin: 0 20px 20px 20px; background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(59,130,246,0.15)); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--accent-gold); text-align: center;">
-    <h3 style="color: var(--accent-gold); font-size: 1.1rem; margin-bottom: 6px;">
-      <i class="fa-solid fa-gem" style="margin-left: 6px;"></i>ترقية مستوى العضوية
-    </h3>
-    <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5;">
-      قم بترقية مستواك لزيادة عدد المهام والتقييمات اليومية وتحقيق عوائد وأرباح أعلى بشكل يومي!
-    </p>
+  <div class="container">
+    <!-- Info Banner (Glassmorphism) -->
+    <div class="glass-card" style="text-align: center; background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(59,130,246,0.1)); border: 1px solid rgba(245,158,11,0.2);">
+      <h3 style="color: var(--accent-gold); font-size: 1.05rem; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <i class="fa-solid fa-gem"></i> ترقية مستوى العضوية
+      </h3>
+      <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.6;">
+        قم بترقية مستواك لزيادة عدد المهام والتقييمات اليومية وتحقيق عوائد وأرباح أعلى بشكل يومي!
+      </p>
+    </div>
+
+    <!-- Balance Summary Bar -->
+    <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; margin-bottom: 20px;">
+      <span style="font-size: 0.85rem; color: var(--text-muted);">رصيدك المتاح حالياً:</span>
+      <span style="font-size: 1.2rem; font-weight: 900; color: var(--accent-green);" id="userBalanceText">$0.00</span>
+    </div>
+
+    <!-- VIP Levels List Container -->
+    <main id="vipCardsContainer">
+      <!-- VIP Cards Will Be Dynamically Injected Here -->
+    </main>
   </div>
 
-  <!-- Balance Summary Bar -->
-  <div style="margin: 0 20px 20px 20px; background-color: var(--bg-card); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-    <span style="font-size: 0.85rem; color: var(--text-secondary);">رصيدك المتاح حالياً:</span>
-    <span style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green);" id="userBalanceText">$0.00</span>
-  </div>
-
-  <!-- VIP Levels List Container -->
-  <main id="vipCardsContainer">
-    <!-- VIP Cards Will Be Dynamically Injected Here -->
-  </main>
-
-  <!-- Bottom Navigation Bar -->
+  <!-- Bottom Navigation Bar (Floating) -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
       <i class="fa-solid fa-house"></i>
@@ -71,23 +75,25 @@
     const VIP_LEVELS = [
       {
         id: "VIP0",
-        title: "عضوية VIP0 (مجانية)",
+        title: "عضوية VIP0 (تجريبي)",
         price: 0,
         dailyTasks: 2,
         taskReward: 0.25,
         dailyProfit: 0.50,
         monthlyProfit: 15.00,
-        badgeColor: "#9ca3af"
+        headerClass: "vip-0",
+        iconColor: "#3b82f6"
       },
       {
         id: "VIP1",
-        title: "عضوية VIP1 الفضية",
+        title: "عضوية VIP1 الاحترافية",
         price: 20,
         dailyTasks: 4,
         taskReward: 1.25,
         dailyProfit: 5.00,
         monthlyProfit: 150.00,
-        badgeColor: "#3b82f6"
+        headerClass: "vip-1",
+        iconColor: "#64748b"
       },
       {
         id: "VIP2",
@@ -97,7 +103,8 @@
         taskReward: 3.50,
         dailyProfit: 21.00,
         monthlyProfit: 630.00,
-        badgeColor: "#f59e0b"
+        headerClass: "vip-2",
+        iconColor: "#f59e0b"
       },
       {
         id: "VIP3",
@@ -107,7 +114,8 @@
         taskReward: 8.00,
         dailyProfit: 80.00,
         monthlyProfit: 2400.00,
-        badgeColor: "#10b981"
+        headerClass: "vip-3",
+        iconColor: "#10b981"
       }
     ];
 
@@ -150,38 +158,42 @@
         const isCurrentLevel = (userVip === level.id);
 
         const card = document.createElement('div');
-        card.className = `vip-card ${isCurrentLevel ? 'active-level' : ''}`;
+        card.className = `vip-tier-card ${isCurrentLevel ? 'active-level' : ''}`;
+        if (isCurrentLevel) {
+          card.style.borderColor = 'var(--accent-gold)';
+          card.style.boxShadow = '0 0 25px rgba(245, 158, 11, 0.25)';
+        }
+
         card.innerHTML = `
-          <div class="vip-header">
-            <div class="vip-title" style="color: ${level.badgeColor};">
-              <i class="fa-solid fa-crown" style="margin-left: 6px;"></i>${level.title}
-            </div>
-            <div class="vip-price">$${level.price.toFixed(2)}</div>
+          <div class="vip-header ${level.headerClass}">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-crown"></i> ${level.title}
+            </span>
+            <span>$${level.price.toFixed(2)}</span>
           </div>
           <div class="vip-body">
-            <div class="vip-feature">
-              <span>المهام اليومية:</span>
-              <span class="val">${level.dailyTasks} مهام</span>
+            <div class="vip-feature-row">
+              <span><i class="fa-solid fa-tasks" style="color:var(--accent-blue);"></i> المهام اليومية:</span>
+              <span>${level.dailyTasks} مهام</span>
             </div>
-            <div class="vip-feature">
-              <span>ربح المهمة الواحدة:</span>
-              <span class="val">$${level.taskReward.toFixed(2)}</span>
+            <div class="vip-feature-row">
+              <span><i class="fa-solid fa-coins" style="color:var(--accent-gold);"></i> ربح المهمة:</span>
+              <span>$${level.taskReward.toFixed(2)}</span>
             </div>
-            <div class="vip-feature">
-              <span>الإيراد اليومي المتوقع:</span>
-              <span class="val" style="color: var(--accent-green);">$${level.dailyProfit.toFixed(2)}</span>
+            <div class="vip-feature-row">
+              <span><i class="fa-solid fa-chart-line" style="color:var(--accent-green);"></i> الإيراد اليومي:</span>
+              <span style="color: var(--accent-green);">$${level.dailyProfit.toFixed(2)}</span>
             </div>
-            <div class="vip-feature">
-              <span>الإيراد الشهري المتوقع:</span>
-              <span class="val" style="color: var(--accent-green);">$${level.monthlyProfit.toFixed(2)}</span>
+            <div class="vip-feature-row">
+              <span><i class="fa-solid fa-wallet" style="color:var(--accent-gold);"></i> الإيراد الشهري:</span>
+              <span style="color: var(--accent-gold);">$${level.monthlyProfit.toFixed(2)}</span>
             </div>
-          </div>
-          <div class="vip-footer">
-            <button class="vip-buy-btn ${isCurrentLevel ? 'current' : ''}" 
+            <button class="btn-primary" 
                     id="btn_upgrade_${level.id}"
                     onclick="handleUpgrade('${level.id}', ${level.price})" 
+                    style="margin-top: 20px; ${isCurrentLevel ? 'background: rgba(255,255,255,0.1); color: var(--text-muted); cursor: not-allowed; box-shadow: none;' : ''}"
                     ${isCurrentLevel ? 'disabled' : ''}>
-              ${isCurrentLevel ? 'مستواك الحالي' : 'ترقية الان مقابل $' + level.price}
+              ${isCurrentLevel ? 'مستواك الحالي' : 'ترقية الآن مقابل $' + level.price}
             </button>
           </div>
         `;
@@ -210,7 +222,7 @@
       const btn = document.getElementById(`btn_upgrade_${targetVipId}`);
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner" style="width:16px; height:16px;"></span> جاري الترقية...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الترقية...';
       }
 
       try {
