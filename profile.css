@@ -245,3 +245,85 @@ input[type="text"]:focus {
   color: var(--accent-gold);
   transform: translateY(-2px);
 }
+
+/* --- تنسيق بطاقات ومستويات الـ VIP --- */
+#vipCardsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.vip-tier-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-glass);
+  transition: var(--transition);
+}
+
+.vip-tier-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.vip-header {
+  padding: 14px 20px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* تدرجات ألوان ترويسات مستويات الـ VIP */
+.vip-header.vip-0 {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(20, 29, 53, 0.4));
+}
+
+.vip-header.vip-1 {
+  background: linear-gradient(135deg, rgba(100, 116, 139, 0.15), rgba(20, 29, 53, 0.4));
+}
+
+.vip-header.vip-2 {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(20, 29, 53, 0.4));
+}
+
+.vip-header.vip-3 {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(20, 29, 53, 0.4));
+}
+
+.vip-body {
+  padding: 16px 20px;
+}
+
+.vip-feature-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+.vip-feature-row:last-of-type {
+  border-bottom: none;
+}
+
+.vip-feature-row span:last-child {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* تخصيص زر التواجد أو الترقية داخل الكارد */
+.vip-tier-card .submit-btn, 
+.vip-tier-card button {
+  width: 100%;
+  margin-top: 16px;
+}
