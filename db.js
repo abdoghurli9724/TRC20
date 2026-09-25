@@ -5,9 +5,9 @@
 // إعدادات مفاتيح الاتصال بالسحابة (JSONBin)
 // قم بوضع BIN ID و API KEY الخاصين بك هنا عند النشر النهائي
 const JSONBIN_CONFIG = {
-  BIN_ID: "6ab55304ac6210605af17b83",
+  BIN_ID: "6ab64fc4ffd5d160532d8642",
   API_KEY: "$2a$10$ivwSTRMoM3LWu6xcGn1TuOwDAt1Od36P/ifB92r0AgPfmP6ZeuEyy",
-  MASTER_KEY: "$2a$10$YOUR_MASTER_KEY_HERE",
+  MASTER_KEY: "$2a$10$ivwSTRMoM3LWu6xcGn1TuOwDAt1Od36P/ifB92r0AgPfmP6ZeuEyy",
   BASE_URL: "https://api.jsonbin.io/v3/b"
 };
 
