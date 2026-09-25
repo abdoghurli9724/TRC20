@@ -8,18 +8,22 @@
   <style>
     .admin-section { margin-bottom: 24px; }
     .table-container { overflow-x: auto; margin-top: 10px; width: 100%; }
-    table { width: 100%; border-collapse: collapse; text-align: right; font-size: 0.8rem; }
-    th, td { padding: 10px 6px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
+    
+    table { width: 100%; border-collapse: collapse; text-align: right; font-size: 0.75rem; direction: rtl; }
+    th, td { padding: 10px 6px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); word-break: break-word; }
     th { color: var(--accent-gold); background: var(--bg-secondary); }
-    .action-btns { display: flex; gap: 6px; }
-    .btn-approve { background: var(--accent-green); color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
-    .btn-reject { background: #ef4444; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    
+    .action-btns { display: flex; gap: 4px; justify-content: flex-start; }
+    .btn-approve { background: var(--accent-green); color: #fff; padding: 5px 8px; font-size: 0.7rem; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-reject { background: #ef4444; color: #fff; padding: 5px 8px; font-size: 0.7rem; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
     .btn-balance { background: #3b82f6; color: #fff; padding: 6px 12px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
     .btn-vip { background: #8b5cf6; color: #fff; padding: 6px 12px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    
     .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
     .stat-card { background: var(--bg-secondary); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
     .stat-card h4 { font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px; }
     .stat-card p { font-size: 1rem; color: var(--accent-gold); font-weight: bold; }
+    
     .user-card-item {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
@@ -61,11 +65,11 @@
       border: 1px solid var(--border-color);
       color: #fff;
       border-radius: 6px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       font-size: 0.9rem;
       text-align: center;
     }
-    .modal-actions { display: flex; gap: 8px; justify-content: center; }
+    .modal-actions { display: flex; gap: 8px; justify-content: center; margin-top: 5px; }
     .modal-actions button { flex: 1; padding: 8px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
     .btn-modal-cancel { background: #475569; color: #fff; }
     .btn-modal-add { background: #10b981; color: #fff; }
@@ -187,15 +191,23 @@
     </div>
   </div>
 
-  <!-- نافذة تعديل الرصيد المخصصة -->
+  <!-- نافذة تعديل الرصيد المخصصة مع خيار نوع الرصيد -->
   <div id="balanceModal" class="custom-modal">
     <div class="modal-content">
       <h3 id="balanceModalTitle">إدارة رصيد المستخدم</h3>
+      
+      <!-- اختيار نوع الرصيد المراد تعديله -->
+      <select id="balanceTypeSelect">
+        <option value="balance">الرصيد الحالي</option>
+        <option value="depositBalance">رصيد الإيداع</option>
+      </select>
+
       <input type="number" id="balanceInputAmount" placeholder="أدخل المبلغ (USDT)" step="any">
+      
       <div class="modal-actions">
         <button class="btn-modal-cancel" onclick="closeModals()">إلغاء</button>
-        <button class="btn-modal-sub" onclick="processBalance('sub')">إزالة</button>
-        <button class="btn-modal-add" onclick="processBalance('add')">إضافة</button>
+        <button class="btn-modal-sub" onclick="processBalance('sub')">حذف (-)</button>
+        <button class="btn-modal-add" onclick="processBalance('add')">إضافة (+)</button>
       </div>
     </div>
   </div>
@@ -223,7 +235,6 @@
   <script>
     let activeUser = "";
 
-    // دالة عرض الإشعارات الاحترافية بدل الـ alert
     function showToast(message, type = 'success') {
       const container = document.getElementById("toastContainer");
       const toast = document.createElement("div");
@@ -271,7 +282,7 @@
               <tr>
                 <td>${req.username || 'مجهول'}</td>
                 <td>${req.amount || 0}</td>
-                <td>${req.txHash || req.txid || '-'}</td>
+                <td style="max-width: 120px; word-break: break-all;">${req.txHash || req.txid || '-'}</td>
                 <td>
                   <div class="action-btns">
                     <button class="btn-approve" onclick="handleDeposit('${req.id}', 'approve')">قبول</button>
@@ -294,7 +305,7 @@
               <tr>
                 <td>${req.username || 'مجهول'}</td>
                 <td>${req.amount || 0}</td>
-                <td>${req.address ? req.address.substring(0,6) + '...' : '-'}</td>
+                <td style="max-width: 130px; word-break: break-all; font-family: monospace;">${req.address || '-'}</td>
                 <td>
                   <div class="action-btns">
                     <button class="btn-approve" onclick="handleWithdraw('${req.id}', 'approve')">قبول</button>
@@ -306,7 +317,7 @@
           });
         }
 
-        // عرض قائمة المستخدمين بأزرار تفاعلية أنيقة
+        // قائمة المستخدمين
         const usersContainer = document.getElementById("usersListContainer");
         usersContainer.innerHTML = "";
         if (usersList.length === 0) {
@@ -315,13 +326,14 @@
           usersList.forEach((u) => {
             const uname = u.username || 'مستخدم';
             const ubal = Number(u.balance || 0).toFixed(2);
+            const udbal = Number(u.depositBalance || 0).toFixed(2);
             const uvip = u.vip || 'VIP0';
             
             usersContainer.innerHTML += `
               <div class="user-card-item">
                 <div class="user-info">
                   <div style="color: var(--accent-gold); font-weight: bold;">👤 ${uname}</div>
-                  <div>الرصيد: <span style="color: #10b981;">${ubal} USDT</span></div>
+                  <div>الرصيد: <span style="color: #10b981;">${ubal} USDT</span> | الإيداع: <span style="color: #3b82f6;">${udbal}</span></div>
                   <div>المستوى: ${uvip}</div>
                 </div>
                 <div class="action-btns">
@@ -349,6 +361,7 @@
       if (action === 'approve') {
         if (userIndex !== -1) {
           db.users[userIndex].balance = Number(db.users[userIndex].balance || 0) + Number(req.amount);
+          db.users[userIndex].depositBalance = Number(db.users[userIndex].depositBalance || 0) + Number(req.amount);
         }
         req.status = 'approved';
         showToast("تمت الموافقة على طلب الإيداع بنجاح", "success");
@@ -385,11 +398,11 @@
       loadAdminData();
     }
 
-    // دوال النوافذ المنبثقة
     function openBalanceModal(username) {
       activeUser = username;
       document.getElementById("balanceModalTitle").innerText = `إدارة رصيد: ${username}`;
       document.getElementById("balanceInputAmount").value = "";
+      document.getElementById("balanceTypeSelect").value = "balance";
       document.getElementById("balanceModal").style.display = "flex";
     }
 
@@ -408,6 +421,8 @@
 
     async function processBalance(actionType) {
       const amountVal = parseFloat(document.getElementById("balanceInputAmount").value);
+      const balanceType = document.getElementById("balanceTypeSelect").value; // 'balance' أو 'depositBalance'
+
       if (isNaN(amountVal) || amountVal <= 0) {
         showToast("الرجاء إدخال مبلغ صحيح", "error");
         return;
@@ -418,15 +433,16 @@
       const userIndex = db.users.findIndex(u => u.username === activeUser);
       if (userIndex === -1) return;
 
-      let currentBalance = Number(db.users[userIndex].balance || 0);
+      let currentVal = Number(db.users[userIndex][balanceType] || 0);
+
       if (actionType === 'add') {
-        currentBalance += amountVal;
+        currentVal += amountVal;
       } else {
-        currentBalance -= amountVal;
-        if (currentBalance < 0) currentBalance = 0;
+        currentVal -= amountVal;
+        if (currentVal < 0) currentVal = 0;
       }
 
-      db.users[userIndex].balance = Number(currentBalance.toFixed(2));
+      db.users[userIndex][balanceType] = Number(currentVal.toFixed(2));
       await updateCloudDB(db);
       closeModals();
       showToast("تم تحديث الرصيد وحفظه في السحابة بنجاح", "success");
