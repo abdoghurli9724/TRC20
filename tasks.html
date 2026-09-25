@@ -295,7 +295,8 @@
 
         try {
             let db = await getCloudDB();
-            if (!db.usersDB[currentUser]) {
+            if (!db.usersDB || !db.usersDB[currentUser]) {
+                if (!db.usersDB) db.usersDB = {};
                 db.usersDB[currentUser] = { balance: 0, vip: 'VIP0', completedTasks: [], history: [] };
             }
 
@@ -308,13 +309,18 @@
 
             await new Promise(res => setTimeout(res, 1000));
 
+            // تسجيل المهمة المكتملة
             u.completedTasks.push(taskId);
-            u.balance = (parseFloat(u.balance) || 0) + parseFloat(reward);
+
+            // إضافة مكافأة المهمة مباشرة للرصيد المتاح مع التحقق الرقمي الآمن
+            let currentBalance = parseFloat(u.balance) || 0;
+            let taskReward = parseFloat(reward) || 0;
+            u.balance = currentBalance + taskReward;
 
             if (!u.history) u.history = [];
             u.history.unshift({ 
                 type: 'مهمة', 
-                amount: `+$${reward.toFixed(2)}`, 
+                amount: `+$${taskReward.toFixed(2)}`, 
                 title: 'عمولة تقييم منتج', 
                 date: new Date().toLocaleString('ar-EG') 
             });
@@ -335,7 +341,7 @@
             successSound.volume = 0.5;
             successSound.play().catch(() => {});
 
-            showToast(`تم التقييم بنجاح! أضيف +$${reward.toFixed(2)} لرصيدك`, 'success');
+            showToast(`تم التقييم بنجاح! أضيف +$${taskReward.toFixed(2)} لرصيدك المتاح. الرصيد الحالي: $${u.balance.toFixed(2)}`, 'success');
             await renderTasks();
 
         } catch (err) {
