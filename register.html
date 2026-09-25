@@ -1,44 +1,237 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إنشاء حساب جديد - VirtualMall</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VirtualMall - إنشاء حساب جديد</title>
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-<div class="app-container">
-    <div class="auth-card">
-        <div class="auth-header">
-            <div class="logo-icon"><i class="fa-solid fa-cart-shopping"></i></div>
-            <h2>إنشاء حساب جديد</h2>
-        </div>
-
-        <form onsubmit="handleRegister(event)">
-            <div class="input-group">
-                <label>البريد الإلكتروني أو رقم الهاتف</label>
-                <input type="text" id="regEmail" placeholder="أدخل بياناتك" required>
-            </div>
-            <div class="input-group">
-                <label>كلمة المرور</label>
-                <input type="password" id="regPass" placeholder="أدخل كلمة المرور" required>
-            </div>
-            <div class="input-group">
-                <label>رمز الدعوة (اختياري)</label>
-                <input type="text" placeholder="Invitation Code">
-            </div>
-            <div id="statusMsg" style="font-size: 13px; text-align: center; margin-bottom: 10px;"></div>
-            <button type="submit" class="btn-submit btn-green">تسجيل حساب جديد</button>
-        </form>
-
-        <div class="auth-footer">
-            لديك حساب بالفعل؟ <a href="login.html">Login (تسجيل الدخول)</a>
-        </div>
+  <!-- Header Bar -->
+  <header class="header-bar">
+    <div class="brand-logo">
+      <i class="fa-solid fa-store" style="color: var(--accent-blue);"></i>
+      Virtual<span>Mall</span>
     </div>
-</div>
+  </header>
 
-<script src="js/main.js"></script>
+  <!-- Register Form Container -->
+  <main class="form-container" style="max-width: 450px; margin: 40px auto;">
+    <div class="text-center mb-20">
+      <h2 style="font-size: 1.6rem; color: var(--text-primary); margin-bottom: 8px;">إنشاء حساب جديد</h2>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">أدخل بياناتك للانضمام إلى منصة VirtualMall</p>
+    </div>
+
+    <!-- Alert Box for Error/Success Messages -->
+    <div id="alertBox" style="display: none; padding: 12px; border-radius: var(--radius-md); margin-bottom: 16px; font-size: 0.85rem; text-align: center;"></div>
+
+    <form id="registerForm">
+      <!-- Username / Phone -->
+      <div class="form-group">
+        <label class="form-label" for="username">
+          <i class="fa-solid fa-phone" style="margin-left: 6px;"></i>رقم الهاتف / اسم المستخدم
+        </label>
+        <input type="text" id="username" class="form-input" placeholder="أدخل رقم الهاتف (مثال: 088888888)" required>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label class="form-label" for="password">
+          <i class="fa-solid fa-lock" style="margin-left: 6px;"></i>كلمة المرور
+        </label>
+        <div style="position: relative;">
+          <input type="password" id="password" class="form-input" placeholder="أدخل كلمة المرور" required>
+          <i class="fa-solid fa-eye" id="togglePassword" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); cursor: pointer;"></i>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label class="form-label" for="confirmPassword">
+          <i class="fa-solid fa-shield-halved" style="margin-left: 6px;"></i>تأكيد كلمة المرور
+        </label>
+        <input type="password" id="confirmPassword" class="form-input" placeholder="أعد إدخال كلمة المرور" required>
+      </div>
+
+      <!-- Referral Code -->
+      <div class="form-group">
+        <label class="form-label" for="referralCode">
+          <i class="fa-solid fa-user-plus" style="margin-left: 6px;"></i>كود الدعوة (اختياري)
+        </label>
+        <input type="text" id="referralCode" class="form-input" placeholder="أدخل كود الدعوة إذا توفر">
+      </div>
+
+      <!-- Terms Checkbox -->
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-secondary);">
+        <input type="checkbox" id="agreeTerms" style="accent-color: var(--accent-blue); width: 16px; height: 16px;" required>
+        <label for="agreeTerms">أوافق على الشروط والأحكام وسياسة الخصوصية</label>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" id="submitBtn" class="submit-btn">
+        <span id="btnText">إنشاء الحساب الآن</span>
+        <span id="btnSpinner" class="spinner" style="display: none;"></span>
+      </button>
+    </form>
+
+    <div class="text-center mt-20" style="font-size: 0.9rem; color: var(--text-secondary);">
+      لديك حساب بالفعل؟ <a href="login.html" style="color: var(--accent-blue); font-weight: 700;">تسجيل الدخول</a>
+    </div>
+  </main>
+
+  <!-- Database Script -->
+  <script src="db.js"></script>
+
+  <!-- Page JS Script -->
+  <script>
+    // Toggle Password Visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      togglePassword.classList.toggle('fa-eye');
+      togglePassword.classList.toggle('fa-eye-slash');
+    });
+
+    // Alert Display Utility
+    function showAlert(message, type) {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.style.display = 'block';
+      alertBox.innerText = message;
+      if (type === 'error') {
+        alertBox.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
+        alertBox.style.color = 'var(--accent-red)';
+        alertBox.style.border = '1px solid var(--accent-red)';
+      } else {
+        alertBox.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+        alertBox.style.color = 'var(--accent-green)';
+        alertBox.style.border = '1px solid var(--accent-green)';
+      }
+    }
+
+    // Auto-fill Referral Code from URL
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const refParam = urlParams.get('ref');
+      if (refParam) {
+        document.getElementById('referralCode').value = refParam;
+      }
+    });
+
+    // Form Registration Handler
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const referralCodeInput = document.getElementById('referralCode').value.trim();
+
+      // Input Validations
+      if (username.length < 3) {
+        showAlert('يرجى إدخال اسم مستخدم أو رقم هاتف صحيح (3 حروف/أرقام على الأقل)', 'error');
+        return;
+      }
+
+      if (password.length < 3) {
+        showAlert('كلمة المرور يجب أن تكون 3 خانات على الأقل', 'error');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showAlert('كلمتان المرور غير متطابقتين', 'error');
+        return;
+      }
+
+      // UI Loading State
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+
+      submitBtn.disabled = true;
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline-block';
+
+      try {
+        // Fetch Cloud Database
+        const db = await getCloudDB();
+
+        // Check if user already exists
+        const userExists = db.users.some(u => u.username === username);
+        if (userExists) {
+          showAlert('اسم المستخدم أو رقم الهاتف هذا مسجل بالفعل', 'error');
+          submitBtn.disabled = false;
+          btnText.style.display = 'inline';
+          btnSpinner.style.display = 'none';
+          return;
+        }
+
+        // Validate Referral Code if provided
+        let invitedBy = null;
+        if (referralCodeInput) {
+          const inviter = db.users.find(u => u.referralCode === referralCodeInput);
+          if (inviter) {
+            invitedBy = inviter.username;
+          } else {
+            showAlert('كود الدعوة غير صحيح', 'error');
+            submitBtn.disabled = false;
+            btnText.style.display = 'inline';
+            btnSpinner.style.display = 'none';
+            return;
+          }
+        }
+
+        // Create New User Object
+        const newUser = {
+          username: username,
+          password: password,
+          balance: 0.00,
+          totalDeposit: 0.00,
+          vip: "VIP0",
+          referralCode: generateReferralCode(),
+          invitedBy: invitedBy,
+          completedTasksToday: [],
+          lastTaskResetDate: new Date().toISOString().split('T')[0],
+          history: [
+            {
+              id: generateTransactionId(),
+              type: "register",
+              title: "تسجيل حساب جديد",
+              amount: 0.00,
+              status: "completed",
+              date: new Date().toLocaleString('ar-EG')
+            }
+          ]
+        };
+
+        // Update Cloud Database
+        db.users.push(newUser);
+        const success = await updateCloudDB(db);
+
+        if (success) {
+          showAlert('تم إنشاء الحساب بنجاح! جاري تحويلك لصفحة الدخول...', 'success');
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 1500);
+        } else {
+          showAlert('حدث خطأ أثناء حفظ البيانات بالسحابة، يرجى المحاولة لاحقاً', 'error');
+          submitBtn.disabled = false;
+          btnText.style.display = 'inline';
+          btnSpinner.style.display = 'none';
+        }
+
+      } catch (error) {
+        console.error('Register Error:', error);
+        showAlert('فشل الاتصال الخادم، يرجى إعادة المحاولة', 'error');
+        submitBtn.disabled = false;
+        btnText.style.display = 'inline';
+        btnSpinner.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>
