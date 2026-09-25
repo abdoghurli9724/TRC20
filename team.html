@@ -71,7 +71,7 @@
     <!-- Referral Levels Breakdown -->
     <section style="margin: 0 20px;">
       <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 12px;">
-        <i class="bi bi-diagram-3-fill" style="color: var(--accent-gold); margin-left: 6px;"></i>مستويات الفريق
+        <i class="bi bi-diagram-3-fill" style="color: var(--accent-gold); margin-left: 6px;"></i>مستويات الفريق والعمولات
       </h3>
 
       <!-- Level 1 Card -->
@@ -111,7 +111,7 @@
       </div>
     </section>
 
-    <!-- Referred Users List -->
+    <!-- Referred Users List (Dynamic with Cloud VIP Packages) -->
     <section class="card-box" style="margin: 20px;">
       <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 12px;">
         <i class="bi bi-list-ul" style="margin-left: 6px; color: var(--accent-blue);"></i>قائمة الأعضاء المدعوين
@@ -176,6 +176,9 @@
           return;
         }
 
+        // جلب الباقات المحدثة من السحابة (لضمان مطابقة أسماء وأرصدة الباقات التي أضافها الأدمن)
+        const cloudVipPackages = (db && db.vipPackages) ? db.vipPackages : [];
+
         const myCode = user.referralCode || generateReferralCode();
         document.getElementById('myReferralCode').value = myCode;
         
@@ -210,10 +213,18 @@
           let html = '<div style="display: flex; flex-direction: column; gap: 8px;">';
           level1Members.forEach(m => {
             const maskedUsername = m.username.length > 4 ? m.username.substring(0, 3) + '****' + m.username.slice(-2) : m.username;
+            
+            // مطابقة اسم الباقة أو معرفها ديناميكياً مع الباقات الموجودة في سحابة الأدمن
+            let userVipDisplay = m.vip || 'VIP0';
+            const matchedPkg = cloudVipPackages.find(p => p.id === m.vip || p.name === m.vip);
+            if (matchedPkg) {
+              userVipDisplay = matchedPkg.name || matchedPkg.id;
+            }
+
             html += `
-              <div style="display: flex; justify-content: space-between; padding: 8px 12px; background-color: var(--bg-main); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background-color: var(--bg-main); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
                 <span><i class="bi bi-person-check-fill" style="color: var(--accent-green); margin-left:6px;"></i>${maskedUsername}</span>
-                <span style="color: var(--accent-gold);">${m.vip || 'VIP0'}</span>
+                <span style="color: var(--accent-gold); font-size: 0.8rem; font-weight: 700;">${userVipDisplay}</span>
               </div>
             `;
           });
