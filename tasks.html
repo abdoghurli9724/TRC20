@@ -12,18 +12,18 @@
   <!-- Header Bar -->
   <header class="header-bar">
     <div class="brand-logo">
-      <i class="fa-solid fa-list-check" style="color: var(--accent-blue);"></i>
+      <i class="bi bi-check2-square" style="color: var(--accent-blue);"></i>
       مركز <span>المهام</span>
     </div>
     <div class="vip-badge" id="vipHeaderBadge">
-      <i class="fa-solid fa-crown"></i>
+      <i class="bi bi-award-fill"></i>
       <span id="userVipText">VIP0</span>
     </div>
   </header>
 
   <!-- Countdown Timer Box -->
   <div class="timer-box">
-    <i class="fa-solid fa-clock" style="margin-left: 6px;"></i>
+    <i class="bi bi-clock-fill" style="margin-left: 6px;"></i>
     الوقت المتبقي لتجديد المهام اليومية: <span id="countdownTimer">24:00:00</span>
   </div>
 
@@ -34,7 +34,7 @@
       <div style="font-size: 1.2rem; font-weight: 800; color: var(--accent-blue);" id="taskProgressText">0 / 0</div>
     </div>
     <a href="vip.html" style="background-color: rgba(245, 158, 11, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700;">
-      <i class="fa-solid fa-arrow-up-right-dots"></i> ترقية VIP
+      <i class="bi bi-arrow-up-right-circle-fill"></i> ترقية VIP
     </a>
   </div>
 
@@ -46,19 +46,19 @@
   <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
       <span>الرئيسية</span>
     </a>
     <a href="tasks.html" class="nav-item active">
-      <i class="fa-solid fa-list-check"></i>
+      <i class="bi bi-check2-square"></i>
       <span>المهام</span>
     </a>
     <a href="team.html" class="nav-item">
-      <i class="fa-solid fa-users"></i>
+      <i class="bi bi-people-fill"></i>
       <span>الفريق</span>
     </a>
     <a href="vip.html" class="nav-item">
-      <i class="fa-solid fa-crown"></i>
+      <i class="bi bi-award-fill"></i>
       <span>VIP</span>
     </a>
   </nav>
@@ -68,7 +68,6 @@
 
   <!-- Tasks Logic Script -->
   <script>
-    // Configurable VIP Tasks Limits and Rewards
     const VIP_CONFIG = {
       "VIP0": { dailyLimit: 2, rewardPerTask: 0.25, title: "منتج تقييم أساسي" },
       "VIP1": { dailyLimit: 4, rewardPerTask: 1.25, title: "منتج تقييم مميز" },
@@ -76,7 +75,6 @@
       "VIP3": { dailyLimit: 10, rewardPerTask: 8.00, title: "منتج تقييم ذهبي" }
     };
 
-    // Dummy Mock Products Catalog
     const PRODUCTS_CATALOG = [
       { name: "ساعة ذكية مقاومة للماء - الإصدار الرياضي", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80" },
       { name: "سماعات لاسلكية عازلة للضوضاء", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80" },
@@ -92,7 +90,6 @@
 
     let currentUserObj = null;
 
-    // Load Tasks Logic
     window.addEventListener('DOMContentLoaded', async () => {
       const activeUsername = localStorage.getItem('currentUser');
       if (!activeUsername) {
@@ -109,7 +106,6 @@
           return;
         }
 
-        // Check & Reset Daily Tasks if a new day has arrived
         const todayStr = new Date().toISOString().split('T')[0];
         if (currentUserObj.lastTaskResetDate !== todayStr) {
           currentUserObj.completedTasksToday = [];
@@ -127,7 +123,6 @@
       }
     });
 
-    // Render Page Tasks UI
     function renderTasksPage() {
       const userVip = currentUserObj.vip || "VIP0";
       const config = VIP_CONFIG[userVip] || VIP_CONFIG["VIP0"];
@@ -147,7 +142,6 @@
 
         const card = document.createElement('div');
         card.className = 'task-card';
-        // تعديل الهيكل الداخلي للبطاقة ليطابق التصميم المطلوب بدقة (صورة على اليسار، تفاصيل بالمنتج، وزر إكمال المهمة على اليمين)
         card.style.cssText = "display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--bg-card); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 12px;";
         
         card.innerHTML = `
@@ -170,7 +164,6 @@
       }
     }
 
-    // Process Task Completion
     async function processTask(taskId, reward) {
       const btn = document.getElementById(`btn_${taskId}`);
       if (!btn || btn.disabled) return;
@@ -191,7 +184,6 @@
           user.completedTasksToday.push(taskId);
           user.balance = parseFloat(user.balance || 0) + parseFloat(reward);
 
-          // Add transaction to history
           user.history.unshift({
             id: generateTransactionId(),
             type: "task",
@@ -201,7 +193,6 @@
             date: new Date().toLocaleString('ar-EG')
           });
 
-          // Update Cloud Storage
           const success = await updateCloudDB(db);
 
           if (success) {
@@ -216,13 +207,12 @@
         }
       } catch (error) {
         console.error('Task error:', error);
-        alert('فشل الاتصال الخادم');
+        alert('فشل الاتصال بالخادم');
         btn.disabled = false;
         btn.innerText = 'إكمال المهمة';
       }
     }
 
-    // Countdown Timer logic to midnight
     function startCountdownTimer() {
       function updateTimer() {
         const now = new Date();
