@@ -65,7 +65,7 @@
       overflow-y: auto;
     }
     .modal-content h3 { color: var(--accent-gold); font-size: 1rem; margin-bottom: 15px; }
-    .modal-content input, .modal-content select {
+    .modal-content input, .modal-content select, .modal-content textarea {
       width: 100%;
       padding: 10px;
       background: #0f172a;
@@ -74,7 +74,8 @@
       border-radius: 6px;
       margin-bottom: 10px;
       font-size: 0.9rem;
-      text-align: center;
+      text-align: right;
+      font-family: inherit;
     }
     .modal-actions { display: flex; gap: 8px; justify-content: center; margin-top: 5px; }
     .modal-actions button { flex: 1; padding: 8px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
@@ -146,6 +147,22 @@
       </div>
     </div>
 
+    <!-- قسم إعدادات الواجهة والروابط العامة -->
+    <div class="card-box admin-section">
+      <h3 style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px;">إعدادات النصوص والروابط في الواجهة</h3>
+      <div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 10px;">
+        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">النص الحالي في أعلى الصفحة:</div>
+        <div id="currentTopTextDisplay" style="color: #fff; font-size: 0.85rem; margin-bottom: 10px; word-break: break-all;">جاري التحميل...</div>
+
+        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">رابط تليجرام للدعم الحالي:</div>
+        <div id="currentTelegramDisplay" style="font-family: monospace; color: var(--accent-gold); font-size: 0.85rem; margin-bottom: 12px; word-break: break-all;">جاري التحميل...</div>
+
+        <button class="btn-global-wallet" onclick="openFrontSettingsModal()">
+          <i class="fa-solid fa-pen-to-square"></i> تعديل نص الأعلى ورابط التليجرام
+        </button>
+      </div>
+    </div>
+
     <div class="card-box admin-section">
       <h3 style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px;">إدارة محفظة الإيداع (المنصة)</h3>
       <div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 10px;">
@@ -213,6 +230,7 @@
     </div>
   </div>
 
+  <!-- Modal تعديل الباقات (محدث ليشمل إيرادات السنة) -->
   <div id="packageModal" class="custom-modal">
     <div class="modal-content">
       <h3 id="packageModalTitle">إضافة باقة جديدة</h3>
@@ -238,9 +256,31 @@
       <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 2px;">الإيراد الشهري ($):</label>
       <input type="number" id="pkgMonthlyIncome" placeholder="0" step="any">
 
+      <!-- حقل إيرادات السنة الجديد -->
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 2px;">إيرادات السنة ($):</label>
+      <input type="number" id="pkgYearlyIncome" placeholder="0" step="any">
+
       <div class="modal-actions" style="margin-top: 10px;">
         <button class="btn-modal-cancel" onclick="closeModals()">إلغاء</button>
         <button class="btn-modal-confirm" onclick="processSavePackage()">حفظ الباقة</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal تعديل نص الأعلى ورابط التليجرام -->
+  <div id="frontSettingsModal" class="custom-modal">
+    <div class="modal-content">
+      <h3>إعدادات الواجهة الرئيسية</h3>
+      
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 2px;">النص الذي يظهر في أعلى الصفحة:</label>
+      <textarea id="topTextInput" rows="3" placeholder="أدخل النص الجديد هنا..."></textarea>
+
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 2px;">رابط دعم تليجرام (علامة التليجرام):</label>
+      <input type="text" id="telegramLinkInput" placeholder="https://t.me/your_username">
+
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeModals()">إلغاء</button>
+        <button class="btn-modal-confirm" onclick="processUpdateFrontSettings()">حفظ التعديلات</button>
       </div>
     </div>
   </div>
@@ -338,14 +378,21 @@
         const db = await getCloudDB();
         if (!db) return;
 
+        // عرض الإعدادات الحالية للواجهة
+        const currentTopText = db.topBannerText || "أهلاً بك في منصة VirtualMall الرسمية";
+        document.getElementById("currentTopTextDisplay").innerText = currentTopText;
+
+        const currentTelegram = db.telegramSupportLink || "https://t.me/support_channel";
+        document.getElementById("currentTelegramDisplay").innerText = currentTelegram;
+
         const currentDepositWallet = db.depositWallet || "...TXYZ999MockWalletA";
         document.getElementById("currentDepositWalletDisplay").innerText = currentDepositWallet;
 
         const packagesContainer = document.getElementById("packagesListContainer");
         packagesContainer.innerHTML = "";
         const packagesList = db.vipPackages || [
-          { id: "VIP0", name: "عضوية VIP0 (تجريبي)", price: 0, tasks: 2, taskProfit: 0.25, dailyIncome: 0.50, monthlyIncome: 15.00 },
-          { id: "VIP1", name: "عضوية VIP1 الاحترافية", price: 20, tasks: 6, taskProfit: 3.50, dailyIncome: 21.00, monthlyIncome: 630.00 }
+          { id: "VIP0", name: "عضوية VIP0 (تجريبي)", price: 0, tasks: 2, taskProfit: 0.25, dailyIncome: 0.50, monthlyIncome: 15.00, yearlyIncome: 180.00 },
+          { id: "VIP1", name: "عضوية VIP1 الاحترافية", price: 20, tasks: 6, taskProfit: 3.50, dailyIncome: 21.00, monthlyIncome: 630.00, yearlyIncome: 7560.00 }
         ];
 
         if (packagesList.length === 0) {
@@ -357,7 +404,7 @@
                 <div class="package-info">
                   <div style="color: var(--accent-gold); font-weight: bold;">💎 ${pkg.name || pkg.id || 'باقة'}</div>
                   <div>المعرف: <span style="color: #f59e0b;">${pkg.id || 'VIP'}</span> | السعر: <span style="color: #3b82f6;">$${pkg.price || 0}</span> | المهام: <span style="color: #10b981;">${pkg.tasks || 0}</span></div>
-                  <div>الإيراد اليومي: <span style="color: #10b981;">$${pkg.dailyIncome || 0}</span> | الشهري: <span style="color: #10b981;">$${pkg.monthlyIncome || 0}</span></div>
+                  <div>الإيراد اليومي: <span style="color: #10b981;">$${pkg.dailyIncome || 0}</span> | الشهري: <span style="color: #10b981;">$${pkg.monthlyIncome || 0}</span> | السنوي: <span style="color: #f59e0b;">$${pkg.yearlyIncome || 0}</span></div>
                 </div>
                 <div class="action-btns">
                   <button class="btn-edit-user" onclick="openPackageModal('edit', ${index})">تعديل</button>
@@ -511,6 +558,12 @@
       document.getElementById("depositWalletModal").style.display = "flex";
     }
 
+    function openFrontSettingsModal() {
+      document.getElementById("topTextInput").value = document.getElementById("currentTopTextDisplay").innerText;
+      document.getElementById("telegramLinkInput").value = document.getElementById("currentTelegramDisplay").innerText;
+      document.getElementById("frontSettingsModal").style.display = "flex";
+    }
+
     async function openPackageModal(mode, index = -1) {
       editingPackageIndex = index;
       const db = await getCloudDB();
@@ -526,6 +579,7 @@
         document.getElementById("pkgTaskProfit").value = pkg.taskProfit || 0;
         document.getElementById("pkgDailyIncome").value = pkg.dailyIncome || 0;
         document.getElementById("pkgMonthlyIncome").value = pkg.monthlyIncome || 0;
+        document.getElementById("pkgYearlyIncome").value = pkg.yearlyIncome || 0;
       } else {
         document.getElementById("packageModalTitle").innerText = "إضافة باقة VIP جديدة";
         document.getElementById("pkgId").value = `VIP${packagesList.length}`;
@@ -535,6 +589,7 @@
         document.getElementById("pkgTaskProfit").value = "";
         document.getElementById("pkgDailyIncome").value = "";
         document.getElementById("pkgMonthlyIncome").value = "";
+        document.getElementById("pkgYearlyIncome").value = "";
       }
       document.getElementById("packageModal").style.display = "flex";
     }
@@ -547,6 +602,7 @@
       const taskProfit = parseFloat(document.getElementById("pkgTaskProfit").value);
       const dailyIncome = parseFloat(document.getElementById("pkgDailyIncome").value);
       const monthlyIncome = parseFloat(document.getElementById("pkgMonthlyIncome").value);
+      const yearlyIncome = parseFloat(document.getElementById("pkgYearlyIncome").value);
 
       if (!name || isNaN(price) || isNaN(tasks)) {
         showToast("الرجاء إدخال الحقول الأساسية بشكل صحيح", "error");
@@ -558,7 +614,7 @@
         db.vipPackages = [];
       }
 
-      const packageData = { id, name, price, tasks, taskProfit, dailyIncome, monthlyIncome };
+      const packageData = { id, name, price, tasks, taskProfit, dailyIncome, monthlyIncome, yearlyIncome };
 
       if (editingPackageIndex !== -1 && db.vipPackages[editingPackageIndex]) {
         db.vipPackages[editingPackageIndex] = packageData;
@@ -612,6 +668,7 @@
 
     function closeModals() {
       document.getElementById("depositWalletModal").style.display = "none";
+      document.getElementById("frontSettingsModal").style.display = "none";
       document.getElementById("packageModal").style.display = "none";
       document.getElementById("balanceModal").style.display = "none";
       document.getElementById("vipModal").style.display = "none";
@@ -634,6 +691,21 @@
       await updateCloudDB(db);
       closeModals();
       showToast("تم تحديث محفظة الإيداع للمنصة بنجاح", "success");
+      loadAdminData();
+    }
+
+    async function processUpdateFrontSettings() {
+      const newTopText = document.getElementById("topTextInput").value.trim();
+      const newTelegram = document.getElementById("telegramLinkInput").value.trim();
+
+      const db = await getCloudDB();
+      if (!db) return;
+
+      db.topBannerText = newTopText;
+      db.telegramSupportLink = newTelegram;
+      await updateCloudDB(db);
+      closeModals();
+      showToast("تم تحديث إعدادات الواجهة الرئيسية بنجاح", "success");
       loadAdminData();
     }
 
