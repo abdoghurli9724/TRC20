@@ -18,7 +18,7 @@
       border-collapse: collapse; 
       text-align: right; 
       font-size: 0.8rem; 
-      min-width: 500px;
+      min-width: 550px;
     }
     th, td { 
       padding: 10px 8px; 
@@ -30,6 +30,11 @@
     .action-btns { display: flex; gap: 6px; }
     .btn-approve { background: var(--accent-green); color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 4px; border: none; cursor: pointer; }
     .btn-reject { background: #ef4444; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 4px; border: none; cursor: pointer; }
+    .btn-edit { background: #3b82f6; color: #fff; padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; border: none; cursor: pointer; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+    .stat-card { background: var(--bg-secondary); padding: 12px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
+    .stat-card h4 { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 5px; }
+    .stat-card p { font-size: 1.1rem; color: var(--accent-gold); font-weight: bold; }
   </style>
 </head>
 <body>
@@ -40,6 +45,23 @@
   </div>
 
   <div style="padding: 20px;">
+    
+    <!-- إحصائيات عامة سريعة -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h4>المستخدمون</h4>
+        <p id="totalUsersCount">0</p>
+      </div>
+      <div class="stat-card">
+        <h4>إيداعات معلقة</h4>
+        <p id="pendingDepositsCount">0</p>
+      </div>
+      <div class="stat-card">
+        <h4>سحوبات معلقة</h4>
+        <p id="pendingWithdrawsCount">0</p>
+      </div>
+    </div>
+
     <!-- قسم طلبات الإيداع -->
     <div class="card-box admin-section">
       <h3 style="color: var(--accent-gold); font-size: 1rem; margin-bottom: 10px;"><i class="fa-solid fa-file-arrow-down"></i> طلبات الإيداع المعلقة</h3>
@@ -84,7 +106,7 @@
 
     <!-- قسم إدارة المستخدمين والرصيد -->
     <div class="card-box admin-section">
-      <h3 style="color: var(--accent-gold); font-size: 1rem; margin-bottom: 10px;"><i class="fa-solid fa-users-gear"></i> إدارة أرصدة المستخدمين</h3>
+      <h3 style="color: var(--accent-gold); font-size: 1rem; margin-bottom: 10px;"><i class="fa-solid fa-users-gear"></i> إدارة أرصدة ومستويات المستخدمين</h3>
       <div class="table-container">
         <table>
           <thead>
@@ -92,7 +114,7 @@
               <th>المستخدم</th>
               <th>الرصيد الحالي</th>
               <th>مستوى VIP</th>
-              <th>تعديل الرصيد</th>
+              <th>التحكم</th>
             </tr>
           </thead>
           <tbody id="usersTable">
@@ -113,15 +135,21 @@
       }
 
       const db = await getCloudDB();
-      // استخراج المستخدمين وقوائم الطلبات بأمان تام بغض النظر عن طريقة هيكلة قاعدة البيانات
       const usersList = db.users || (Array.isArray(db) ? db : []) || [];
       const depositReqs = db.depositRequests || [];
       const withdrawReqs = db.withdrawRequests || [];
 
+      // تحديث الإحصائيات
+      const pendingDeposits = depositReqs.filter(r => r.status === 'pending');
+      const pendingWithdraws = withdrawReqs.filter(r => r.status === 'pending');
+      
+      document.getElementById("totalUsersCount").innerText = usersList.length;
+      document.getElementById("pendingDepositsCount").innerText = pendingDeposits.length;
+      document.getElementById("pendingWithdrawsCount").innerText = pendingWithdraws.length;
+
       // عرض طلبات الإيداع المعلقة
       const depositTbody = document.getElementById("depositRequestsTable");
       depositTbody.innerHTML = "";
-      const pendingDeposits = depositReqs.filter(r => r.status === 'pending');
       if (pendingDeposits.length === 0) {
         depositTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">لا توجد طلبات إيداع معلقة</td></tr>`;
       } else {
@@ -146,7 +174,6 @@
       // عرض طلبات السحب المعلقة
       const withdrawTbody = document.getElementById("withdrawRequestsTable");
       withdrawTbody.innerHTML = "";
-      const pendingWithdraws = withdrawReqs.filter(r => r.status === 'pending');
       if (pendingWithdraws.length === 0) {
         withdrawTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">لا توجد طلبات سحب معلقة</td></tr>`;
       } else {
@@ -168,7 +195,7 @@
         });
       }
 
-      // عرض قائمة المستخدمين للتحكم بأرصدتهم
+      // عرض قائمة المستخدمين للتحكم بأرصدتهم ومستوياتهم
       const usersTbody = document.getElementById("usersTable");
       usersTbody.innerHTML = "";
       if (usersList.length === 0) {
@@ -181,7 +208,10 @@
               <td>${(u.balance || 0).toFixed(2)} USDT</td>
               <td>${u.vip || 'VIP0'}</td>
               <td>
-                <button class="btn-approve" style="padding: 4px 8px; font-size: 0.75rem;" onclick="modifyUserBalance('${u.username}')">تعديل</button>
+                <div class="action-btns">
+                  <button class="btn-edit" onclick="modifyUserBalance('${u.username}')">الرصيد</button>
+                  <button class="btn-approve" style="background:#8b5cf6;" onclick="modifyUserVip('${u.username}')">VIP</button>
+                </div>
               </td>
             </tr>
           `;
@@ -283,6 +313,21 @@
         db.users[userIndex].balance = newBalance;
         await updateCloudDB(db);
         alert("تم تحديث الرصيد بنجاح!");
+        loadAdminData();
+      }
+    }
+
+    async function modifyUserVip(username) {
+      const newVip = prompt(`أدخل مستوى الـ VIP الجديد للمستخدم ${username} (مثال: VIP1, VIP2, VIP3):`);
+      if (!newVip) return;
+
+      const db = await getCloudDB();
+      if (!db.users) return;
+      const userIndex = db.users.findIndex(u => u.username === username);
+      if (userIndex !== -1) {
+        db.users[userIndex].vip = newVip.trim().toUpperCase();
+        await updateCloudDB(db);
+        alert("تم تحديث مستوى الـ VIP بنجاح!");
         loadAdminData();
       }
     }
