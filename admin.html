@@ -601,7 +601,7 @@
           db.users[userIndex].depositBalance = Number(db.users[userIndex].depositBalance || db.users[userIndex].totalDeposit || 0) + Number(req.amount);
           db.users[userIndex].totalDeposit = db.users[userIndex].depositBalance;
         }
-        req.status = 'approved';
+        req.status = 'completed'; // تم تعديلها لتتوافق مع صفحة السجلات وتظهر مكتملة
         req.title = 'تم قبول طلب الإيداع';
         showToast("تمت الموافقة على طلب الإيداع بنجاح", "success");
       } else {
@@ -632,7 +632,7 @@
       const userIndex = db.users.findIndex(u => u.username === req.username);
 
       if (action === 'approve') {
-        req.status = 'approved';
+        req.status = 'completed'; // تم تعديلها لتتوافق مع صفحة السجلات وتظهر مكتملة
         req.title = 'تم قبول طلب السحب';
         showToast("تمت الموافقة على طلب السحب بنجاح", "success");
       } else {
