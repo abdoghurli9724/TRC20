@@ -3,284 +3,279 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VirtualMall - لوحة تحكم المسؤول</title>
-  <link rel="stylesheet" href="profile.css">
+  <title>Virtual Mall - لوحة تحكم الأدمن</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
-    .admin-tab-btn {
-      flex: 1;
-      padding: 10px;
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      text-align: center;
+    :root {
+      --bg-main: #0b1021;
+      --card-bg: #151b31;
+      --text-main: #ffffff;
+      --text-muted: #94a3b8;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-yellow: #f59e0b;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --radius-md: 12px;
+      --radius-sm: 8px;
     }
-    .admin-tab-btn.active {
-      background-color: var(--accent-blue);
-      color: #ffffff;
-      border-color: var(--accent-blue);
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+    
+    .app-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; background: rgba(11, 16, 33, 0.9);
+      border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;
     }
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.8rem;
+    .main-container { padding: 20px; max-width: 800px; margin: 0 auto; width: 100%; flex: 1; }
+    
+    .card {
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 20px; margin-bottom: 20px;
     }
-    .data-table th, .data-table td {
-      padding: 10px 8px;
-      border-bottom: 1px solid var(--border-color);
-      text-align: center;
+    h2 { font-size: 1.2rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+
+    .record-item, .user-item {
+      background: #0f172a; border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm); padding: 15px; margin-bottom: 12px;
     }
-    .data-table th {
-      background-color: rgba(255, 255, 255, 0.05);
-      color: var(--text-secondary);
+    .record-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .record-details { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
+    
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-approve { background: var(--accent-green); color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+    .btn-reject { background: var(--accent-red); color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+    .btn-edit { background: var(--accent-blue); color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+
+    .badge-pending { color: var(--accent-yellow); background: rgba(245, 158, 11, 0.15); padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; }
+    .badge-approved { color: var(--accent-green); background: rgba(16, 185, 129, 0.15); padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; }
+    .badge-rejected { color: var(--accent-red); background: rgba(239, 68, 68, 0.15); padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; }
+
+    .alert { padding: 10px; border-radius: var(--radius-sm); margin-bottom: 15px; text-align: center; display: none; font-size: 0.9rem; }
+    .alert-success { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+    .alert-error { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
+      display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
     }
-    .action-btn-sm {
-      padding: 4px 8px;
-      border-radius: 4px;
-      border: none;
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin: 2px;
+    .modal-content {
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 20px; width: 100%; max-width: 400px;
     }
+    .form-control {
+      width: 100%; background: #0f172a; border: 1px solid var(--border-color);
+      padding: 10px; border-radius: var(--radius-sm); color: var(--text-main); font-size: 1rem; outline: none; margin-bottom: 15px;
+    }
+    .form-control:focus { border-color: var(--accent-blue); }
   </style>
 </head>
 <body>
 
-  <!-- Header Bar -->
-  <header class="header-bar">
-    <div class="brand-logo">
-      <i class="bi bi-shield-fill-exclamation" style="color: var(--accent-red);"></i>
-      لوحة تحكم <span>المسؤول</span>
+  <header class="app-header">
+    <div style="display: flex; align-items: center; gap: 10px; cursor: pointer;" onclick="window.location.href='index.html'">
+      <i class="bi bi-arrow-right" style="font-size: 1.2rem;"></i>
+      <span style="font-weight: 700; color: var(--accent-red);">لوحة تحكم الأدمن</span>
     </div>
-    <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
-      <i class="bi bi-house-fill"></i>
-    </a>
+    <div onclick="location.reload()" style="cursor: pointer; font-size: 1.1rem;"><i class="bi bi-arrow-clockwise"></i></div>
   </header>
 
-  <main style="max-width: 700px; margin: 20px auto 80px auto; padding: 0 16px;">
+  <div class="main-container">
+    <div id="alertBox" class="alert"></div>
 
-    <!-- Alert Notification Box -->
-    <div id="alertBox" style="display: none; padding: 12px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 0.85rem; text-align: center;"></div>
-
-    <!-- Overview Financial Stats -->
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
-      <div class="card-box" style="padding: 10px; text-align: center;">
-        <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px;">إجمالي المستخدمين</div>
-        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-blue);" id="statUsersCount">0</div>
-      </div>
-      <div class="card-box" style="padding: 10px; text-align: center;">
-        <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px;">طلبات معلقة</div>
-        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-gold);" id="statPendingRequests">0</div>
-      </div>
-      <div class="card-box" style="padding: 10px; text-align: center;">
-        <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px;">إجمالي الإيداعات</div>
-        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green);" id="statTotalDeposits">$0.00</div>
+    <!-- قسم طلبات الإيداع والسحب -->
+    <div class="card">
+      <h2><i class="bi bi-list-check" style="color: var(--accent-blue);"></i> طلبات الإيداع والسحب المعلقة</h2>
+      <div id="requestsContainer">
+        <p style="color: var(--text-muted); text-align: center; padding: 15px;">جاري تحميل الطلبات...</p>
       </div>
     </div>
 
-    <!-- Admin Section Tabs -->
-    <div style="display: flex; gap: 8px; margin-bottom: 20px;">
-      <button class="admin-tab-btn active" id="tabReqBtn" onclick="switchAdminTab('requests')">طلبات الشحن/السحب</button>
-      <button class="admin-tab-btn" id="tabUsersBtn" onclick="switchAdminTab('users')">إدارة الحسابات</button>
-    </div>
-
-    <!-- Section 1: Deposit & Withdrawal Requests -->
-    <div id="sectionRequests" class="card-box" style="padding: 12px; overflow-x: auto;">
-      <h3 style="font-size: 0.95rem; color: var(--text-primary); margin-bottom: 12px;">
-        <i class="bi bi-card-checklist" style="color: var(--accent-blue); margin-left: 6px;"></i>طلبات الإيداع والسحب المعلقة
-      </h3>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>النوع</th>
-            <th>المستخدم</th>
-            <th>المبلغ</th>
-            <th>التفاصيل/العنوان</th>
-            <th>الإجراء</th>
-          </tr>
-        </thead>
-        <tbody id="requestsTableBody">
-          <tr>
-            <td colspan="5" style="padding: 20px; color: var(--text-secondary);">جاري تحميل الطلبات...</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Section 2: User Accounts Management -->
-    <div id="sectionUsers" class="card-box" style="display: none; padding: 12px; overflow-x: auto;">
-      <h3 style="font-size: 0.95rem; color: var(--text-primary); margin-bottom: 12px;">
-        <i class="bi bi-people-fill" style="color: var(--accent-purple); margin-left: 6px;"></i>قائمة كافة المستخدمين
-      </h3>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>اسم المستخدم</th>
-            <th>الرصيد</th>
-            <th>VIP</th>
-            <th>كلمة المرور</th>
-            <th>تعديل</th>
-          </tr>
-        </thead>
-        <tbody id="usersTableBody">
-          <tr>
-            <td colspan="5" style="padding: 20px; color: var(--text-secondary);">جاري تحميل الحسابات...</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-  </main>
-
-  <!-- Edit User Modal -->
-  <div id="editUserModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 16px;">
-    <div class="card-box" style="width: 100%; max-width: 400px; padding: 20px; background-color: var(--card-bg);">
-      <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 16px; text-align: center;">تعديل بيانات المستخدم: <span id="modalTargetUsername" style="color: var(--accent-blue);"></span></h3>
-      
-      <div class="form-group">
-        <label class="form-label" for="editBalanceInput">الرصيد الحالي ($):</label>
-        <input type="number" step="0.01" id="editBalanceInput" class="form-input">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="editVipSelect">مستوى VIP:</label>
-        <select id="editVipSelect" class="form-input">
-          <option value="VIP0">VIP0</option>
-          <option value="VIP1">VIP1</option>
-          <option value="VIP2">VIP2</option>
-          <option value="VIP3">VIP3</option>
-          <option value="VIP4">VIP4</option>
-          <option value="VIP5">VIP5</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="editPasswordInput">كلمة المرور الجديدة:</label>
-        <input type="text" id="editPasswordInput" class="form-input" placeholder="اتركه فارغاً لعدم التغيير">
-      </div>
-
-      <div style="display: flex; gap: 10px; margin-top: 16px;">
-        <button onclick="saveUserEdit()" class="submit-btn" style="flex: 1; background-color: var(--accent-green);">حفظ</button>
-        <button onclick="closeEditModal()" class="submit-btn" style="flex: 1; background-color: rgba(239, 68, 68, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red);">إلغاء</button>
+    <!-- قسم إدارة أرصدة المستخدمين -->
+    <div class="card">
+      <h2><i class="bi bi-people-fill" style="color: var(--accent-green);"></i> إدارة أرصدة المستخدمين</h2>
+      <div id="usersContainer">
+        <p style="color: var(--text-muted); text-align: center; padding: 15px;">جاري تحميل المستخدمين...</p>
       </div>
     </div>
   </div>
 
-  <!-- Database Script -->
-  <script src="db.js"></script>
+  <!-- Modal تعديل الرصيد -->
+  <div class="modal-overlay" id="editBalanceModal">
+    <div class="modal-content">
+      <h3 id="modalUsernameTitle" style="margin-bottom: 15px; font-size: 1.1rem;">تعديل رصيد المستخدم</h3>
+      <input type="hidden" id="modalTargetUsername">
+      <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 6px;">الرصيد المتاح الجديد ($)</label>
+      <input type="number" id="newBalanceInput" class="form-control" step="any" placeholder="أدخل الرصيد الجديد">
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-approve" style="flex: 1; padding: 10px;" onclick="saveNewBalance()">حفظ التعديل</button>
+        <button class="btn-reject" style="flex: 1; padding: 10px;" onclick="closeModal()">إلغاء</button>
+      </div>
+    </div>
+  </div>
 
-  <!-- Admin Logic Script -->
+  <script src="db.js"></script>
   <script>
     let globalDB = null;
-    let selectedUsernameForEdit = null;
 
-    // Load Admin Data on Load
     window.addEventListener('DOMContentLoaded', async () => {
-      const activeUsername = localStorage.getItem('currentUser');
-      if (!activeUsername || activeUsername !== 'admin') {
-        alert('عذراً، هذه الصفحة مخصصة لمدير النظام فقط!');
+      const activeUsername = localStorage.getItem('activeUsername');
+      if (!activeUsername) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      globalDB = await getCloudDB();
+      const currentUser = globalDB.users.find(u => u.username === activeUsername);
+
+      const adminUsers = ['admin', '088888888'];
+      if (!currentUser || !adminUsers.includes(currentUser.username)) {
+        alert('غير مصرح لك بالدخول إلى هذه الصفحة');
         window.location.href = 'index.html';
         return;
       }
 
-      await refreshAdminData();
+      renderAdminPanel();
     });
 
-    // Alert Message Helper
-    function showAlert(message, type) {
-      const alertBox = document.getElementById('alertBox');
-      alertBox.style.display = 'block';
-      alertBox.innerText = message;
-      if (type === 'error') {
-        alertBox.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
-        alertBox.style.color = 'var(--accent-red)';
-        alertBox.style.border = '1px solid var(--accent-red)';
-      } else {
-        alertBox.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
-        alertBox.style.color = 'var(--accent-green)';
-        alertBox.style.border = '1px solid var(--accent-green)';
-      }
-      setTimeout(() => { alertBox.style.display = 'none'; }, 4000);
+    function showAlert(msg, type) {
+      const box = document.getElementById('alertBox');
+      box.className = `alert alert-${type}`;
+      box.innerText = msg;
+      box.style.display = 'block';
+      setTimeout(() => { box.style.display = 'none'; }, 4000);
     }
 
-    // Refresh Data from JSONBin Cloud
-    async function refreshAdminData() {
-      try {
-        globalDB = await getCloudDB();
-        if (!globalDB) return;
-
-        renderStats();
-        renderRequestsTable();
-        renderUsersTable();
-
-      } catch (error) {
-        console.error('Error fetching admin data:', error);
-        showAlert('فشل جلب البيانات من السحابة', 'error');
-      }
+    function renderAdminPanel() {
+      renderRequests();
+      renderUsersList();
     }
 
-    // Render Stats
-    function renderStats() {
-      const users = globalDB.users || [];
-      const records = globalDB.records || [];
-
-      document.getElementById('statUsersCount').innerText = users.length;
-
-      const pendingReqs = records.filter(r => r.status === 'قيد الانتظار');
-      document.getElementById('statPendingRequests').innerText = pendingReqs.length;
-
-      const approvedDeposits = records
-        .filter(r => r.type === 'إيداع' && r.status === 'مقبول')
-        .reduce((sum, r) => sum + parseFloat(r.amount || 0), 0);
+    // عرض الطلبات المعلقة
+    function renderRequests() {
+      const container = document.getElementById('requestsContainer');
       
-      document.getElementById('statTotalDeposits').innerText = '$' + approvedDeposits.toFixed(2);
-    }
-
-    // Tab Switching
-    function switchAdminTab(tabName) {
-      if (tabName === 'requests') {
-        document.getElementById('sectionRequests').style.display = 'block';
-        document.getElementById('sectionUsers').style.display = 'none';
-        document.getElementById('tabReqBtn').classList.add('active');
-        document.getElementById('tabUsersBtn').classList.remove('active');
-      } else {
-        document.getElementById('sectionRequests').style.display = 'none';
-        document.getElementById('sectionUsers').style.display = 'block';
-        document.getElementById('tabReqBtn').classList.remove('active');
-        document.getElementById('tabUsersBtn').classList.add('active');
-      }
-    }
-
-    // Render Pending Requests Table
-    function renderRequestsTable() {
-      const tbody = document.getElementById('requestsTableBody');
-      const pendingRecords = (globalDB.records || []).filter(r => r.status === 'قيد الانتظار');
-
-      if (pendingRecords.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="padding: 20px; color: var(--text-secondary);">لا توجد طلبات معلقة حالياً</td></tr>';
+      if (!globalDB.records || globalDB.records.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 15px;">لا توجد أي طلبات مسجلة حالياً.</p>';
         return;
       }
 
-      tbody.innerHTML = pendingRecords.map(req => `
-        <tr>
-          <td><span style="color: ${req.type === 'إيداع' ? 'var(--accent-green)' : 'var(--accent-gold)'}; font-weight:700;">${req.type}</span></td>
-          <td>${req.username}</td>
-          <td>$${parseFloat(req.amount).toFixed(2)}</td>
-          <td style="font-size:0.7rem; max-width: 120px; word-break: break-all;">${req.details || req.address || '-'}</td>
-          <td>
-            <button onclick="handleRequest('${req.id}', 'approve')" class="action-btn-sm" style="background-color: var(--accent-green); color: #fff;">قبول</button>
-            <button onclick="handleRequest('${req.id}', 'reject')" class="action-btn-sm" style="background-color: var(--accent-red); color: #fff;">رفض</button>
-          </td>
-        </tr>
-      `).join('');
+      container.innerHTML = '';
+      globalDB.records.forEach((record) => {
+        let statusBadge = '';
+        if (record.status === 'قيد الانتظار') statusBadge = '<span class="badge-pending">قيد الانتظار</span>';
+        else if (record.status === 'مقبول') statusBadge = '<span class="badge-approved">مقبول</span>';
+        else statusBadge = '<span class="badge-rejected">مرفوض</span>';
+
+        const div = document.createElement('div');
+        div.className = 'record-item';
+        div.innerHTML = `
+          <div class="record-header">
+            <strong>${record.type === 'إيداع' ? 'إيداع رصيد' : 'سحب أرباح'} - $${record.amount}</strong>
+            ${statusBadge}
+          </div>
+          <div class="record-details">
+            <div>المستخدم: <strong>${record.username}</strong></div>
+            <div>${record.type === 'إيداع' ? 'هاش التحويل (TXID):' : 'عنوان المحفظة:'} <span style="color: var(--text-main);">${record.details || record.address || 'غير متوفر'}</span></div>
+            <div>التاريخ: ${record.date}</div>
+          </div>
+          ${record.status === 'قيد الانتظار' ? `
+            <div class="btn-group">
+              <button class="btn-approve" onclick="handleRequest('${record.id}', 'approve')">قبول الطلب</button>
+              <button class="btn-reject" onclick="handleRequest('${record.id}', 'reject')">رفض الطلب</button>
+            </div>
+          ` : ''}
+        `;
+        container.appendChild(div);
+      });
     }
 
-    // Handle Approve / Reject Request
+    // عرض قائمة المستخدمين لتعديل أرصدتهم
+    function renderUsersList() {
+      const container = document.getElementById('usersContainer');
+      
+      if (!globalDB.users || globalDB.users.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 15px;">لا يوجد مستخدمون مسجلون.</p>';
+        return;
+      }
+
+      container.innerHTML = '';
+      globalDB.users.forEach((user) => {
+        const div = document.createElement('div');
+        div.className = 'user-item';
+        div.innerHTML = `
+          <div class="record-header">
+            <div>
+              <strong>${user.username}</strong>
+              <span style="font-size: 0.75rem; color: var(--accent-blue); margin-right: 8px;">(${user.vip || 'VIP0'})</span>
+            </div>
+            <span style="color: var(--accent-green); font-weight: 700;">$${parseFloat(user.balance || 0).toFixed(2)}</span>
+          </div>
+          <div class="record-details">
+            <div>إجمالي الإيداع: $${parseFloat(user.totalDeposit || 0).toFixed(2)} | إجمالي السحب: $${parseFloat(user.totalWithdraw || 0).toFixed(2)}</div>
+          </div>
+          <div class="btn-group">
+            <button class="btn-edit" onclick="openEditModal('${user.username}', ${user.balance || 0})">
+              <i class="bi bi-wallet2"></i> تعديل الرصيد المتاح
+            </button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // فتح نافذة تعديل الرصيد
+    function openEditModal(username, currentBalance) {
+      document.getElementById('modalTargetUsername').value = username;
+      document.getElementById('modalUsernameTitle').innerText = `تعديل رصيد المستخدم: ${username}`;
+      document.getElementById('newBalanceInput').value = currentBalance;
+      document.getElementById('editBalanceModal').style.display = 'flex';
+    }
+
+    // إغلاق النافذة
+    function closeModal() {
+      document.getElementById('editBalanceModal').style.display = 'none';
+    }
+
+    // حفظ الرصيد الجديد في السحابة
+    async function saveNewBalance() {
+      const username = document.getElementById('modalTargetUsername').value;
+      const newBalance = parseFloat(document.getElementById('newBalanceInput').value);
+
+      if (isNaN(newBalance) || newBalance < 0) {
+        alert('الرجاء إدخال مبلغ صالح');
+        return;
+      }
+
+      const userIndex = globalDB.users.findIndex(u => u.username === username);
+      if (userIndex !== -1) {
+        globalDB.users[userIndex].balance = newBalance.toFixed(2);
+
+        // تسجيل العملية في تاريخ المستخدم
+        if (!globalDB.users[userIndex].history) globalDB.users[userIndex].history = [];
+        globalDB.users[userIndex].history.unshift({
+          id: 'ADJ-' + Math.floor(100000 + Math.random() * 900000),
+          type: 'adjustment',
+          title: 'تعديل رصيد بواسطة الأدمن',
+          amount: newBalance,
+          date: new Date().toLocaleString('ar-EG')
+        });
+
+        const success = await updateCloudDB(globalDB);
+        if (success) {
+          showAlert(`تم تعديل رصيد المستخدم ${username} بنجاح إلى $${newBalance.toFixed(2)}`, 'success');
+          closeModal();
+          globalDB = await getCloudDB();
+          renderUsersList();
+        } else {
+          showAlert('حدث خطأ أثناء حفظ التعديل', 'error');
+        }
+      }
+    }
+
+    // قبول أو رفض الطلبات
     async function handleRequest(recordId, action) {
       const recordIndex = globalDB.records.findIndex(r => r.id === recordId);
       if (recordIndex === -1) return;
@@ -294,7 +289,6 @@
         if (userIndex !== -1) {
           const amount = parseFloat(record.amount);
           if (record.type === 'إيداع') {
-            globalDB.users[userIndex].balance = (parseFloat(globalDB.users[userIndex].balance || 0) + amount).toFixed(2);
             globalDB.users[userIndex].totalDeposit = (parseFloat(globalDB.users[userIndex].totalDeposit || 0) + amount).toFixed(2);
           } else if (record.type === 'سحب') {
             globalDB.users[userIndex].totalWithdraw = (parseFloat(globalDB.users[userIndex].totalWithdraw || 0) + amount).toFixed(2);
@@ -303,86 +297,19 @@
       } else {
         globalDB.records[recordIndex].status = 'مرفوض';
 
-        // Refund balance if withdrawal was rejected
         if (record.type === 'سحب' && userIndex !== -1) {
           const amount = parseFloat(record.amount);
           globalDB.users[userIndex].balance = (parseFloat(globalDB.users[userIndex].balance || 0) + amount).toFixed(2);
         }
       }
 
-      // Sync to Cloud DB
       const success = await updateCloudDB(globalDB);
       if (success) {
         showAlert(`تم ${action === 'approve' ? 'قبول' : 'رفض'} الطلب بنجاح وتحديث البيانات!`, 'success');
-        refreshAdminData();
+        globalDB = await getCloudDB();
+        renderAdminPanel();
       } else {
-        showAlert('حدث خطأ أثناء حفظ التعديلات في السحابة', 'error');
-      }
-    }
-
-    // Render Users Table
-    function renderUsersTable() {
-      const tbody = document.getElementById('usersTableBody');
-      const users = globalDB.users || [];
-
-      tbody.innerHTML = users.map(u => `
-        <tr>
-          <td><strong>${u.username}</strong></td>
-          <td style="color: var(--accent-green); font-weight:700;">$${parseFloat(u.balance || 0).toFixed(2)}</td>
-          <td><span style="color: var(--accent-gold); font-size:0.75rem;">${u.vip || 'VIP0'}</span></td>
-          <td style="font-size:0.7rem;">${u.password}</td>
-          <td>
-            <button onclick="openEditModal('${u.username}')" class="action-btn-sm" style="background-color: var(--accent-blue); color: #fff;">تعديل</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    // Open User Edit Modal
-    function openEditModal(username) {
-      const user = globalDB.users.find(u => u.username === username);
-      if (!user) return;
-
-      selectedUsernameForEdit = username;
-      document.getElementById('modalTargetUsername').innerText = username;
-      document.getElementById('editBalanceInput').value = parseFloat(user.balance || 0).toFixed(2);
-      document.getElementById('editVipSelect').value = user.vip || 'VIP0';
-      document.getElementById('editPasswordInput').value = '';
-      
-      document.getElementById('editUserModal').style.display = 'flex';
-    }
-
-    // Close Edit Modal
-    function closeEditModal() {
-      document.getElementById('editUserModal').style.display = 'none';
-      selectedUsernameForEdit = null;
-    }
-
-    // Save User Edit
-    async function saveUserEdit() {
-      if (!selectedUsernameForEdit) return;
-
-      const userIndex = globalDB.users.findIndex(u => u.username === selectedUsernameForEdit);
-      if (userIndex === -1) return;
-
-      const newBalance = parseFloat(document.getElementById('editBalanceInput').value || 0).toFixed(2);
-      const newVip = document.getElementById('editVipSelect').value;
-      const newPass = document.getElementById('editPasswordInput').value.trim();
-
-      globalDB.users[userIndex].balance = newBalance;
-      globalDB.users[userIndex].vip = newVip;
-      if (newPass !== '') {
-        globalDB.users[userIndex].password = newPass;
-      }
-
-      // Sync Changes to JSONBin Cloud
-      const success = await updateCloudDB(globalDB);
-      if (success) {
-        closeEditModal();
-        showAlert('تم تحديث بيانات المستخدم بنجاح!', 'success');
-        refreshAdminData();
-      } else {
-        showAlert('فشل حفظ البيانات في السحابة', 'error');
+        showAlert('حدث خطأ أثناء حفظ التعديلات، حاول ثانية.', 'error');
       }
     }
   </script>
