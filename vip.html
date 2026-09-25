@@ -34,10 +34,16 @@
       </p>
     </div>
 
-    <!-- Balance Summary Bar -->
-    <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; margin-bottom: 20px;">
-      <span style="font-size: 0.85rem; color: var(--text-muted);">رصيدك المتاح حالياً:</span>
-      <span style="font-size: 1.2rem; font-weight: 900; color: var(--accent-green);" id="userBalanceText">$0.00</span>
+    <!-- Balance Summary Bar (عرض إجمالي الإيداع والرصيد المتاح للتوضيح) -->
+    <div class="glass-card" style="display: flex; flex-direction: column; gap: 8px; padding: 14px 20px; margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">إجمالي الإيداع (للترقيات):</span>
+        <span style="font-size: 1.2rem; font-weight: 900; color: var(--accent-gold);" id="userTotalDepositText">$0.00</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); pt-2;">
+        <span style="font-size: 0.8rem; color: var(--text-muted);">الرصيد المتاح (للسحب والأرباح):</span>
+        <span style="font-size: 0.95rem; font-weight: 700; color: var(--accent-green);" id="userBalanceText">$0.00</span>
+      </div>
     </div>
 
     <!-- VIP Levels List Container -->
@@ -147,9 +153,11 @@
     function renderVipPage() {
       const userVip = currentUserObj.vip || "VIP0";
       const userBalance = parseFloat(currentUserObj.balance || 0);
+      const userTotalDeposit = parseFloat(currentUserObj.totalDeposit || 0);
 
       document.getElementById('headerVipText').innerText = userVip;
       document.getElementById('userBalanceText').innerText = '$' + userBalance.toFixed(2);
+      document.getElementById('userTotalDepositText').innerText = '$' + userTotalDeposit.toFixed(2);
 
       const container = document.getElementById('vipCardsContainer');
       container.innerHTML = '';
@@ -202,20 +210,20 @@
       });
     }
 
-    // Handle VIP Upgrade Request
+    // Handle VIP Upgrade Request (تم التعديل ليتم الخصم من totalDeposit)
     async function handleUpgrade(targetVipId, price) {
       if (!currentUserObj) return;
 
-      const currentBalance = parseFloat(currentUserObj.balance || 0);
+      const currentTotalDeposit = parseFloat(currentUserObj.totalDeposit || 0);
 
-      if (currentBalance < price) {
-        if (confirm(`رصيدك الحالي ($${currentBalance.toFixed(2)}) لا يكفي للترقية إلى ${targetVipId} ($${price}). هل ترغب بفتح صفحة الإيداع الآن؟`)) {
+      if (currentTotalDeposit < price) {
+        if (confirm(`إجمالي الإيداع لديك ($${currentTotalDeposit.toFixed(2)}) لا يكفي للترقية إلى ${targetVipId} ($${price}). هل ترغب بفتح صفحة الإيداع الآن؟`)) {
           window.location.href = 'deposit.html';
         }
         return;
       }
 
-      if (!confirm(`هل أنت تأكد من الترقية إلى مستوى ${targetVipId} مقابل خصم $${price} من رصيدك المتاح؟`)) {
+      if (!confirm(`هل أنت متأكد من الترقية إلى مستوى ${targetVipId} مقابل خصم $${price} من إجمالي الإيداع؟`)) {
         return;
       }
 
@@ -232,8 +240,8 @@
         if (userIndex !== -1) {
           const user = db.users[userIndex];
 
-          // Deduct Balance & Update VIP Level
-          user.balance = parseFloat(user.balance || 0) - parseFloat(price);
+          // Deduct from totalDeposit & Update VIP Level (الرصيد المتاح balance يبقى سليماً تماماً)
+          user.totalDeposit = parseFloat(user.totalDeposit || 0) - parseFloat(price);
           user.vip = targetVipId;
 
           if (!user.history) user.history = [];
@@ -254,7 +262,7 @@
           if (success) {
             currentUserObj = user;
             renderVipPage();
-            alert(`مبروك! تم ترقية حسابك بنجاح إلى مستوى ${targetVipId}. يمكنك الآن تنفيذ مهام أعلى ربحاً.`);
+            alert(`مبروك! تم ترقية حسابك بنجاح إلى مستوى ${targetVipId}. يمكنك الآن تنفيذ مهام أعلى ربحاً، وبقي رصيدك المتاح آمناً.`);
           } else {
             alert('حدث خطأ أثناء معالجة الترقية في السحابة، يرجى إعادة المحاولة.');
             renderVipPage();
