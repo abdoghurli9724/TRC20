@@ -5,18 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VirtualMall - التحويل الداخلي</title>
   <link rel="stylesheet" href="profile.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- مكتبة Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 
   <!-- Header Bar -->
   <header class="header-bar">
     <div class="brand-logo">
-      <i class="fa-solid fa-arrow-right-arrow-left" style="color: var(--accent-blue);"></i>
+      <i class="bi bi-arrow-left-right" style="color: var(--accent-blue);"></i>
       التحويل <span>الداخلي</span>
     </div>
     <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
     </a>
   </header>
 
@@ -34,7 +37,7 @@
     <!-- Transfer Form -->
     <form id="transferForm" class="card-box">
       <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-        <i class="fa-solid fa-paper-plane" style="color: var(--accent-blue); margin-left: 6px;"></i>تفاصيل تحويل الرصيد
+        <i class="bi bi-send-fill" style="color: var(--accent-blue); margin-left: 6px;"></i>تفاصيل تحويل الرصيد
       </h3>
 
       <!-- Receiver Username / Phone -->
@@ -66,19 +69,19 @@
   <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
       <span>الرئيسية</span>
     </a>
     <a href="tasks.html" class="nav-item">
-      <i class="fa-solid fa-list-check"></i>
+      <i class="bi bi-check2-square"></i>
       <span>المهام</span>
     </a>
     <a href="team.html" class="nav-item">
-      <i class="fa-solid fa-users"></i>
+      <i class="bi bi-people-fill"></i>
       <span>الفريق</span>
     </a>
     <a href="vip.html" class="nav-item">
-      <i class="fa-solid fa-crown"></i>
+      <i class="bi bi-award-fill"></i>
       <span>VIP</span>
     </a>
   </nav>
@@ -90,7 +93,6 @@
   <script>
     let currentUserObj = null;
 
-    // Verify Active Session and Load Balance
     window.addEventListener('DOMContentLoaded', async () => {
       const activeUsername = localStorage.getItem('currentUser');
       if (!activeUsername) {
@@ -112,7 +114,6 @@
       }
     });
 
-    // Alert Display Helper
     function showAlert(message, type) {
       const alertBox = document.getElementById('alertBox');
       alertBox.style.display = 'block';
@@ -128,7 +129,6 @@
       }
     }
 
-    // Submit Transfer Handler
     document.getElementById('transferForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -138,7 +138,6 @@
 
       const currentBalance = parseFloat(currentUserObj.balance || 0);
 
-      // Input Validation Rules
       if (!receiverUsername) {
         showAlert('يرجى تحديد حساب المستلم', 'error');
         return;
@@ -175,9 +174,7 @@
       try {
         const db = await getCloudDB();
 
-        // Sender Index
         const senderIndex = db.users.findIndex(u => u.username === currentUserObj.username);
-        // Receiver Index
         const receiverIndex = db.users.findIndex(u => u.username === receiverUsername);
 
         if (receiverIndex === -1) {
@@ -192,7 +189,6 @@
           const sender = db.users[senderIndex];
           const receiver = db.users[receiverIndex];
 
-          // Deduct from Sender & Add to Receiver
           sender.balance = parseFloat(sender.balance || 0) - amount;
           receiver.balance = parseFloat(receiver.balance || 0) + amount;
 
@@ -202,7 +198,6 @@
           const timestamp = new Date().toLocaleString('ar-EG');
           const txId = generateTransactionId();
 
-          // Add transaction to Sender history
           sender.history.unshift({
             id: txId,
             type: "transfer_out",
@@ -212,7 +207,6 @@
             date: timestamp
           });
 
-          // Add transaction to Receiver history
           receiver.history.unshift({
             id: txId,
             type: "transfer_in",
@@ -222,7 +216,6 @@
             date: timestamp
           });
 
-          // Sync Changes to JSONBin Cloud
           const success = await updateCloudDB(db);
 
           if (success) {
