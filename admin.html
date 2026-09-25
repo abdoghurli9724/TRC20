@@ -11,10 +11,11 @@
     table { width: 100%; border-collapse: collapse; text-align: right; font-size: 0.8rem; }
     th, td { padding: 10px 6px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
     th { color: var(--accent-gold); background: var(--bg-secondary); }
-    .action-btns { display: flex; gap: 4px; }
-    .btn-approve { background: var(--accent-green); color: #fff; padding: 5px 8px; font-size: 0.7rem; border-radius: 4px; border: none; cursor: pointer; }
-    .btn-reject { background: #ef4444; color: #fff; padding: 5px 8px; font-size: 0.7rem; border-radius: 4px; border: none; cursor: pointer; }
-    .btn-edit { background: #3b82f6; color: #fff; padding: 5px 8px; font-size: 0.7rem; border-radius: 4px; border: none; cursor: pointer; }
+    .action-btns { display: flex; gap: 6px; }
+    .btn-approve { background: var(--accent-green); color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-reject { background: #ef4444; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-balance { background: #3b82f6; color: #fff; padding: 6px 12px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-vip { background: #8b5cf6; color: #fff; padding: 6px 12px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
     .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
     .stat-card { background: var(--bg-secondary); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
     .stat-card h4 { font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px; }
@@ -22,14 +23,54 @@
     .user-card-item {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      padding: 10px;
+      padding: 12px;
       border-radius: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .user-info div { font-size: 0.8rem; margin-bottom: 2px; color: var(--text-primary); }
+    .user-info div { font-size: 0.85rem; margin-bottom: 3px; color: var(--text-primary); }
+
+    /* تصميم النافذة المنبثقة المخصصة (Modal) */
+    .custom-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+    .modal-content {
+      background: #1e293b;
+      border: 1px solid var(--border-color);
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 340px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .modal-content h3 { color: var(--accent-gold); font-size: 1rem; margin-bottom: 15px; }
+    .modal-content input, .modal-content select {
+      width: 100%;
+      padding: 10px;
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .modal-actions { display: flex; gap: 8px; justify-content: center; }
+    .modal-actions button { flex: 1; padding: 8px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
+    .btn-modal-cancel { background: #475569; color: #fff; }
+    .btn-modal-add { background: #10b981; color: #fff; }
+    .btn-modal-sub { background: #ef4444; color: #fff; }
+    .btn-modal-confirm { background: #8b5cf6; color: #fff; width: 100%; }
   </style>
 </head>
 <body>
@@ -106,8 +147,42 @@
     </div>
   </div>
 
+  <!-- نافذة تعديل الرصيد المخصصة -->
+  <div id="balanceModal" class="custom-modal">
+    <div class="modal-content">
+      <h3 id="balanceModalTitle">إدارة رصيد المستخدم</h3>
+      <input type="number" id="balanceInputAmount" placeholder="أدخل المبلغ (USDT)" step="any">
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeModals()">إلغاء</button>
+        <button class="btn-modal-sub" onclick="processBalance('sub')">إزالة</button>
+        <button class="btn-modal-add" onclick="processBalance('add')">إضافة</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة تعديل الـ VIP المخصصة -->
+  <div id="vipModal" class="custom-modal">
+    <div class="modal-content">
+      <h3 id="vipModalTitle">تغيير مستوى الـ VIP</h3>
+      <select id="vipSelectOption">
+        <option value="VIP0">VIP 0</option>
+        <option value="VIP1">VIP 1</option>
+        <option value="VIP2">VIP 2</option>
+        <option value="VIP3">VIP 3</option>
+        <option value="VIP4">VIP 4</option>
+        <option value="VIP5">VIP 5</option>
+      </select>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeModals()">إلغاء</button>
+        <button class="btn-modal-confirm" onclick="processVip()">تأكيد التغيير</button>
+      </div>
+    </div>
+  </div>
+
   <script src="db.js"></script>
   <script>
+    let activeUser = "";
+
     async function loadAdminData() {
       try {
         const db = await getCloudDB();
@@ -173,7 +248,7 @@
           });
         }
 
-        // عرض قائمة المستخدمين (تظهر الأسماء والأرصدة والمستويات مباشرة)
+        // عرض قائمة المستخدمين بأزرار تفاعلية أنيقة
         const usersContainer = document.getElementById("usersListContainer");
         usersContainer.innerHTML = "";
         if (usersList.length === 0) {
@@ -192,8 +267,8 @@
                   <div>المستوى: ${uvip}</div>
                 </div>
                 <div class="action-btns">
-                  <button class="btn-edit" onclick="modifyUserBalance('${uname}')">الرصيد</button>
-                  <button class="btn-approve" style="background:#8b5cf6;" onclick="modifyUserVip('${uname}')">VIP</button>
+                  <button class="btn-balance" onclick="openBalanceModal('${uname}')">الرصيد</button>
+                  <button class="btn-vip" onclick="openVipModal('${uname}', '${uvip}')">VIP</button>
                 </div>
               </div>
             `;
@@ -252,39 +327,66 @@
       loadAdminData();
     }
 
-    async function modifyUserBalance(username) {
-      const newBalanceStr = prompt(`أدخل الرصيد الجديد للمستخدم ${username}:`);
-      if (newBalanceStr === null) return;
-      const newBalance = parseFloat(newBalanceStr);
-      if (isNaN(newBalance)) {
-        alert("قيمة غير صالحة.");
+    // دوال النوافذ المنبثقة
+    function openBalanceModal(username) {
+      activeUser = username;
+      document.getElementById("balanceModalTitle").innerText = `إدارة رصيد: ${username}`;
+      document.getElementById("balanceInputAmount").value = "";
+      document.getElementById("balanceModal").style.display = "flex";
+    }
+
+    function openVipModal(username, currentVip) {
+      activeUser = username;
+      document.getElementById("vipModalTitle").innerText = `تغيير VIP لـ: ${username}`;
+      document.getElementById("vipSelectOption").value = currentVip || "VIP0";
+      document.getElementById("vipModal").style.display = "flex";
+    }
+
+    function closeModals() {
+      document.getElementById("balanceModal").style.display = "none";
+      document.getElementById("vipModal").style.display = "none";
+      activeUser = "";
+    }
+
+    async function processBalance(actionType) {
+      const amountVal = parseFloat(document.getElementById("balanceInputAmount").value);
+      if (isNaN(amountVal) || amountVal <= 0) {
+        alert("الرجاء إدخال مبلغ صحيح.");
         return;
       }
 
       const db = await getCloudDB();
       if (!db.users) return;
-      const userIndex = db.users.findIndex(u => u.username === username);
-      if (userIndex !== -1) {
-        db.users[userIndex].balance = newBalance;
-        await updateCloudDB(db);
-        alert("تم تحديث الرصيد وحفظه في JSONBin بنجاح!");
-        loadAdminData();
+      const userIndex = db.users.findIndex(u => u.username === activeUser);
+      if (userIndex === -1) return;
+
+      let currentBalance = Number(db.users[userIndex].balance || 0);
+      if (actionType === 'add') {
+        currentBalance += amountVal;
+      } else {
+        currentBalance -= amountVal;
+        if (currentBalance < 0) currentBalance = 0;
       }
+
+      db.users[userIndex].balance = Number(currentBalance.toFixed(2));
+      await updateCloudDB(db);
+      closeModals();
+      alert("تم تحديث الرصيد وحفظه بنجاح!");
+      loadAdminData();
     }
 
-    async function modifyUserVip(username) {
-      const newVip = prompt(`أدخل مستوى الـ VIP الجديد للمستخدم ${username} (مثال: VIP1, VIP2):`);
-      if (!newVip) return;
-
+    async function processVip() {
+      const selectedVip = document.getElementById("vipSelectOption").value;
       const db = await getCloudDB();
       if (!db.users) return;
-      const userIndex = db.users.findIndex(u => u.username === username);
-      if (userIndex !== -1) {
-        db.users[userIndex].vip = newVip.trim().toUpperCase();
-        await updateCloudDB(db);
-        alert("تم تحديث مستوى VIP وحفظه في JSONBin بنجاح!");
-        loadAdminData();
-      }
+      const userIndex = db.users.findIndex(u => u.username === activeUser);
+      if (userIndex === -1) return;
+
+      db.users[userIndex].vip = selectedVip;
+      await updateCloudDB(db);
+      closeModals();
+      alert(`تم تحديث مستوى الـ VIP إلى ${selectedVip} بنجاح!`);
+      loadAdminData();
     }
 
     loadAdminData();
