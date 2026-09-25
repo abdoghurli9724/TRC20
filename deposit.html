@@ -5,11 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>إيداع الأموال - VirtualMall</title>
   <link rel="stylesheet" href="profile.css">
+  <!-- خط Cairo -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- مكتبة Bootstrap Icons المجانية -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 
   <div class="header-bar">
-    <div class="brand-logo"><i class="fa-solid fa-wallet" style="color: var(--accent-gold);"></i> إيداع <span>الرصيد</span></div>
+    <div class="brand-logo"><i class="bi bi-wallet2" style="color: var(--accent-gold);"></i> إيداع <span>الرصيد</span></div>
     <div class="vip-badge" id="userVipBadge">جاري التحميل...</div>
   </div>
 
@@ -17,14 +21,21 @@
     <div class="card-box">
       <h3 style="margin-bottom: 12px; font-size: 1rem; color: var(--accent-gold);">تعليمات الإيداع عبر TRC20</h3>
       <p style="font-size: 0.850rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
-        قم بتحويل المبلغ المطلوب إلى عنوان المحفظة أدناه، ثم أدخل رقم المعاملة (TXID) أو قم برفع صورة إثبات التحويل لتأكيد الطلب.
+        قم بتحويل المبلغ المطلوب إلى عنوان المحفظة أدناه أو مسح الرمز، ثم أدخل رقم المعاملة (TXID) لتأكيد الطلب.
       </p>
+
+      <!-- قسم عرض باركود المحفظة (QR Code) -->
+      <div style="text-align: center; margin-bottom: 16px;">
+        <div style="background: #fff; padding: 10px; display: inline-block; border-radius: 12px;">
+          <img id="qrCodeImg" src="" alt="Wallet QR Code" style="width: 130px; height: 130px; display: block;">
+        </div>
+      </div>
 
       <div class="form-group" style="margin-bottom: 16px;">
         <label class="form-label">عنوان محفظة الإيداع (USDT - TRC20)</label>
         <div style="display: flex; gap: 8px;">
           <input type="text" id="walletAddress" class="form-input" value="TXYZ999MockWalletAddressForDemoTrc20..." readonly>
-          <button type="button" onclick="copyWallet()" style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--accent-gold);"><i class="fa-solid fa-copy"></i></button>
+          <button type="button" onclick="copyWallet()" style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--accent-gold); padding: 0 12px; border-radius: 8px; cursor: pointer;"><i class="bi bi-clipboard"></i></button>
         </div>
       </div>
 
@@ -42,12 +53,12 @@
     </div>
   </div>
 
-  <!-- القائمة السفلية -->
+  <!-- القائمة السفلية باستخدام Bootstrap Icons -->
   <div class="bottom-nav">
-    <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
-    <a href="tasks.html" class="nav-item"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
-    <a href="team.html" class="nav-item"><i class="fa-solid fa-users"></i><span>الفريق</span></a>
-    <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
+    <a href="index.html" class="nav-item"><i class="bi bi-house-door"></i><span>الرئيسية</span></a>
+    <a href="tasks.html" class="nav-item"><i class="bi bi-list-check"></i><span>المهام</span></a>
+    <a href="team.html" class="nav-item"><i class="bi bi-people"></i><span>الفريق</span></a>
+    <a href="profile.html" class="nav-item"><i class="bi bi-person"></i><span>حسابي</span></a>
   </div>
 
   <script src="db.js"></script>
@@ -58,7 +69,12 @@
         window.location.href = "login.html";
         return;
       }
-      document.getElementById("userVipBadge").innerHTML = `<i class="fa-solid fa-crown"></i> ${user.vip || 'VIP0'}`;
+      document.getElementById("userVipBadge").innerHTML = `<i class="bi bi-award"></i> ${user.vip || 'VIP0'}`;
+      
+      // جلب عنوان المحفظة وتوليد الـ QR Code الخاص به تلقائياً
+      const walletVal = document.getElementById("walletAddress").value;
+      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(walletVal)}`;
+      document.getElementById("qrCodeImg").src = qrApiUrl;
     }
 
     function copyWallet() {
@@ -94,11 +110,9 @@
         date: new Date().toLocaleString('ar-EG')
       };
 
-      // إضافة الطلب إلى قائمة الإيداعات العامة في السحابة
       if (!db.depositRequests) db.depositRequests = [];
       db.depositRequests.push(requestObj);
 
-      // إضافة العملية إلى سجل المستخدم المؤقت بانتظار الموافقة
       if (!user.history) user.history = [];
       user.history.unshift({
         id: requestObj.id,
@@ -119,7 +133,7 @@
         alert("تم إرسال طلب الإيداع بنجاح، سيتم مراجعته وتحديث رصيدك قريباً.");
         window.location.href = "profile.html";
       } else {
-        alert("حدث خطأ أثناء الاتصال بالسحابة، يمحى المحاولة لاحقاً.");
+        alert("حدث خطأ أثناء الاتصال بالسحابة، يرجى المحاولة لاحقاً.");
       }
     }
 
