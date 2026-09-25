@@ -1,43 +1,225 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سحب - VirtualMall</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/profile.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VirtualMall - سحب الأرباح</title>
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<div class="app-container">
-    <div class="top-bar">
-        <a href="profile.html" style="color: #0f172a; text-decoration: none; font-size: 20px;"><i class="fa-solid fa-arrow-right"></i></a>
-        <span class="brand-title">سحب الأرباح</span>
-        <div></div>
+
+  <!-- Header Bar -->
+  <header class="header-bar">
+    <div class="brand-logo">
+      <i class="fa-solid fa-hand-holding-dollar" style="color: var(--accent-gold);"></i>
+      سحب <span>الأرباح</span>
+    </div>
+    <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
+      <i class="fa-solid fa-house"></i>
+    </a>
+  </header>
+
+  <main style="max-width: 500px; margin: 20px auto 80px auto; padding: 0 16px;">
+
+    <!-- Balance Summary Card -->
+    <div class="balance-card" style="margin-bottom: 20px;">
+      <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">الرصيد المتاح للسحب</div>
+      <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-green);" id="displayAvailableBalance">$0.00</div>
     </div>
 
-    <form onsubmit="submitWithdraw(event)" class="user-card">
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-size: 13px; color: #475569; margin-bottom: 5px;">المبلغ المراد سحبه (USDT)</label>
-            <input type="number" step="0.01" placeholder="أقل مبلغ للسحب 1.00" required style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; outline: none;">
-        </div>
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-size: 13px; color: #475569; margin-bottom: 5px;">عنوان محفظتك (USDT TRC20)</label>
-            <input type="text" placeholder="أدخل عنوان المحفظة" required style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; outline: none;">
-        </div>
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-size: 13px; color: #475569; margin-bottom: 5px;">كلمة مرور السحب</label>
-            <input type="password" placeholder="أدخل كلمة المرور" required style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; outline: none;">
-        </div>
-        <button type="submit" style="background: #d1c4e9; color: #4a148c; border: none; padding: 12px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold;">تاكيد طلب السحب</button>
-    </form>
-</div>
+    <!-- Notice Box -->
+    <div style="background-color: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-gold); padding: 12px; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-primary); margin-bottom: 20px;">
+      <i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-gold); margin-left: 6px;"></i>
+      تنبيه: الحد الأدنى للسحب هو <strong>$2.00</strong>. يتم معالجة طلبات السحب فوراً وتصلك خلال فترة من 5 دقائق إلى 24 ساعة.
+    </div>
 
-<script>
-function submitWithdraw(e) {
-    e.preventDefault();
-    alert('تم تقديم طلب السحب بنجاح، سيتم معالجة الطلب خلال دقائق.');
-    window.location.href = 'profile.html';
-}
-</script>
+    <!-- Alert Box -->
+    <div id="alertBox" style="display: none; padding: 12px; border-radius: var(--radius-md); margin-bottom: 16px; font-size: 0.85rem; text-align: center;"></div>
+
+    <!-- Withdraw Form -->
+    <form id="withdrawForm" class="card-box">
+      <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+        <i class="fa-solid fa-money-bill-transfer" style="color: var(--accent-gold); margin-left: 6px;"></i>بيانات طلب السحب
+      </h3>
+
+      <div class="form-group">
+        <label class="form-label" for="withdrawAmount">المبلغ المراد سحبه (USD / USDT):</label>
+        <input type="number" id="withdrawAmount" class="form-input" min="2" step="any" placeholder="أدخل المبلغ (الحد الأدنى $2)" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="withdrawAddress">عنوان محفظتك (USDT - TRC20):</label>
+        <input type="text" id="withdrawAddress" class="form-input" placeholder="أدخل عنوان محفظة TRC20 الخاص بك" style="direction: ltr; text-align: left;" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="securityPassword">كلمة مرور الحساب للتأكيد:</label>
+        <input type="password" id="securityPassword" class="form-input" placeholder="أدخل كلمة المرور لتأكيد الطلب" required>
+      </div>
+
+      <button type="submit" id="submitBtn" class="submit-btn" style="background-color: var(--accent-gold);">
+        <span id="btnText">تأكيد إرسال طلب السحب</span>
+        <span id="btnSpinner" class="spinner" style="display: none;"></span>
+      </button>
+    </form>
+
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <i class="fa-solid fa-house"></i>
+      <span>الرئيسية</span>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <i class="fa-solid fa-list-check"></i>
+      <span>المهام</span>
+    </a>
+    <a href="team.html" class="nav-item">
+      <i class="fa-solid fa-users"></i>
+      <span>الفريق</span>
+    </a>
+    <a href="vip.html" class="nav-item">
+      <i class="fa-solid fa-crown"></i>
+      <span>VIP</span>
+    </a>
+  </nav>
+
+  <!-- Database Script -->
+  <script src="db.js"></script>
+
+  <!-- Withdraw Logic Script -->
+  <script>
+    let currentUserObj = null;
+
+    // Load User Data
+    window.addEventListener('DOMContentLoaded', async () => {
+      const activeUsername = localStorage.getItem('currentUser');
+      if (!activeUsername) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      try {
+        currentUserObj = await getCurrentUser();
+        if (!currentUserObj) {
+          logoutUser();
+          return;
+        }
+
+        document.getElementById('displayAvailableBalance').innerText = '$' + parseFloat(currentUserObj.balance || 0).toFixed(2);
+
+      } catch (error) {
+        console.error('Error loading withdraw page:', error);
+      }
+    });
+
+    // Alert Helper
+    function showAlert(message, type) {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.style.display = 'block';
+      alertBox.innerText = message;
+      if (type === 'error') {
+        alertBox.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
+        alertBox.style.color = 'var(--accent-red)';
+        alertBox.style.border = '1px solid var(--accent-red)';
+      } else {
+        alertBox.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+        alertBox.style.color = 'var(--accent-green)';
+        alertBox.style.border = '1px solid var(--accent-green)';
+      }
+    }
+
+    // Submit Withdrawal Request
+    document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const amount = parseFloat(document.getElementById('withdrawAmount').value);
+      const address = document.getElementById('withdrawAddress').value.trim();
+      const password = document.getElementById('securityPassword').value;
+
+      const currentBalance = parseFloat(currentUserObj.balance || 0);
+
+      // Input Validations
+      if (isNaN(amount) || amount < 2) {
+        showAlert('الحد الأدنى للسحب هو $2.00', 'error');
+        return;
+      }
+
+      if (amount > currentBalance) {
+        showAlert(`رصيدك المتاح ($${currentBalance.toFixed(2)}) لا يكفي لإتمام هذا السحب`, 'error');
+        return;
+      }
+
+      if (!address || address.length < 15) {
+        showAlert('يرجى كتابة عنوان محفظة TRC20 صحيح', 'error');
+        return;
+      }
+
+      if (password !== currentUserObj.password) {
+        showAlert('كلمة المرور غير صحيحة', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+
+      submitBtn.disabled = true;
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline-block';
+
+      try {
+        const db = await getCloudDB();
+        const userIndex = db.users.findIndex(u => u.username === currentUserObj.username);
+
+        if (userIndex !== -1) {
+          const user = db.users[userIndex];
+
+          // Deduct Amount Instantly
+          user.balance = parseFloat(user.balance || 0) - amount;
+
+          if (!user.history) user.history = [];
+
+          // Record withdrawal transaction
+          user.history.unshift({
+            id: generateTransactionId(),
+            type: "withdraw",
+            title: "طلب سحب أرباح (USDT-TRC20)",
+            amount: -amount,
+            address: address,
+            status: "pending",
+            date: new Date().toLocaleString('ar-EG')
+          });
+
+          // Sync with Cloud Database
+          const success = await updateCloudDB(db);
+
+          if (success) {
+            currentUserObj = user;
+            document.getElementById('displayAvailableBalance').innerText = '$' + user.balance.toFixed(2);
+            showAlert('تم تقديم طلب السحب بنجاح! سيتم تحويل المبلغ لعنوان محفظتك فوراً.', 'success');
+            document.getElementById('withdrawForm').reset();
+            
+            setTimeout(() => {
+              window.location.href = 'records.html';
+            }, 2000);
+          } else {
+            showAlert('حدث خطأ أثناء الاتصال بالسحابة، حاول ثانية.', 'error');
+            submitBtn.disabled = false;
+            btnText.style.display = 'inline';
+            btnSpinner.style.display = 'none';
+          }
+        }
+      } catch (error) {
+        console.error('Withdraw Error:', error);
+        showAlert('فشل الاتصال بالسيرفر، يرجى المحاولة لاحقاً', 'error');
+        submitBtn.disabled = false;
+        btnText.style.display = 'inline';
+        btnSpinner.style.display = 'none';
+      }
+    });
+  </script>
 </body>
 </html>
