@@ -21,13 +21,14 @@
     .btn-edit-user { background: #f59e0b; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
     .btn-delete-user { background: #991b1b; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
     .btn-global-wallet { background: #10b981; color: #fff; padding: 8px 14px; font-size: 0.8rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-add-package { background: var(--accent-gold); color: #0f172a; padding: 8px 14px; font-size: 0.8rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
     .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
     .stat-card { background: var(--bg-secondary); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
     .stat-card h4 { font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px; }
     .stat-card p { font-size: 1rem; color: var(--accent-gold); font-weight: bold; }
     
-    .user-card-item {
+    .user-card-item, .package-card-item {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       padding: 12px;
@@ -39,7 +40,7 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-    .user-info div { font-size: 0.85rem; margin-bottom: 3px; color: var(--text-primary); }
+    .user-info div, .package-info div { font-size: 0.82rem; margin-bottom: 3px; color: var(--text-primary); }
 
     /* تصميم النافذة المنبثقة المخصصة (Modal) */
     .custom-modal {
@@ -58,7 +59,7 @@
       padding: 20px;
       border-radius: 12px;
       width: 100%;
-      max-width: 360px;
+      max-width: 380px;
       text-align: center;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
       max-height: 90vh;
@@ -72,7 +73,7 @@
       border: 1px solid var(--border-color);
       color: #fff;
       border-radius: 6px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       font-size: 0.9rem;
       text-align: center;
     }
@@ -83,7 +84,7 @@
     .btn-modal-sub { background: #ef4444; color: #fff; }
     .btn-modal-confirm { background: #8b5cf6; color: #fff; width: 100%; }
 
-    /* تصميم الإشعارات العائمة الاحترافية (Toast Notifications) */
+    /* تصميم الإشعارات العائمة الاحترافية */
     #toastContainer {
       position: fixed;
       bottom: 20px;
@@ -161,6 +162,17 @@
       </div>
     </div>
 
+    <!-- قسم إدارة الباقات وأسعار VIP -->
+    <div class="card-box admin-section">
+      <h3 style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px;">إدارة باقات الـ VIP والأرباح</h3>
+      <button class="btn-add-package" onclick="openPackageModal('add')">
+        <i class="fa-solid fa-plus-circle"></i> إضافة باقة VIP جديدة
+      </button>
+      <div id="packagesListContainer" style="margin-top: 10px;">
+        <div style="text-align: center; color: var(--text-secondary);">جاري جلب الباقات...</div>
+      </div>
+    </div>
+
     <!-- قسم طلبات الإيداع -->
     <div class="card-box admin-section">
       <h3 style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px;">طلبات الإيداع المعلقة</h3>
@@ -206,6 +218,36 @@
       <h3 style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px;">إدارة أرصدة ومستويات المستخدمين</h3>
       <div id="usersListContainer">
         <div style="text-align: center; color: var(--text-secondary);">جاري جلب المستخدمين...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة إضافة/تعديل باقة VIP -->
+  <div id="packageModal" class="custom-modal">
+    <div class="modal-content">
+      <h3 id="packageModalTitle">إضافة باقة جديدة</h3>
+      
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 2px;">اسم الباقة (مثال: VIP1 الاحترافية):</label>
+      <input type="text" id="pkgName" placeholder="اسم الباقة">
+
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 2px;">سعر الباقة (سعر الترقية بالدولار):</label>
+      <input type="number" id="pkgPrice" placeholder="0" step="any">
+
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 2px;">عدد المهام اليومية:</label>
+      <input type="number" id="pkgTasks" placeholder="0">
+
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 2px;">ربح المهمة الواحدة ($):</label>
+      <input type="number" id="pkgTaskProfit" placeholder="0" step="any">
+
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 2px;">الإيراد اليومي ($):</label>
+      <input type="number" id="pkgDailyIncome" placeholder="0" step="any">
+
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 2px;">الإيراد الشهري ($):</label>
+      <input type="number" id="pkgMonthlyIncome" placeholder="0" step="any">
+
+      <div class="modal-actions" style="margin-top: 10px;">
+        <button class="btn-modal-cancel" onclick="closeModals()">إلغاء</button>
+        <button class="btn-modal-confirm" onclick="processSavePackage()">حفظ الباقة</button>
       </div>
     </div>
   </div>
@@ -259,16 +301,13 @@
     </div>
   </div>
 
-  <!-- نافذة التعديل الشامل لبيانات المستخدم الفردي -->
+  <!-- نافذة التعديل الشامل لبيانات المستخدم الفردي (بدون محفظة) -->
   <div id="editUserModal" class="custom-modal">
     <div class="modal-content">
       <h3 id="editUserModalTitle">تعديل بيانات المستخدم</h3>
       
       <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 4px;">كلمة المرور الجديدة:</label>
       <input type="text" id="editUserPassword" placeholder="اتركه فارغاً لعدم التغيير">
-
-      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 4px;">محفظة السحب للمستخدم:</label>
-      <input type="text" id="editUserWallet" placeholder="عنوان محفظة السحب">
 
       <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 4px;">حالة الحساب:</label>
       <select id="editUserStatus">
@@ -286,6 +325,7 @@
   <script src="db.js"></script>
   <script>
     let activeUser = "";
+    let editingPackageIndex = -1;
 
     function showToast(message, type = 'success') {
       const container = document.getElementById("toastContainer");
@@ -307,13 +347,39 @@
     async function loadAdminData() {
       try {
         const db = await getCloudDB();
-        if (!db) {
-          return;
-        }
+        if (!db) return;
 
         // عرض محفظة الإيداع الحالية للمنصة
         const currentDepositWallet = db.depositWallet || "...TXYZ999MockWalletA";
         document.getElementById("currentDepositWalletDisplay").innerText = currentDepositWallet;
+
+        // جلب وعرض الباقات
+        const packagesContainer = document.getElementById("packagesListContainer");
+        packagesContainer.innerHTML = "";
+        const packagesList = db.vipPackages || [
+          { name: "عضوية VIP0 (تجريبي)", price: 0, tasks: 2, taskProfit: 0.25, dailyIncome: 0.50, monthlyIncome: 15.00 },
+          { name: "عضوية VIP1 الاحترافية", price: 20, tasks: 6, taskProfit: 3.50, dailyIncome: 21.00, monthlyIncome: 630.00 }
+        ];
+
+        if (packagesList.length === 0) {
+          packagesContainer.innerHTML = `<div style="text-align: center; color: var(--text-secondary);">لا توجد باقات مضافة حالياً</div>`;
+        } else {
+          packagesList.forEach((pkg, index) => {
+            packagesContainer.innerHTML += `
+              <div class="package-card-item">
+                <div class="package-info">
+                  <div style="color: var(--accent-gold); font-weight: bold;">💎 ${pkg.name || 'باقة'}</div>
+                  <div>السعر: <span style="color: #3b82f6;">$${pkg.price || 0}</span> | المهام اليومية: <span style="color: #10b981;">${pkg.tasks || 0}</span> | ربح المهمة: <span style="color: #10b981;">$${pkg.taskProfit || 0}</span></div>
+                  <div>الإيراد اليومي: <span style="color: #10b981;">$${pkg.dailyIncome || 0}</span> | الشهري: <span style="color: #10b981;">$${pkg.monthlyIncome || 0}</span></div>
+                </div>
+                <div class="action-btns">
+                  <button class="btn-edit-user" onclick="openPackageModal('edit', ${index})">تعديل</button>
+                  <button class="btn-delete-user" onclick="deletePackage(${index})">حذف</button>
+                </div>
+              </div>
+            `;
+          });
+        }
 
         const usersList = db.users || [];
         const depositReqs = db.depositRequests || [];
@@ -384,14 +450,13 @@
             const udbal = Number(u.depositBalance || 0).toFixed(2);
             const uvip = u.vip || 'VIP0';
             const ustatus = u.status === 'suspended' ? '<span style="color:#ef4444;">(مجمّد)</span>' : '<span style="color:#10b981;">(نشط)</span>';
-            const uwallet = u.walletAddress || u.wallet || 'غير محددة';
             
             usersContainer.innerHTML += `
               <div class="user-card-item">
                 <div class="user-info">
                   <div style="color: var(--accent-gold); font-weight: bold;">👤 ${uname} ${ustatus}</div>
                   <div>الرصيد: <span style="color: #10b981;">${ubal} USDT</span> | الإيداع: <span style="color: #3b82f6;">${udbal}</span></div>
-                  <div>المستوى: ${uvip} | المحفظة: <span style="font-family: monospace; font-size: 0.75rem;">${uwallet}</span></div>
+                  <div>المستوى: ${uvip}</div>
                 </div>
                 <div class="action-btns">
                   <button class="btn-balance" onclick="openBalanceModal('${uname}')">الرصيد</button>
@@ -462,6 +527,79 @@
       document.getElementById("depositWalletModal").style.display = "flex";
     }
 
+    async function openPackageModal(mode, index = -1) {
+      editingPackageIndex = index;
+      const db = await getCloudDB();
+      const packagesList = db.vipPackages || [];
+
+      if (mode === 'edit' && index !== -1 && packagesList[index]) {
+        const pkg = packagesList[index];
+        document.getElementById("packageModalTitle").innerText = "تعديل بيانات الباقة";
+        document.getElementById("pkgName").value = pkg.name || "";
+        document.getElementById("pkgPrice").value = pkg.price || 0;
+        document.getElementById("pkgTasks").value = pkg.tasks || 0;
+        document.getElementById("pkgTaskProfit").value = pkg.taskProfit || 0;
+        document.getElementById("pkgDailyIncome").value = pkg.dailyIncome || 0;
+        document.getElementById("pkgMonthlyIncome").value = pkg.monthlyIncome || 0;
+      } else {
+        document.getElementById("packageModalTitle").innerText = "إضافة باقة VIP جديدة";
+        document.getElementById("pkgName").value = "";
+        document.getElementById("pkgPrice").value = "";
+        document.getElementById("pkgTasks").value = "";
+        document.getElementById("pkgTaskProfit").value = "";
+        document.getElementById("pkgDailyIncome").value = "";
+        document.getElementById("pkgMonthlyIncome").value = "";
+      }
+      document.getElementById("packageModal").style.display = "flex";
+    }
+
+    async function processSavePackage() {
+      const name = document.getElementById("pkgName").value.trim();
+      const price = parseFloat(document.getElementById("pkgPrice").value);
+      const tasks = parseInt(document.getElementById("pkgTasks").value);
+      const taskProfit = parseFloat(document.getElementById("pkgTaskProfit").value);
+      const dailyIncome = parseFloat(document.getElementById("pkgDailyIncome").value);
+      const monthlyIncome = parseFloat(document.getElementById("pkgMonthlyIncome").value);
+
+      if (!name || isNaN(price) || isNaN(tasks)) {
+        showToast("الرجاء إدخال الحقول الأساسية بشكل صحيح", "error");
+        return;
+      }
+
+      const db = await getCloudDB();
+      if (!db.vipPackages) {
+        db.vipPackages = [
+          { name: "عضوية VIP0 (تجريبي)", price: 0, tasks: 2, taskProfit: 0.25, dailyIncome: 0.50, monthlyIncome: 15.00 },
+          { name: "عضوية VIP1 الاحترافية", price: 20, tasks: 6, taskProfit: 3.50, dailyIncome: 21.00, monthlyIncome: 630.00 }
+        ];
+      }
+
+      const packageData = { name, price, tasks, taskProfit, dailyIncome, monthlyIncome };
+
+      if (editingPackageIndex !== -1 && db.vipPackages[editingPackageIndex]) {
+        db.vipPackages[editingPackageIndex] = packageData;
+        showToast("تم تحديث الباقة بنجاح", "success");
+      } else {
+        db.vipPackages.push(packageData);
+        showToast("تمت إضافة الباقة الجديدة بنجاح", "success");
+      }
+
+      await updateCloudDB(db);
+      closeModals();
+      loadAdminData();
+    }
+
+    async function deletePackage(index) {
+      if (!confirm("هل أنت متأكد من حذف هذه الباقة نهائياً؟")) return;
+      const db = await getCloudDB();
+      if (!db.vipPackages) return;
+
+      db.vipPackages.splice(index, 1);
+      await updateCloudDB(db);
+      showToast("تم حذف الباقة بنجاح", "success");
+      loadAdminData();
+    }
+
     function openBalanceModal(username) {
       activeUser = username;
       document.getElementById("balanceModalTitle").innerText = `إدارة رصيد: ${username}`;
@@ -484,17 +622,18 @@
       
       document.getElementById("editUserModalTitle").innerText = `تعديل بيانات: ${username}`;
       document.getElementById("editUserPassword").value = "";
-      document.getElementById("editUserWallet").value = user && (user.walletAddress || user.wallet) ? (user.walletAddress || user.wallet) : "";
       document.getElementById("editUserStatus").value = user && user.status ? user.status : "active";
       document.getElementById("editUserModal").style.display = "flex";
     }
 
     function closeModals() {
       document.getElementById("depositWalletModal").style.display = "none";
+      document.getElementById("packageModal").style.display = "none";
       document.getElementById("balanceModal").style.display = "none";
       document.getElementById("vipModal").style.display = "none";
       document.getElementById("editUserModal").style.display = "none";
       activeUser = "";
+      editingPackageIndex = -1;
     }
 
     async function processUpdateDepositWallet() {
@@ -560,7 +699,6 @@
 
     async function processEditUser() {
       const newPassword = document.getElementById("editUserPassword").value.trim();
-      const newWallet = document.getElementById("editUserWallet").value.trim();
       const newStatus = document.getElementById("editUserStatus").value;
 
       const db = await getCloudDB();
@@ -571,13 +709,11 @@
       if (newPassword !== "") {
         db.users[userIndex].password = newPassword;
       }
-      db.users[userIndex].walletAddress = newWallet;
-      db.users[userIndex].wallet = newWallet;
       db.users[userIndex].status = newStatus;
 
       await updateCloudDB(db);
       closeModals();
-      showToast("تم تحديث بيانات المحفظة والحساب بنجاح", "success");
+      showToast("تم تحديث بيانات الحساب بنجاح", "success");
       loadAdminData();
     }
 
