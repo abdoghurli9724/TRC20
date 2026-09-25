@@ -3,65 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VirtualMall - الرئيسية</title>
-  <link rel="stylesheet" href="profile.css">
+  <title>VirtualMall - الصفحة الرئيسية</title>
+  <!-- ربط خط كيرو العربي ومكتبة الأيقونات الحديثة وملف التصميم الموحد -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="profile.css">
 </head>
 <body>
 
   <!-- Header Bar -->
-  <header class="header-bar">
-    <div class="brand-logo">
+  <header class="app-header">
+    <div class="logo-area">
       <i class="fa-solid fa-store" style="color: var(--accent-blue);"></i>
-      Virtual <span>Mall</span>
+      Virtual<span>Mall</span>
     </div>
-    <div class="vip-badge" id="vipHeaderBadge">
-      <i class="fa-solid fa-crown"></i>
-      <span id="userVipText">VIP0</span>
+    <div class="cart-icon-btn" onclick="window.location.href='tasks.html'" style="cursor: pointer; font-size: 1.2rem; color: var(--text-main);">
+      <i class="fa-solid fa-cart-shopping"></i>
     </div>
   </header>
 
-  <!-- Scrolling Ticker Notifications Bar -->
-  <div class="ticker-container">
+  <!-- Ticker Bar -->
+  <div class="ticker-bar">
     <i class="fa-solid fa-bullhorn"></i>
-    <div class="ticker-content" id="tickerContent">
-      <!-- Dynamic Ticker Items injected via JS -->
+    <span>قام المستخدم 09***432 بسحب $150.00 بنجاح ... قام المستخدم 08***911 بسحب $45.50 بنجاح ... مرحباً بك في منصة VirtualMall الرسمية!</span>
+  </div>
+
+  <div class="container">
+    <!-- Main Balance Card (Glassmorphism) -->
+    <div class="glass-card" style="text-align: center; position: relative; overflow: hidden;">
+      
+      <!-- User Info & VIP Badge Row -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;">
+        <div id="displayUsername" style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.95rem;">
+          <i class="fa-solid fa-user-circle" style="color: var(--accent-blue); font-size: 1.2rem;"></i>
+          <span id="usernameText">جاري التحميل...</span>
+        </div>
+        <div id="displayVipRank" style="background: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px;">
+          <i class="fa-solid fa-crown"></i>
+          <span id="vipRankText">VIP0</span>
+        </div>
+      </div>
+
+      <!-- Balances Grid -->
+      <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 4px;">الرصيد المتاح</p>
+      <h1 id="availableBalanceVal" style="font-size: 2.2rem; font-weight: 900; color: var(--accent-gold); margin-bottom: 16px;">$0.00</h1>
+      
+      <div style="display: flex; justify-content: center; gap: 20px; background: var(--bg-secondary); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); margin-bottom: 16px;">
+        <div>
+          <span style="font-size: 0.7rem; color: var(--text-muted); display: block;">إجمالي الإيداع</span>
+          <span id="totalDepositVal" style="font-size: 0.9rem; font-weight: 700; color: var(--text-main);">$0.00</span>
+        </div>
+      </div>
+
+      <!-- Quick Actions Grid -->
+      <div class="actions-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+        <a href="deposit.html" class="action-btn">
+          <i class="fa-solid fa-wallet"></i>
+          <span>إيداع</span>
+        </a>
+        <a href="withdraw.html" class="action-btn">
+          <i class="fa-solid fa-hand-holding-dollar"></i>
+          <span>سحب</span>
+        </a>
+        <a href="account.html" class="action-btn">
+          <i class="fa-solid fa-sliders"></i>
+          <span>حسابي</span>
+        </a>
+        <a href="records.html" class="action-btn">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>سجلات</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Logout Strip -->
+    <div style="margin-top: 20px;">
+      <button id="logoutBtn" style="width: 100%; padding: 12px; background-color: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; border-radius: var(--radius-md); font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; transition: var(--transition);">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        تسجيل الخروج من الحساب
+      </button>
     </div>
   </div>
 
-  <!-- User Balance & Overview Card -->
-  <div style="margin: 20px; background: var(--bg-card); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
-    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">الرصيد المتاح حالياً</div>
-    <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-green); margin-bottom: 16px;" id="userBalanceText">$0.00</div>
-    
-    <!-- Quick Actions Grid (Fixed Layout & Non-clipped text) -->
-    <div class="quick-actions-grid">
-      <a href="deposit.html" class="action-btn">
-        <i class="fa-solid fa-wallet"></i>
-        <span>إيداع</span>
-      </a>
-      <a href="withdraw.html" class="action-btn">
-        <i class="fa-solid fa-money-bill-transfer"></i>
-        <span>سحب</span>
-      </a>
-      <a href="profile.html" class="action-btn">
-        <i class="fa-solid fa-user-gear"></i>
-        <span>حسابي</span>
-      </a>
-      <a href="records.html" class="action-btn">
-        <i class="fa-solid fa-clock-rotate-left"></i>
-        <span>سجلات</span>
-      </a>
-    </div>
-  </div>
+  <!-- Floating Telegram Support Button -->
+  <a href="https://t.me" target="_blank" class="floating-support-btn" title="الدعم الفني" style="position: fixed; bottom: 90px; left: 20px; background: var(--accent-blue); color: #fff; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 99;">
+    <i class="fa-solid fa-paper-plane"></i>
+  </a>
 
-  <!-- Announcement / Banner Section -->
-  <div style="margin: 0 20px 20px 20px; background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(245,158,11,0.1)); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; text-align: center;">
-    <div style="font-weight: 700; font-size: 1rem; margin-bottom: 6px; color: var(--accent-gold);">منصة التقييم الذكي للمنتجات</div>
-    <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">قم بترقية مستواك الآن لزيادة مهامك اليومية ومضاعفة أرباحك السحب الفوري على مدار الساعة.</div>
-  </div>
-
-  <!-- Bottom Navigation Bar -->
+  <!-- Floating Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item active">
       <i class="fa-solid fa-house"></i>
@@ -81,91 +110,43 @@
     </a>
   </nav>
 
-  <!-- Custom Modal HTML Structure -->
-  <div id="customModal" class="custom-modal-overlay">
-    <div class="custom-modal-box">
-      <div class="custom-modal-icon">
-        <i class="fa-solid fa-circle-exclamation"></i>
-      </div>
-      <div class="custom-modal-message" id="modalMessageText">نص الرسالة هنا</div>
-      <div class="custom-modal-buttons" id="modalButtonsContainer">
-        <button class="custom-modal-btn primary" id="modalOkBtn">موافق</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Database Script -->
   <script src="db.js"></script>
 
-  <!-- Index Logic Script -->
+  <!-- Dashboard Controller Script -->
   <script>
-    // Custom Modal Alert Function
-    function showCustomAlert(message, callback) {
-      const modal = document.getElementById('customModal');
-      document.getElementById('modalMessageText').innerText = message;
-      document.getElementById('modalButtonsContainer').innerHTML = '<button class="custom-modal-btn primary" id="modalOkBtn">موافق</button>';
-      modal.classList.add('active');
-      
-      document.getElementById('modalOkBtn').onclick = function() {
-        modal.classList.remove('active');
-        if (typeof callback === 'function') callback();
-      };
-    }
-
-    // Dynamic Fake Ticker Notifications Data
-    const tickerMessages = [
-      "قام المستخدم (***4921) بسحب مبلغ $150.00 بنجاح",
-      "قام المستخدم (***8812) بإيداع مبلغ $50.00 بنجاح",
-      "تم ترقية حساب المستخدم (***3319) إلى مستوى VIP2 بنجاح",
-      "قام المستخدم (***7024) بسحب مبلغ $320.50 بنجاح",
-      "قام المستخدم (***1105) بإيداع مبلغ $100.00 بنجاح",
-      "حصل المستخدم (***5542) على عمولة تقييم جديدة بقيمة $8.00"
-    ];
-
-    let currentTickerIndex = 0;
-
-    function initTicker() {
-      const tickerContainer = document.getElementById('tickerContent');
-      if (!tickerContainer) return;
-
-      // Render items
-      tickerContainer.innerHTML = '';
-      tickerMessages.forEach((msg, idx) => {
-        const div = document.createElement('div');
-        div.className = `ticker-item ${idx === 0 ? 'active' : ''}`;
-        div.innerText = msg;
-        tickerContainer.appendChild(div);
-      });
-
-      // Rotate every 3.5 seconds
-      setInterval(() => {
-        const items = tickerContainer.querySelectorAll('.ticker-item');
-        if (items.length === 0) return;
-        
-        items[currentTickerIndex].classList.remove('active');
-        currentTickerIndex = (currentTickerIndex + 1) % items.length;
-        items[currentTickerIndex].classList.add('active');
-      }, 3500);
-    }
-
-    // Load User Data on Startup
     window.addEventListener('DOMContentLoaded', async () => {
       const activeUsername = localStorage.getItem('currentUser');
+      
       if (!activeUsername) {
         window.location.href = 'login.html';
         return;
       }
 
-      initTicker();
-
       try {
         const user = await getCurrentUser();
-        if (user) {
-          document.getElementById('userBalanceText').innerText = `$${parseFloat(user.balance || 0).toFixed(2)}`;
-          document.getElementById('userVipText').innerText = user.vip || "VIP0";
+
+        if (!user) {
+          alert('جلسة العمل انتهت أو الحساب غير موجود');
+          logoutUser();
+          return;
         }
-      } catch (e) {
-        console.error('Error fetching user profile:', e);
+
+        // Render Dashboard Data
+        document.getElementById('usernameText').innerText = user.username || activeUsername;
+        document.getElementById('vipRankText').innerText = user.vip || 'VIP0';
+        document.getElementById('totalDepositVal').innerText = '$' + parseFloat(user.totalDeposit || 0).toFixed(2);
+        document.getElementById('availableBalanceVal').innerText = '$' + parseFloat(user.balance || 0).toFixed(2);
+
+      } catch (error) {
+        console.error('Error loading dashboard:', error);
+      }
+    });
+
+    // Logout Handler
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      if (confirm('هل أنت تأكد من رغبتك في تسجيل الخروج؟')) {
+        logoutUser();
       }
     });
   </script>
