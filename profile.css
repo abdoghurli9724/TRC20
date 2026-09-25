@@ -74,7 +74,7 @@ body {
   white-space: nowrap;
 }
 
-/* الحاويات والبطاقات العامة لتنظيم النصوص والأزرار داخل مربعات */
+/* الحاويات والبطاقات العامة */
 .container {
   padding: 16px;
   max-width: 500px;
@@ -96,12 +96,11 @@ body {
   margin-bottom: 16px;
 }
 
-/* حصر جميع النصوص داخل مربعات منمقة ومنظمة */
 p, span, div {
   word-break: break-word;
 }
 
-/* شبكة أزرار العمليات السريعة (إيداع، سحب، حسابي، سجلات) */
+/* شبكة أزرار العمليات السريعة */
 .actions-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -143,7 +142,7 @@ p, span, div {
   transform: translateY(-2px);
 }
 
-/* بطاقات الـ VIP العمودية المنمقة داخل مربعات */
+/* بطاقات الـ VIP العمودية */
 .vip-tier-card {
   background: var(--bg-card);
   border: 1px solid var(--glass-border);
@@ -190,22 +189,33 @@ p, span, div {
   font-weight: 700;
 }
 
-/* بطاقات متجر المهام (E-commerce Cards) داخل مربعات منظمة */
-.task-product-card {
+/* ==========================================
+   تنسيق قسم المهام (Task Center Cards) المنظم
+   ========================================== */
+.task-product-card,
+.task-card,
+.task-item {
   background: var(--bg-card);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   padding: 16px;
   display: flex;
-  gap: 16px;
-  align-items: center;
+  flex-direction: column;
+  gap: 12px;
   margin-bottom: 14px;
   box-shadow: var(--shadow-glass);
 }
 
+/* محاذاة أفقية داخل بطاقة المهمة إذا كانت تحتوي صورة وتايتل بجانب بعض */
+.task-inner-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
 .task-product-img {
-  width: 75px;
-  height: 75px;
+  width: 70px;
+  height: 70px;
   border-radius: var(--radius-sm);
   background: var(--bg-secondary);
   display: flex;
@@ -223,7 +233,7 @@ p, span, div {
 
 .task-info h4 {
   font-size: 0.95rem;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   color: var(--text-main);
 }
 
@@ -233,7 +243,55 @@ p, span, div {
   font-weight: 700;
 }
 
-/* القائمة السفلية العائمة (Floating Bottom Nav) */
+/* ==========================================
+   تنسيق قسم الفريق (Team & Invite Section)
+   ========================================== */
+.team-section,
+.invite-box,
+.stats-box,
+.level-box {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-glass);
+}
+
+/* تنظيم حقول الإدخال وأزرار النسخ داخل قسم الفريق */
+input[type="text"], 
+input[type="number"],
+.form-control {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  color: var(--text-main);
+  font-size: 0.9rem;
+  margin-top: 6px;
+  margin-bottom: 10px;
+  outline: none;
+}
+
+input[type="text"]:focus {
+  border-color: var(--accent-gold);
+}
+
+/* تنسيق مستويات الفريق (Level 1, Level 2, Level 3) لتظهر في مربعات */
+.team-level-card,
+.level-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* القائمة السفلية العائمة */
 .bottom-nav {
   position: fixed;
   bottom: 12px;
@@ -275,13 +333,13 @@ p, span, div {
 /* الأزرار العامة */
 .btn-primary, button {
   width: 100%;
-  padding: 14px;
+  padding: 12px 16px;
   border-radius: var(--radius-md);
   border: none;
   background: linear-gradient(135deg, var(--accent-gold), #d97706);
   color: #0b1021;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 0.95rem;
   cursor: pointer;
   box-shadow: var(--shadow-glow);
   transition: var(--transition);
