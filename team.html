@@ -9,8 +9,48 @@
   <!-- مكتبة Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="profile.css">
+  <style>
+    /* تصميم حاوية الإشعارات العائمة Toast لتكون عصرية ومتناسقة */
+    #toastContainer {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      width: 90%;
+      max-width: 350px;
+      pointer-events: none;
+    }
+    .toast-msg {
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateY(20px);
+      text-align: center;
+      width: 100%;
+      pointer-events: auto;
+      border-right: 4px solid #10b981;
+    }
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
+
+  <!-- حاوية الإشعارات العائمة -->
+  <div id="toastContainer"></div>
 
   <!-- Header Bar -->
   <header class="header-bar">
@@ -33,7 +73,7 @@
         <label class="form-label">كود الدعوة الخاص بك:</label>
         <div style="display: flex; gap: 8px;">
           <input type="text" id="myReferralCode" class="form-input" readonly value="جاري التحميل..." style="font-weight: 800; letter-spacing: 1px; color: var(--accent-gold);">
-          <button class="submit-btn" style="width: auto; padding: 0 16px; font-size: 0.85rem;" onclick="copyInputText('myReferralCode', 'تم نسخ كود الدعوة!')">
+          <button class="submit-btn" style="width: auto; padding: 0 16px; font-size: 0.85rem;" onclick="copyInputText('myReferralCode', 'تم نسخ كود الدعوة بنجاح!')">
             <i class="bi bi-clipboard-fill"></i> نسخ
           </button>
         </div>
@@ -44,7 +84,7 @@
         <label class="form-label">رابط الدعوة المباشر:</label>
         <div style="display: flex; gap: 8px;">
           <input type="text" id="myReferralLink" class="form-input" readonly value="جاري التحميل..." style="font-size: 0.8rem; direction: ltr; text-align: left;">
-          <button class="submit-btn" style="width: auto; padding: 0 16px; font-size: 0.85rem;" onclick="copyInputText('myReferralLink', 'تم نسخ رابط الدعوة!')">
+          <button class="submit-btn" style="width: auto; padding: 0 16px; font-size: 0.85rem;" onclick="copyInputText('myReferralLink', 'تم نسخ رابط الدعوة بنجاح!')">
             <i class="bi bi-link-45deg"></i> نسخ
           </button>
         </div>
@@ -114,6 +154,24 @@
 
   <!-- Team Controller Script -->
   <script>
+    // دالة إظهار التنبيهات العصرية بدلاً من alert المتصفح
+    function showToast(message) {
+      const container = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      toast.className = "toast-msg";
+      toast.innerText = message;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add("show");
+      }, 50);
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
     function copyInputText(inputId, successMsg) {
       const inputEl = document.getElementById(inputId);
       if (!inputEl || !inputEl.value) return;
@@ -121,9 +179,10 @@
       inputEl.select();
       inputEl.setSelectionRange(0, 99999);
       navigator.clipboard.writeText(inputEl.value).then(() => {
-        alert(successMsg);
+        showToast(successMsg);
       }).catch(err => {
         console.error('Copy failed:', err);
+        showToast('فشل النسخ، حاول مرة أخرى');
       });
     }
 
@@ -204,7 +263,7 @@
           cardDiv.style.marginBottom = '12px';
           cardDiv.style.display = 'flex';
           cardDiv.style.justifyContent = 'space-between';
-          cardDiv.style.alignItems = 'center';
+          cardDiv.style.alignItems: 'center';
           cardDiv.style.borderRight = `4px solid ${borderColor}`;
 
           cardDiv.innerHTML = `
