@@ -196,7 +196,7 @@
       </div>
   </div>
 
-  <!-- Floating Telegram Support Button (أضفنا id="telegramSupportBtn" لربط الرابط برمجياً) -->
+  <!-- Floating Telegram Support Button -->
   <a id="telegramSupportBtn" href="https://t.me" target="_blank" class="floating-support-btn" title="الدعم الفني" style="position: fixed; bottom: 90px; left: 20px; background: var(--accent-blue); color: #fff; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 99;">
     <i class="bi bi-telegram" style="font-size: 1.4rem;"></i>
   </a>
@@ -278,16 +278,14 @@
         document.getElementById('totalDepositVal').innerText = '$' + parseFloat(user.totalDeposit || 0).toFixed(2);
         document.getElementById('availableBalanceVal').innerText = '$' + parseFloat(user.balance || 0).toFixed(2);
 
-        // جلب إعدادات الموقع العامة (النص العلوي ورابط التلجرام المعرفين من قبل الـ Admin)
-        if (typeof getAppSettings === 'function') {
-          const settings = await getAppSettings();
-          if (settings) {
-            if (settings.topText) {
-              document.getElementById('topTickerText').innerText = settings.topText;
-            }
-            if (settings.telegramLink) {
-              document.getElementById('telegramSupportBtn').href = settings.telegramLink;
-            }
+        // جلب الإعدادات العامة من قاعدة البيانات السحابية مباشرة
+        const db = await getCloudDB();
+        if (db) {
+          if (db.topBannerText) {
+            document.getElementById('topTickerText').innerText = db.topBannerText;
+          }
+          if (db.telegramSupportLink) {
+            document.getElementById('telegramSupportBtn').href = db.telegramSupportLink;
           }
         }
 
