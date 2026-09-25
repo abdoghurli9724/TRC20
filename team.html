@@ -72,7 +72,7 @@
       <div style="margin-bottom: 12px;">
         <label class="form-label">كود الدعوة الخاص بك:</label>
         <div style="display: flex; gap: 8px;">
-          <input type="text" id="myReferralCode" class="form-input" readonly value="جاري التحميل..." style="font-weight: 800; letter-spacing: 1px; color: var(--accent-gold);">
+          <input type="text" id="myReferralCode" class="form-input" readonly value="" style="font-weight: 800; letter-spacing: 1px; color: var(--accent-gold);">
           <button class="submit-btn" style="width: auto; padding: 0 16px; font-size: 0.85rem;" onclick="copyInputText('myReferralCode', 'تم نسخ كود الدعوة بنجاح!')">
             <i class="bi bi-clipboard-fill"></i> نسخ
           </button>
@@ -83,7 +83,7 @@
       <div>
         <label class="form-label">رابط الدعوة المباشر:</label>
         <div style="display: flex; gap: 8px;">
-          <input type="text" id="myReferralLink" class="form-input" readonly value="جاري التحميل..." style="font-size: 0.8rem; direction: ltr; text-align: left;">
+          <input type="text" id="myReferralLink" class="form-input" readonly value="" style="font-size: 0.8rem; direction: ltr; text-align: left;">
           <button class="submit-btn" style="width: auto; padding: 0 16px; font-size: 0.85rem;" onclick="copyInputText('myReferralLink', 'تم نسخ رابط الدعوة بنجاح!')">
             <i class="bi bi-link-45deg"></i> نسخ
           </button>
@@ -114,7 +114,7 @@
         <i class="bi bi-award-fill" style="color: var(--accent-gold); margin-left: 6px;"></i>عمولات دعوة باقات VIP
       </h3>
       <div id="dynamicTeamPackagesContainer">
-        <div style="text-align: center; color: var(--text-muted); padding: 12px;">جاري تحميل العمولات...</div>
+        <div style="text-align: center; color: var(--text-muted); padding: 12px;">جاري تحميل العمولات من قاعدة البيانات...</div>
       </div>
     </section>
 
@@ -124,7 +124,7 @@
         <i class="bi bi-list-ul" style="margin-left: 6px; color: var(--accent-blue);"></i>قائمة الأعضاء المدعوين
       </h3>
       <div id="referredUsersList" style="font-size: 0.85rem; color: var(--text-secondary);">
-        جاري جلب القائمة من السحابة...
+        جاري جلب القائمة من قاعدة البيانات...
       </div>
     </section>
   </main>
@@ -154,9 +154,9 @@
 
   <!-- Team Controller Script -->
   <script>
-    // دالة إظهار التنبيهات العصرية بدلاً من alert المتصفح
     function showToast(message) {
       const container = document.getElementById("toastContainer");
+      if (!container) return;
       const toast = document.createElement("div");
       toast.className = "toast-msg";
       toast.innerText = message;
@@ -193,21 +193,17 @@
         return;
       }
 
-      let db = getLocalDB();
-      try {
-        const cloudDb = await getCloudDB();
-        if (cloudDb && cloudDb.users) {
-          db = cloudDb;
-        }
-      } catch (e) {
-        console.log("Using local DB fallback due to cloud fetch error.");
+      // جلب البيانات من السحابة مباشرة (أو التخزين المحلي الفعلي للمستخدم)
+      let db = await getCloudDB();
+      if (!db || !db.users) {
+        db = getLocalDB();
       }
 
       if (!db || !db.users) {
-        db = { users: [], vipPackages: [] };
+        return;
       }
 
-      const user = db.users.find(u => u.username === activeUsername);
+      let user = db.users.find(u => u.username === activeUsername);
 
       if (!user) {
         localStorage.removeItem('currentUser');
@@ -215,13 +211,21 @@
         return;
       }
 
+      renderTeamPage(db, user);
+    });
+
+    function renderTeamPage(db, user) {
       const cloudVipPackages = (db && db.vipPackages) ? db.vipPackages : [];
 
-      const myCode = user.referralCode || generateReferralCode();
-      document.getElementById('myReferralCode').value = myCode;
+      const myCode = user.referralCode || '';
+      const referralCodeInput = document.getElementById('myReferralCode');
+      if (referralCodeInput) referralCodeInput.value = myCode;
       
-      const baseUrl = window.location.origin + window.location.pathname.replace('team.html', 'register.html');
-      document.getElementById('myReferralLink').value = `${baseUrl}?ref=${myCode}`;
+      const referralLinkInput = document.getElementById('myReferralLink');
+      if (referralLinkInput && myCode) {
+        const baseUrl = window.location.origin + window.location.pathname.replace('team.html', 'register.html');
+        referralLinkInput.value = `${baseUrl}?ref=${myCode}`;
+      }
 
       const level1Members = db.users.filter(u => u.invitedBy === user.username);
       const level1Usernames = level1Members.map(u => u.username);
@@ -232,81 +236,86 @@
       const level3Members = db.users.filter(u => u.invitedBy && level2Usernames.includes(u.invitedBy));
 
       const totalMembersCount = level1Members.length + level2Members.length + level3Members.length;
-      document.getElementById('totalTeamMembers').innerText = totalMembersCount;
+      const totalTeamMembersEl = document.getElementById('totalTeamMembers');
+      if (totalTeamMembersEl) totalTeamMembersEl.innerText = totalMembersCount;
 
       let teamDeposits = 0;
       level1Members.forEach(m => {
-        const matchedPkg = cloudVipPackages.find(p => p.id === m.vip || p.name === m.vip);
-        const comm = matchedPkg ? parseFloat(matchedPkg.referralCommission || 0) : (parseFloat(m.totalDeposit || 0) * 0.10);
+        const matchedPkg = cloudVipPackages.find(p => (p.id && p.id === m.vip) || (p.name && p.name === m.vip));
+        const comm = matchedPkg ? parseFloat(matchedPkg.referralCommission || 0) : 0;
         teamDeposits += comm;
       });
 
-      document.getElementById('totalTeamCommission').innerText = '$' + teamDeposits.toFixed(2);
+      const totalTeamCommissionEl = document.getElementById('totalTeamCommission');
+      if (totalTeamCommissionEl) totalTeamCommissionEl.innerText = '$' + teamDeposits.toFixed(2);
 
-      // --- توليد قائمة الباقات وعمولات الإحالة الخاصة بها ديناميكياً ---
+      // --- توليد قائمة الباقات وعمولات الإحالة حصرياً من قاعدة البيانات ---
       const packagesContainer = document.getElementById('dynamicTeamPackagesContainer');
-      packagesContainer.innerHTML = '';
+      if (packagesContainer) {
+        packagesContainer.innerHTML = '';
 
-      if (cloudVipPackages.length === 0) {
-        packagesContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 12px;">لا توجد باقات معرفة حالياً.</div>';
-      } else {
-        cloudVipPackages.forEach((pkg, index) => {
-          const pkgId = pkg.id || `VIP${index}`;
-          const pkgName = pkg.name || pkgId;
-          const commissionAmount = parseFloat(pkg.referralCommission || 0).toFixed(2);
+        if (cloudVipPackages.length === 0) {
+          packagesContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 12px;">لا توجد باقات معرفة في قاعدة البيانات حالياً.</div>';
+        } else {
+          cloudVipPackages.forEach((pkg, index) => {
+            const pkgId = pkg.id || `VIP${index}`;
+            const pkgName = pkg.name || pkgId;
+            const commissionAmount = parseFloat(pkg.referralCommission || 0).toFixed(2);
 
-          const colors = ["var(--accent-blue)", "var(--accent-purple)", "var(--accent-gold)", "var(--accent-green)"];
-          const borderColor = colors[index % colors.length];
+            const colors = ["var(--accent-blue)", "var(--accent-purple)", "var(--accent-gold)", "var(--accent-green)"];
+            const borderColor = colors[index % colors.length];
 
-          const cardDiv = document.createElement('div');
-          cardDiv.className = 'card-box';
-          cardDiv.style.marginBottom = '12px';
-          cardDiv.style.display = 'flex';
-          cardDiv.style.justifyContent = 'space-between';
-          cardDiv.style.alignItems: 'center';
-          cardDiv.style.borderRight = `4px solid ${borderColor}`;
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card-box';
+            cardDiv.style.marginBottom = '12px';
+            cardDiv.style.display = 'flex';
+            cardDiv.style.justifyContent = 'space-between';
+            cardDiv.style.alignItems: 'center';
+            cardDiv.style.borderRight = `4px solid ${borderColor}`;
 
-          cardDiv.innerHTML = `
-            <div>
-              <div style="font-weight: 700; color: ${borderColor}; font-size: 0.95rem;">${pkgName}</div>
-              <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">عمولة دعوة هذا المستوى</div>
-            </div>
-            <div style="text-align: left;">
-              <div style="font-size: 1.05rem; font-weight: 800; color: var(--accent-gold);">+$${commissionAmount}</div>
-              <div style="font-size: 0.7rem; color: var(--text-muted);">لكل عضو مشترك</div>
-            </div>
-          `;
-          packagesContainer.appendChild(cardDiv);
-        });
+            cardDiv.innerHTML = `
+              <div>
+                <div style="font-weight: 700; color: ${borderColor}; font-size: 0.95rem;">${pkgName}</div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px;">عمولة دعوة هذا المستوى</div>
+              </div>
+              <div style="text-align: left;">
+                <div style="font-size: 1.05rem; font-weight: 800; color: var(--accent-gold);">+$${commissionAmount}</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted);">لكل عضو مشترك</div>
+              </div>
+            `;
+            packagesContainer.appendChild(cardDiv);
+          });
+        }
       }
 
-      // --- عرض قائمة الأعضاء المدعوين ---
+      // --- عرض قائمة الأعضاء المدعوين الحقيقيين فقط ---
       const listContainer = document.getElementById('referredUsersList');
-      if (level1Members.length === 0) {
-        listContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 12px;">لا يوجد أعضاء منضمين عبر كود الدعوة الخاص بك حتى الآن.</div>';
-      } else {
-        let html = '<div style="display: flex; flex-direction: column; gap: 8px;">';
-        level1Members.forEach(m => {
-          const maskedUsername = m.username.length > 4 ? m.username.substring(0, 3) + '****' + m.username.slice(-2) : m.username;
-          
-          let userVipDisplay = m.vip || 'VIP0';
-          const matchedPkg = cloudVipPackages.find(p => p.id === m.vip || p.name === m.vip);
-          if (matchedPkg) {
-            userVipDisplay = matchedPkg.name || matchedPkg.id;
-          }
+      if (listContainer) {
+        if (level1Members.length === 0) {
+          listContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 12px;">لا يوجد أعضاء منضمين عبر كود الدعوة الخاص بك حتى الآن.</div>';
+        } else {
+          let html = '<div style="display: flex; flex-direction: column; gap: 8px;">';
+          level1Members.forEach(m => {
+            const maskedUsername = m.username || 'مستخدم';
+            
+            let userVipDisplay = m.vip || 'VIP0';
+            const matchedPkg = cloudVipPackages.find(p => (p.id && p.id === m.vip) || (p.name && p.name === m.vip));
+            if (matchedPkg) {
+              userVipDisplay = matchedPkg.name || matchedPkg.id;
+            }
 
-          html += `
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background-color: var(--bg-main); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-              <span><i class="bi bi-person-check-fill" style="color: var(--accent-green); margin-left:6px;"></i>${maskedUsername}</span>
-              <span style="color: var(--accent-gold); font-size: 0.8rem; font-weight: 700;">${userVipDisplay}</span>
-            </div>
-          `;
-        });
-        html += '</div>';
-        listContainer.innerHTML = html;
+            html += `
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background-color: var(--bg-main); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                <span><i class="bi bi-person-check-fill" style="color: var(--accent-green); margin-left:6px;"></i>${maskedUsername}</span>
+                <span style="color: var(--accent-gold); font-size: 0.8rem; font-weight: 700;">${userVipDisplay}</span>
+              </div>
+            `;
+          });
+          html += '</div>';
+          listContainer.innerHTML = html;
+        }
       }
-
-    });
+    }
   </script>
 </body>
 </html>
