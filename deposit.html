@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>إيداع الأموال - VirtualMall</title>
   <link rel="stylesheet" href="profile.css">
-  <!-- خط Cairo -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <!-- مكتبة Bootstrap Icons المجانية -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
@@ -24,18 +22,21 @@
         قم بتحويل المبلغ المطلوب إلى عنوان المحفظة أدناه أو مسح الرمز، ثم أدخل رقم المعاملة (TXID) لتأكيد الطلب.
       </p>
 
-      <!-- قسم عرض باركود المحفظة (QR Code) -->
-      <div style="text-align: center; margin-bottom: 16px;">
-        <div style="background: #fff; padding: 10px; display: inline-block; border-radius: 12px;">
-          <img id="qrCodeImg" src="" alt="Wallet QR Code" style="width: 130px; height: 130px; display: block;">
-        </div>
-      </div>
-
+      <!-- قسم محفظة الإيداع والـ QR Code بجانب بعضهما -->
       <div class="form-group" style="margin-bottom: 16px;">
-        <label class="form-label">عنوان محفظة الإيداع (USDT - TRC20)</label>
-        <div style="display: flex; gap: 8px;">
-          <input type="text" id="walletAddress" class="form-input" value="TXYZ999MockWalletAddressForDemoTrc20..." readonly>
-          <button type="button" onclick="copyWallet()" style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--accent-gold); padding: 0 12px; border-radius: 8px; cursor: pointer;"><i class="bi bi-clipboard"></i></button>
+        <label class="form-label">عنوان محفظة الإيداع (USDT - TRC20) والباركود</label>
+        <div style="display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; border: 1px solid var(--border-color);">
+          
+          <!-- QR Code بجانب الحقل -->
+          <div style="background: #fff; padding: 6px; border-radius: 8px; flex-shrink: 0;">
+            <img id="qrCodeImg" src="" alt="Wallet QR Code" style="width: 90px; height: 90px; display: block;">
+          </div>
+          
+          <!-- الحقل وزر النسخ -->
+          <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px;">
+            <input type="text" id="walletAddress" class="form-input" value="جاري الجلب..." readonly style="font-size: 0.8rem;">
+            <button type="button" onclick="copyWallet()" style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--accent-gold); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 6px;"><i class="bi bi-clipboard"></i> نسخ العنوان</button>
+          </div>
         </div>
       </div>
 
@@ -53,7 +54,6 @@
     </div>
   </div>
 
-  <!-- القائمة السفلية باستخدام Bootstrap Icons -->
   <div class="bottom-nav">
     <a href="index.html" class="nav-item"><i class="bi bi-house-door"></i><span>الرئيسية</span></a>
     <a href="tasks.html" class="nav-item"><i class="bi bi-list-check"></i><span>المهام</span></a>
@@ -70,10 +70,15 @@
         return;
       }
       document.getElementById("userVipBadge").innerHTML = `<i class="bi bi-award"></i> ${user.vip || 'VIP0'}`;
+
+      // جلب بيانات السحابة لعرض عنوان المحفظة المحدث من الأدمن
+      const db = await getCloudDB();
+      const walletVal = (db && db.depositWallet) ? db.depositWallet : "TXYZ999MockWalletAddressForDemoTrc20...";
       
-      // جلب عنوان المحفظة وتوليد الـ QR Code الخاص به تلقائياً
-      const walletVal = document.getElementById("walletAddress").value;
-      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(walletVal)}`;
+      document.getElementById("walletAddress").value = walletVal;
+      
+      // توليد الـ QR Code بناءً على العنوان الجلبي
+      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(walletVal)}`;
       document.getElementById("qrCodeImg").src = qrApiUrl;
     }
 
