@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VirtualMall - تسجيل الدخول</title>
   <link rel="stylesheet" href="profile.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 
   <!-- Header Bar -->
   <header class="header-bar">
     <div class="brand-logo">
-      <i class="fa-solid fa-store" style="color: var(--accent-blue);"></i>
+      <i class="bi bi-shop" style="color: var(--accent-blue);"></i>
       Virtual<span>Mall</span>
     </div>
   </header>
@@ -31,7 +31,7 @@
       <!-- Username / Phone -->
       <div class="form-group">
         <label class="form-label" for="username">
-          <i class="fa-solid fa-phone" style="margin-left: 6px;"></i>رقم الهاتف / اسم المستخدم
+          <i class="bi bi-telephone-fill" style="margin-left: 6px;"></i>رقم الهاتف / اسم المستخدم
         </label>
         <input type="text" id="username" class="form-input" placeholder="أدخل رقم الهاتف أو اسم المستخدم" required>
       </div>
@@ -39,11 +39,11 @@
       <!-- Password -->
       <div class="form-group">
         <label class="form-label" for="password">
-          <i class="fa-solid fa-lock" style="margin-left: 6px;"></i>كلمة المرور
+          <i class="bi bi-lock-fill" style="margin-left: 6px;"></i>كلمة المرور
         </label>
         <div style="position: relative;">
           <input type="password" id="password" class="form-input" placeholder="أدخل كلمة المرور" required>
-          <i class="fa-solid fa-eye" id="togglePassword" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); cursor: pointer;"></i>
+          <i class="bi bi-eye-slash" id="togglePassword" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); cursor: pointer;"></i>
         </div>
       </div>
 
@@ -79,8 +79,10 @@
     togglePassword.addEventListener('click', () => {
       const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
       passwordInput.setAttribute('type', type);
-      togglePassword.classList.toggle('fa-eye');
-      togglePassword.classList.toggle('fa-eye-slash');
+      
+      // التبديل بين أيقونة العين المفتوحة والمغلقة لـ Bootstrap Icons
+      togglePassword.classList.toggle('bi-eye');
+      togglePassword.classList.toggle('bi-eye-slash');
     });
 
     // Display Alert Utility
