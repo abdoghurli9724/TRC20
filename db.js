@@ -1,56 +1,76 @@
-// db.js - إدارة البيانات السحابية والمحلية بالتزامن
+// بيانات الربط الخاصة بـ JSONBin
+const JSONBIN_BIN_ID = '6ab55304ac6210605af17b83'; 
+const JSONBIN_API_KEY = '$2a$10$ivwSTRMoM3LWu6xcGn1TuOwDAt1Od36P/ifB92r0AgPfmP6ZeuEyy'; 
 
-const API_URL = "https://api.jsonbin.io/v3/b/6ab55304ac6210605af17b83"; // استبدل بـ BIN ID الخاص بك إن وجد
-const API_KEY = "$2a$10$ivwSTRMoM3LWu6xcGn1TuOwDAt1Od36P/ifB92r0AgPfmP6ZeuEyy"; // استبدل بـ API Key الخاص بك إن وجد
-
-// الهيكل الابتدائي لقاعدة البيانات
-const initialDB = {
-    usersDB: {
-        "admin": { balance: 1000, vip: "VIP3", completedTasks: [], history: [] },
-        "demo": { balance: 10.00, vip: "VIP0", completedTasks: [], history: [] }
-    },
-    depositRequests: []
-};
-
-// جلب البيانات من السحابة مع التخزين الاحتياطي المحلي
+// دالة جلب البيانات من السحابة مع معالجة الحسابات الجديدة تلقائياً
 async function getCloudDB() {
     try {
-        // محاولة التحميل المحلي السريع أولاً أو من السحابة
-        const localData = localStorage.getItem('app_cloud_db');
-        if (localData) {
-            return JSON.parse(localData);
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+            method: 'GET',
+            headers: {
+                'X-Master-Key': JSONBIN_API_KEY,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) throw new Error('فشل جلب البيانات من JSONBin');
+
+        const data = await response.json();
+        let db = data.record;
+
+        // التأكد من وجود هيكل البيانات الأساسي
+        if (!db) db = {};
+        if (!db.usersDB) db.usersDB = {};
+
+        // الحصول على اسم المستخدم الحالي
+        let currentUser = localStorage.getItem('currentUser') || 'demo';
+
+        // إذا كان الحساب جديداً وغير موجود في السحابة، يتم تهيئته فوراً بقيم افتراضية صريحة
+        if (!db.usersDB[currentUser]) {
+            db.usersDB[currentUser] = {
+                balance: 0.00,
+                vip: 'VIP0',
+                completedTasks: [],
+                history: [],
+                createdAt: new Date().toISOString()
+            };
+            // حفظ الحساب الجديد فوراً في السحابة
+            await updateCloudDB(db);
+        } else {
+            // ضمان أن الرصيد رقم صحيح وليس undefined أو null
+            if (db.usersDB[currentUser].balance === undefined || db.usersDB[currentUser].balance === null || isNaN(db.usersDB[currentUser].balance)) {
+                db.usersDB[currentUser].balance = 0.00;
+            }
         }
-        
-        // إذا لم توجد بيانات محلياً، يتم تعيين البيانات الافتراضية
-        localStorage.setItem('app_cloud_db', JSON.stringify(initialDB));
-        return initialDB;
+
+        return db;
+
     } catch (error) {
-        console.error("خطأ في قراءة البيانات:", error);
-        return initialDB;
+        console.error('خطأ في الاتصال بالسحابة:', error);
+        // ارجاع كائن افتراضي في حالة انقطاع الإنترنت لعدم تعطل الموقع
+        let currentUser = localStorage.getItem('currentUser') || 'demo';
+        let fallbackDB = { usersDB: {} };
+        fallbackDB.usersDB[currentUser] = { balance: 0.00, vip: 'VIP0', completedTasks: [], history: [] };
+        return fallbackDB;
     }
 }
 
-// حفظ وتحديث البيانات في السحابة والمحلي فوراً
-async function updateCloudDB(newData) {
+// دالة تحديث الحفظ في JSONBin
+async function updateCloudDB(newDbData) {
     try {
-        // حفظ نسخة محلياً فوراً لمنع أي تأخير في الواجهة
-        localStorage.setItem('app_cloud_db', JSON.stringify(newData));
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_API_KEY
+            },
+            body: JSON.stringify(newDbData)
+        });
 
-        // محاكاة إرسال للسحابة (أو إرسال حقيقي في حال وجود API)
-        if (API_URL.includes("YOUR_BIN_ID") === false) {
-            fetch(API_URL, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': API_KEY
-                },
-                body: JSON.stringify(newData)
-            }).catch(err => console.warn("تعذر المزامنة السحابية الفورية:", err));
-        }
+        if (!response.ok) throw new Error('فشل حفظ البيانات في JSONBin');
 
-        return true;
+        return await response.json();
     } catch (error) {
-        console.error("خطأ أثناء تحديث البيانات:", error);
-        return false;
+        console.error('خطأ أثناء حفظ البيانات:', error);
     }
 }
