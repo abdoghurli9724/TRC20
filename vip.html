@@ -6,12 +6,11 @@
   <title>VirtualMall - مستويات VIP والترقية</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   
-  <!-- استبدال مكتبة FontAwesome بمكتبة Bootstrap Icons المجانية والمستقرة -->
+  <!-- مكتبة Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="profile.css">
   
   <style>
-    /* تصميم النافذة المنبثقة المخصصة المتناسقة مع الموقع */
     .vip-modal-overlay {
         position: fixed;
         top: 0;
@@ -100,11 +99,11 @@
   <!-- Header Bar -->
   <header class="app-header">
     <div class="logo-area">
-      <i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i>
+      <i class="bi bi-award-fill" style="color: var(--accent-gold);"></i>
       عضويات <span>VIP</span>
     </div>
     <div class="vip-badge" id="currentVipBadge" style="background: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px;">
-      <i class="fa-solid fa-crown"></i>
+      <i class="bi bi-award-fill"></i>
       <span id="headerVipText">VIP0</span>
     </div>
   </header>
@@ -113,7 +112,7 @@
     <!-- Info Banner -->
     <div class="glass-card" style="text-align: center; background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(59,130,246,0.1)); border: 1px solid rgba(245,158,11,0.2);">
       <h3 style="color: var(--accent-gold); font-size: 1.05rem; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-        <i class="fa-solid fa-gem"></i> ترقية مستوى العضوية
+        <i class="bi bi-gem"></i> ترقية مستوى العضوية
       </h3>
       <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.6;">
         قم بترقية مستواك لزيادة عدد المهام والتقييمات اليومية وتحقيق عوائد وأرباح أعلى بشكل يومي!
@@ -154,19 +153,19 @@
   <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
       <span>الرئيسية</span>
     </a>
     <a href="tasks.html" class="nav-item">
-      <i class="fa-solid fa-list-check"></i>
+      <i class="bi bi-check2-square"></i>
       <span>المهام</span>
     </a>
     <a href="team.html" class="nav-item">
-      <i class="fa-solid fa-users"></i>
+      <i class="bi bi-people-fill"></i>
       <span>الفريق</span>
     </a>
     <a href="vip.html" class="nav-item active">
-      <i class="fa-solid fa-crown"></i>
+      <i class="bi bi-award-fill"></i>
       <span>VIP</span>
     </a>
   </nav>
@@ -225,7 +224,6 @@
 
     let currentUserObj = null;
 
-    // دالة إظهار النافذة المخصصة بدل الرسائل البدائية
     function showCustomModal(title, text, icon = "⚠️", showCancel = true, confirmText = "موافق", onConfirm = null) {
         const modal = document.getElementById('customVipModal');
         document.getElementById('vipModalTitle').innerText = title;
@@ -299,25 +297,25 @@
         card.innerHTML = `
           <div class="vip-header ${level.headerClass}">
             <span style="display: flex; align-items: center; gap: 8px;">
-              <i class="fa-solid fa-crown"></i> ${level.title}
+              <i class="bi bi-award-fill"></i> ${level.title}
             </span>
             <span>$${level.price.toFixed(2)}</span>
           </div>
           <div class="vip-body">
             <div class="vip-feature-row">
-              <span><i class="fa-solid fa-tasks" style="color:var(--accent-blue);"></i> المهام اليومية:</span>
+              <span><i class="bi bi-list-check" style="color:var(--accent-blue);"></i> المهام اليومية:</span>
               <span>${level.dailyTasks} مهام</span>
             </div>
             <div class="vip-feature-row">
-              <span><i class="fa-solid fa-coins" style="color:var(--accent-gold);"></i> ربح المهمة:</span>
+              <span><i class="bi bi-coin" style="color:var(--accent-gold);"></i> ربح المهمة:</span>
               <span>$${level.taskReward.toFixed(2)}</span>
             </div>
             <div class="vip-feature-row">
-              <span><i class="fa-solid fa-chart-line" style="color:var(--accent-green);"></i> الإيراد اليومي:</span>
+              <span><i class="bi bi-graph-up-arrow" style="color:var(--accent-green);"></i> الإيراد اليومي:</span>
               <span style="color: var(--accent-green);">$${level.dailyProfit.toFixed(2)}</span>
             </div>
             <div class="vip-feature-row">
-              <span><i class="fa-solid fa-wallet" style="color:var(--accent-gold);"></i> الإيراد الشهري:</span>
+              <span><i class="bi bi-wallet2" style="color:var(--accent-gold);"></i> الإيراد الشهري:</span>
               <span style="color: var(--accent-gold);">$${level.monthlyProfit.toFixed(2)}</span>
             </div>
             <button class="btn-primary" 
@@ -363,7 +361,7 @@
           const btn = document.getElementById(`btn_upgrade_${targetVipId}`);
           if (btn) {
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الترقية...';
+            btn.innerHTML = '<i class="bi bi-arrow-repeat" style="animation: spin 1s linear infinite;"></i> جاري الترقية...';
           }
 
           try {
@@ -400,7 +398,7 @@
             }
           } catch (error) {
             console.error('Upgrade Error:', error);
-            alert('حدث خطأ في الاتصال بالسيرفر، يرجى المحاولة لاحقاً');
+            alert('فشل الاتصال بالسيرفر، يرجى المحاولة لاحقاً');
             renderVipPage();
           }
         }
