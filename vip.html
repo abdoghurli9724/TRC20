@@ -226,10 +226,10 @@
           cloudVipLevels = db.vipPackages;
         } else {
           cloudVipLevels = [
-            { id: "VIP0", name: "عضوية VIP0 (تجريبي)", price: 0, tasks: 2, taskProfit: 0.25, dailyIncome: 0.50, monthlyIncome: 15.00, annualIncome: 180.00 },
-            { id: "VIP1", name: "عضوية VIP1 الاحترافية", price: 20, tasks: 6, taskProfit: 3.50, dailyIncome: 21.00, monthlyIncome: 630.00, annualIncome: 7560.00 },
-            { id: "VIP2", name: "عضوية VIP2 الذهبية", price: 50, tasks: 6, taskProfit: 5.00, dailyIncome: 30.00, monthlyIncome: 900.00, annualIncome: 10800.00 },
-            { id: "VIP3", name: "عضوية VIP3 الماسية", price: 100, tasks: 10, taskProfit: 8.00, dailyIncome: 80.00, monthlyIncome: 2400.00, annualIncome: 28800.00 }
+            { id: "VIP0", name: "عضوية VIP0 (تجريبي)", price: 0, tasks: 2, taskProfit: 0.25, dailyIncome: 0.50, monthlyIncome: 15.00, annualIncome: 180.00, referralCommission: 0 },
+            { id: "VIP1", name: "عضوية VIP1 الاحترافية", price: 20, tasks: 6, taskProfit: 3.50, dailyIncome: 21.00, monthlyIncome: 630.00, annualIncome: 7560.00, referralCommission: 10 },
+            { id: "VIP2", name: "عضوية VIP2 الذهبية", price: 50, tasks: 6, taskProfit: 5.00, dailyIncome: 30.00, monthlyIncome: 900.00, annualIncome: 10800.00, referralCommission: 15 },
+            { id: "VIP3", name: "عضوية VIP3 الماسية", price: 100, tasks: 10, taskProfit: 8.00, dailyIncome: 80.00, monthlyIncome: 2400.00, annualIncome: 28800.00, referralCommission: 25 }
           ];
         }
 
@@ -317,8 +317,6 @@
       const currentDeposit = parseFloat(currentUserObj.depositBalance || currentUserObj.totalDeposit || 0);
 
       let refundAmount = 0;
-
-      // البحث عن الباقة السابقة للمستخدم في المصفوفة السحابية أو بأسعار احتياطية
       const currentPkg = cloudVipLevels.find(p => p.id === currentVip || p.name === currentVip || (p.id && p.id.toLowerCase() === currentVip.toLowerCase()));
 
       if (currentVip !== "VIP0") {
@@ -330,7 +328,6 @@
         }
       }
 
-      // التحقق مما إذا كان رصيد الإيداع يكفي لشراء الباقة الجديدة
       if (currentDeposit < targetPrice) {
         showCustomModal(
           "تنبيه الرصيد",
@@ -386,7 +383,6 @@
 
               if (!user.history) user.history = [];
 
-              // تسجيل عملية الاسترداد في السجل
               if (currentVip !== "VIP0" && refundAmount > 0) {
                 user.history.unshift({
                   id: generateTransactionId(),
@@ -398,7 +394,6 @@
                 });
               }
 
-              // تسجيل عملية الخصم للترقية الجديدة
               user.history.unshift({
                 id: generateTransactionId(),
                 type: "upgrade",
@@ -407,6 +402,33 @@
                 status: "completed",
                 date: new Date().toLocaleString('ar-EG')
               });
+
+              // 3. --- إضافة عمولة الدعوة تلقائياً للمُحيل (invitedBy) ---
+              if (user.invitedBy) {
+                const referrerIndex = db.users.findIndex(u => u.username === user.invitedBy);
+                if (referrerIndex !== -1) {
+                  const referrer = db.users[referrerIndex];
+                  
+                  // البحث عن الباقة المستهدفة لمعرفة عمولة الإحالة المحددة من الأدمن
+                  const targetPkg = cloudVipPackages.find(p => p.id === targetVipId || p.name === targetVipId);
+                  const commissionEarned = targetPkg ? parseFloat(targetPkg.referralCommission || 0) : 0;
+
+                  if (commissionEarned > 0) {
+                    if (referrer.balance === undefined) referrer.balance = 0;
+                    referrer.balance = parseFloat((parseFloat(referrer.balance) + commissionEarned).toFixed(2));
+
+                    if (!referrer.history) referrer.history = [];
+                    referrer.history.unshift({
+                      id: generateTransactionId(),
+                      type: "referral_commission",
+                      title: `عمولة ترقية العضو المدعو (${user.username}) إلى ${targetVipId}`,
+                      amount: commissionEarned,
+                      status: "completed",
+                      date: new Date().toLocaleString('ar-EG')
+                    });
+                  }
+                }
+              }
 
               const success = await updateCloudDB(db);
 
