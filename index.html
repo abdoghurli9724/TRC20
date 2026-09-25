@@ -4,43 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VirtualMall - الصفحة الرئيسية</title>
-  <!-- ربط خط كيرو العربي ومكتبة الأيقونات الحديثة وملف التصميم الموحد -->
+  <!-- ربط خط كيرو العربي -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  
+  <!-- استبدال مكتبة FontAwesome بمكتبة Bootstrap Icons المجانية والمستقرة -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
   <link rel="stylesheet" href="profile.css">
 </head>
 <body>
 
   <!-- Header Bar -->
-  <header class="app-header">
-    <div class="logo-area">
-      <i class="fa-solid fa-store" style="color: var(--accent-blue);"></i>
+  <header class="app-header" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: rgba(11, 16, 33, 0.9); border-bottom: 1px solid var(--border-color);">
+    <div class="logo-area" style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1.25rem;">
+      <i class="bi bi-shop" style="color: var(--accent-blue); font-size: 1.4rem;"></i>
       Virtual<span>Mall</span>
     </div>
     <div class="cart-icon-btn" onclick="window.location.href='tasks.html'" style="cursor: pointer; font-size: 1.2rem; color: var(--text-main);">
-      <i class="fa-solid fa-cart-shopping"></i>
+      <i class="bi bi-cart3"></i>
     </div>
   </header>
 
   <!-- Ticker Bar -->
-  <div class="ticker-bar">
-    <i class="fa-solid fa-bullhorn"></i>
+  <div class="ticker-bar" style="display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: rgba(59, 130, 246, 0.1); border-bottom: 1px solid var(--border-color); font-size: 0.85rem;">
+    <i class="bi bi-megaphone-fill" style="color: var(--accent-gold);"></i>
     <span>قام المستخدم 09***432 بسحب $150.00 بنجاح ... قام المستخدم 08***911 بسحب $45.50 بنجاح ... مرحباً بك في منصة VirtualMall الرسمية!</span>
   </div>
 
-  <div class="container">
+  <div class="container" style="padding: 20px;">
     <!-- Main Balance Card (Glassmorphism) -->
     <div class="glass-card" style="text-align: center; position: relative; overflow: hidden;">
       
       <!-- User Info & VIP Badge Row -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;">
         <div id="displayUsername" style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.95rem;">
-          <i class="fa-solid fa-user-circle" style="color: var(--accent-blue); font-size: 1.2rem;"></i>
+          <i class="bi bi-person-circle" style="color: var(--accent-blue); font-size: 1.2rem;"></i>
           <span id="usernameText">جاري التحميل...</span>
         </div>
         <div id="displayVipRank" style="background: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px;">
-          <i class="fa-solid fa-crown"></i>
+          <i class="bi bi-award-fill"></i>
           <span id="vipRankText">VIP0</span>
         </div>
       </div>
@@ -58,21 +60,21 @@
 
       <!-- Quick Actions Grid -->
       <div class="actions-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
-        <a href="deposit.html" class="action-btn">
-          <i class="fa-solid fa-wallet"></i>
-          <span>إيداع</span>
+        <a href="deposit.html" class="action-btn" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px; background: var(--bg-secondary); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <i class="bi bi-wallet2" style="font-size: 1.2rem; color: var(--accent-green);"></i>
+          <span style="font-size: 0.8rem;">إيداع</span>
         </a>
-        <a href="withdraw.html" class="action-btn">
-          <i class="fa-solid fa-hand-holding-dollar"></i>
-          <span>سحب</span>
+        <a href="withdraw.html" class="action-btn" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px; background: var(--bg-secondary); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <i class="bi bi-cash-stack" style="font-size: 1.2rem; color: var(--accent-gold);"></i>
+          <span style="font-size: 0.8rem;">سحب</span>
         </a>
-        <a href="account.html" class="action-btn">
-          <i class="fa-solid fa-sliders"></i>
-          <span>حسابي</span>
+        <a href="account.html" class="action-btn" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px; background: var(--bg-secondary); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <i class="bi bi-sliders" style="font-size: 1.2rem; color: var(--accent-blue);"></i>
+          <span style="font-size: 0.8rem;">حسابي</span>
         </a>
-        <a href="records.html" class="action-btn">
-          <i class="fa-solid fa-clock-rotate-left"></i>
-          <span>سجلات</span>
+        <a href="records.html" class="action-btn" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px; background: var(--bg-secondary); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <i class="bi bi-clock-history" style="font-size: 1.2rem; color: var(--accent-purple);"></i>
+          <span style="font-size: 0.8rem;">سجلات</span>
         </a>
       </div>
     </div>
@@ -80,7 +82,7 @@
     <!-- Logout Strip -->
     <div style="margin-top: 20px;">
       <button id="logoutBtn" style="width: 100%; padding: 12px; background-color: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; border-radius: var(--radius-md); font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; transition: var(--transition);">
-        <i class="fa-solid fa-right-from-bracket"></i>
+        <i class="bi bi-box-arrow-right"></i>
         تسجيل الخروج من الحساب
       </button>
     </div>
@@ -88,25 +90,25 @@
 
   <!-- Floating Telegram Support Button -->
   <a href="https://t.me" target="_blank" class="floating-support-btn" title="الدعم الفني" style="position: fixed; bottom: 90px; left: 20px; background: var(--accent-blue); color: #fff; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 99;">
-    <i class="fa-solid fa-paper-plane"></i>
+    <i class="bi bi-telegram" style="font-size: 1.4rem;"></i>
   </a>
 
   <!-- Floating Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item active">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
       <span>الرئيسية</span>
     </a>
     <a href="tasks.html" class="nav-item">
-      <i class="fa-solid fa-list-check"></i>
+      <i class="bi bi-check2-square"></i>
       <span>المهام</span>
     </a>
     <a href="team.html" class="nav-item">
-      <i class="fa-solid fa-users"></i>
+      <i class="bi bi-people-fill"></i>
       <span>الفريق</span>
     </a>
     <a href="vip.html" class="nav-item">
-      <i class="fa-solid fa-crown"></i>
+      <i class="bi bi-award-fill"></i>
       <span>VIP</span>
     </a>
   </nav>
