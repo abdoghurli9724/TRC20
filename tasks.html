@@ -4,52 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VirtualMall - مركز المهام والتقييمات</title>
-  <!-- ربط خط كيرو العربي ومكتبة الأيقونات الحديثة وملف التصميم الموحد -->
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
   <!-- Header Bar -->
-  <header class="app-header">
-    <div class="logo-area">
+  <header class="header-bar">
+    <div class="brand-logo">
       <i class="fa-solid fa-list-check" style="color: var(--accent-blue);"></i>
       مركز <span>المهام</span>
     </div>
-    <div class="vip-badge" id="vipHeaderBadge" style="background: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+    <div class="vip-badge" id="vipHeaderBadge">
       <i class="fa-solid fa-crown"></i>
       <span id="userVipText">VIP0</span>
     </div>
   </header>
 
-  <div class="container">
-    <!-- Countdown Timer Box (Glassmorphism) -->
-    <div class="glass-card" style="text-align: center; padding: 14px; margin-bottom: 16px; background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(16,185,129,0.1)); border: 1px solid rgba(59,130,246,0.2);">
-      <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">
-        <i class="fa-solid fa-clock" style="color: var(--accent-blue); margin-left: 4px;"></i> الوقت المتبقي لتجديد المهام اليومية:
-      </div>
-      <div id="countdownTimer" style="font-size: 1.25rem; font-weight: 900; color: var(--accent-gold); letter-spacing: 1px;">24:00:00</div>
-    </div>
-
-    <!-- User Status Header -->
-    <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; margin-bottom: 20px;">
-      <div>
-        <div style="font-size: 0.8rem; color: var(--text-muted);">المهام المكتملة اليوم</div>
-        <div style="font-size: 1.2rem; font-weight: 900; color: var(--accent-blue);" id="taskProgressText">0 / 0</div>
-      </div>
-      <a href="vip.html" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 8px 14px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px; text-decoration: none; transition: var(--transition);">
-        <i class="fa-solid fa-arrow-up-right-dots"></i> ترقية VIP
-      </a>
-    </div>
-
-    <!-- Tasks Container -->
-    <main id="tasksContainer">
-      <!-- Dynamic Tasks Will Be Rendered Here -->
-    </main>
+  <!-- Countdown Timer Box -->
+  <div class="timer-box">
+    <i class="fa-solid fa-clock" style="margin-left: 6px;"></i>
+    الوقت المتبقي لتجديد المهام اليومية: <span id="countdownTimer">24:00:00</span>
   </div>
 
-  <!-- Bottom Navigation Bar (Floating) -->
+  <!-- User Status Header -->
+  <div style="margin: 0 20px 16px 20px; background-color: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <div style="font-size: 0.85rem; color: var(--text-secondary);">المهام المكتملة اليوم</div>
+      <div style="font-size: 1.2rem; font-weight: 800; color: var(--accent-blue);" id="taskProgressText">0 / 0</div>
+    </div>
+    <a href="vip.html" style="background-color: rgba(245, 158, 11, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700;">
+      <i class="fa-solid fa-arrow-up-right-dots"></i> ترقية VIP
+    </a>
+  </div>
+
+  <!-- Tasks Container -->
+  <main id="tasksContainer">
+    <!-- Dynamic Tasks Will Be Rendered Here -->
+  </main>
+
+  <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
       <i class="fa-solid fa-house"></i>
@@ -153,33 +147,24 @@
 
         const card = document.createElement('div');
         card.className = 'task-card';
+        // تعديل الهيكل الداخلي للبطاقة ليطابق التصميم المطلوب بدقة (صورة على اليسار، تفاصيل بالمنتج، وزر إكمال المهمة على اليمين)
+        card.style.cssText = "display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--bg-card); padding: 14px; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 12px;";
+        
         card.innerHTML = `
-          <div class="task-main">
-            <img src="${product.img}" alt="${product.name}" class="task-img">
-            <div class="task-info">
-              <div class="task-title">${product.name}</div>
-              <div class="task-stars" style="color: var(--accent-gold); font-size: 0.8rem; margin-top: 4px;">
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-              </div>
+          <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0;">
+            <img src="${product.img}" alt="${product.name}" class="task-img" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: var(--bg-main);">
+            <div class="task-info" style="flex: 1; min-width: 0;">
+              <div class="task-title" style="font-size: 0.9rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${product.name}</div>
+              <div class="task-profit" style="font-size: 0.85rem; font-weight: 800; color: var(--accent-green);">+$${config.rewardPerTask.toFixed(2)}</div>
             </div>
           </div>
-          <div class="task-footer">
-            <div>
-              <span style="font-size: 0.75rem; color: var(--text-muted);">عمولة التقييم:</span>
-              <div class="task-profit" style="color: var(--accent-green); font-weight: 800; font-size: 1rem;">+$${config.rewardPerTask.toFixed(2)}</div>
-            </div>
-            <button class="task-action-btn ${isCompleted ? 'completed' : ''}" 
-                    id="btn_${taskId}" 
-                    onclick="processTask('${taskId}', ${config.rewardPerTask})" 
-                    style="${isCompleted ? 'background: rgba(255,255,255,0.1); color: var(--text-muted); cursor: not-allowed; border: 1px solid var(--glass-border);' : ''}"
-                    ${isCompleted ? 'disabled' : ''}>
-              ${isCompleted ? 'تم التقييم' : 'تقييم المنتج'}
-            </button>
-          </div>
+          <button class="task-action-btn ${isCompleted ? 'completed' : ''}" 
+                  id="btn_${taskId}" 
+                  onclick="processTask('${taskId}', ${config.rewardPerTask})" 
+                  style="padding: 8px 14px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700; white-space: nowrap; flex-shrink: 0; cursor: pointer; border: none; background: ${isCompleted ? 'var(--bg-main)' : 'var(--accent-blue)'}; color: ${isCompleted ? 'var(--text-secondary)' : '#fff'};"
+                  ${isCompleted ? 'disabled' : ''}>
+            ${isCompleted ? 'تم التقييم' : 'إكمال المهمة'}
+          </button>
         `;
         container.appendChild(card);
       }
@@ -191,7 +176,7 @@
       if (!btn || btn.disabled) return;
 
       btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري المعالجة...';
+      btn.innerHTML = '<span class="spinner" style="width:16px; height:16px;"></span> جاري المعالجة...';
 
       try {
         const db = await getCloudDB();
@@ -226,14 +211,14 @@
           } else {
             alert('حدث خطأ في تحديث البيانات بالسحابة، حاول ثانية');
             btn.disabled = false;
-            btn.innerText = 'تقييم المنتج';
+            btn.innerText = 'إكمال المهمة';
           }
         }
       } catch (error) {
         console.error('Task error:', error);
         alert('فشل الاتصال الخادم');
         btn.disabled = false;
-        btn.innerText = 'تقييم المنتج';
+        btn.innerText = 'إكمال المهمة';
       }
     }
 
