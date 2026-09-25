@@ -118,12 +118,16 @@
         const formattedAmount = (isPositive ? '+' : '') + parseFloat(item.amount).toFixed(2);
         
         let statusBadge = '';
-        if (item.status === 'completed') {
+        // دعم حالات النجاح والقبول بمختلف تسمياتها البرمجية
+        if (item.status === 'completed' || item.status === 'approved' || item.status === 'success') {
           statusBadge = '<span style="background-color: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 2px 8px; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: 700;">مكتمل</span>';
         } else if (item.status === 'pending') {
           statusBadge = '<span style="background-color: rgba(245, 158, 11, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 2px 8px; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: 700;">قيد الانتظار</span>';
-        } else {
+        } else if (item.status === 'rejected') {
           statusBadge = '<span style="background-color: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); padding: 2px 8px; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: 700;">مرفوض</span>';
+        } else {
+          // حالة افتراضية آمنة في حال لم تطابق أي مما سبق
+          statusBadge = '<span style="background-color: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 2px 8px; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: 700;">مكتمل</span>';
         }
 
         let iconClass = 'bi-wallet2';
@@ -210,7 +214,7 @@
       color: var(--text-secondary);
       padding: 6px 14px;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.80rem;
       font-weight: 600;
       white-space: nowrap;
       cursor: pointer;
