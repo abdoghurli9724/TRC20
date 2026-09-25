@@ -2,13 +2,17 @@
   --bg-main: #0b1021;
   --bg-secondary: #131b2e;
   --bg-card: rgba(20, 29, 53, 0.85);
+  --border-color: rgba(255, 255, 255, 0.1);
   --glass-border: rgba(255, 255, 255, 0.1);
   --accent-gold: #f59e0b;
   --accent-gold-hover: #fbbf24;
   --accent-green: #10b981;
   --accent-blue: #3b82f6;
+  --accent-purple: #a855f7;
+  --text-primary: #ffffff;
   --text-main: #ffffff;
-  --text-muted: #94a3b8;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 24px;
@@ -26,7 +30,7 @@
 
 body {
   background-color: var(--bg-main);
-  color: var(--text-main);
+  color: var(--text-primary);
   direction: rtl;
   min-height: 100vh;
   padding-bottom: 100px;
@@ -36,13 +40,13 @@ body {
   background-attachment: fixed;
 }
 
-/* الهيدر العلوي وشريط الإشعارات */
-.app-header {
+/* الهيدر العلوي */
+.header-bar {
   position: sticky;
   top: 0;
   background: rgba(11, 16, 33, 0.9);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--border-color);
   padding: 14px 20px;
   display: flex;
   align-items: center;
@@ -50,37 +54,50 @@ body {
   z-index: 100;
 }
 
-.logo-area {
+.brand-logo {
   font-size: 1.25rem;
   font-weight: 800;
-  color: var(--text-main);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.logo-area span {
+.brand-logo span {
   color: var(--accent-gold);
 }
 
-.ticker-bar {
-  background: rgba(16, 185, 129, 0.12);
-  border-bottom: 1px solid rgba(16, 185, 129, 0.25);
-  color: var(--accent-green);
-  padding: 10px 16px;
-  font-size: 0.85rem;
-  font-weight: 600;
+.vip-badge {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid var(--accent-gold);
+  color: var(--accent-gold);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 10px;
-  overflow: hidden;
-  white-space: nowrap;
+  gap: 6px;
 }
 
-/* الحاويات والبطاقات العامة */
-.container {
-  padding: 16px;
-  max-width: 500px;
-  margin: 0 auto;
+/* شريط الوقت المؤقت */
+.timer-box {
+  margin: 16px 20px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: var(--accent-green);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* الحاويات والبطاقات العامة (card-box, balance-card, etc.) */
+.card-box, 
+.balance-card,
 .glass-card, 
 .card, 
 .box, 
@@ -89,7 +106,7 @@ body {
   background: var(--bg-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 20px;
   box-shadow: var(--shadow-glass);
@@ -100,195 +117,94 @@ p, span, div {
   word-break: break-word;
 }
 
-/* شبكة أزرار العمليات السريعة */
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin-top: 16px;
-  background: var(--bg-secondary);
-  padding: 12px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--glass-border);
-}
-
-.action-btn {
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-sm);
-  padding: 10px 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  color: var(--text-main);
-  text-decoration: none;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-align: center;
-  transition: var(--transition);
-  min-height: 65px;
-}
-
-.action-btn i {
-  font-size: 1.1rem;
-  color: var(--accent-gold);
-}
-
-.action-btn:hover {
-  background: rgba(245, 158, 11, 0.15);
-  border-color: var(--accent-gold);
-  transform: translateY(-2px);
-}
-
-/* بطاقات الـ VIP العمودية */
-.vip-tier-card {
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow-glass);
-  transition: var(--transition);
-}
-
-.vip-header {
-  padding: 16px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.vip-header.vip-0 { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff; }
-.vip-header.vip-1 { background: linear-gradient(135deg, #64748b, #334155); color: #fff; }
-.vip-header.vip-2 { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; }
-.vip-header.vip-3 { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
-
-.vip-body {
-  padding: 20px;
-}
-
-.vip-feature-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 12px;
-  margin-bottom: 8px;
-  background: var(--bg-secondary);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--glass-border);
+/* حقول الإدخال والفورمات داخل مربعات منمقة */
+.form-label {
+  display: block;
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  font-weight: 600;
 }
 
-.vip-feature-row span:last-child {
-  color: var(--text-main);
-  font-weight: 700;
-}
-
-/* ==========================================
-   تنسيق قسم المهام (Task Center Cards) المنظم
-   ========================================== */
-.task-product-card,
-.task-card,
-.task-item {
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 14px;
-  box-shadow: var(--shadow-glass);
-}
-
-/* محاذاة أفقية داخل بطاقة المهمة إذا كانت تحتوي صورة وتايتل بجانب بعض */
-.task-inner-row {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-}
-
-.task-product-img {
-  width: 70px;
-  height: 70px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: var(--accent-gold);
-  border: 1px solid var(--glass-border);
-  flex-shrink: 0;
-}
-
-.task-info {
-  flex-grow: 1;
-}
-
-.task-info h4 {
-  font-size: 0.95rem;
-  margin-bottom: 4px;
-  color: var(--text-main);
-}
-
-.task-info p {
-  font-size: 0.85rem;
-  color: var(--accent-green);
-  font-weight: 700;
-}
-
-/* ==========================================
-   تنسيق قسم الفريق (Team & Invite Section)
-   ========================================== */
-.team-section,
-.invite-box,
-.stats-box,
-.level-box {
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: var(--shadow-glass);
-}
-
-/* تنظيم حقول الإدخال وأزرار النسخ داخل قسم الفريق */
+.form-input, 
 input[type="text"], 
-input[type="number"],
-.form-control {
+input[type="number"] {
   width: 100%;
   background: var(--bg-secondary);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   padding: 12px;
-  color: var(--text-main);
+  color: var(--text-primary);
   font-size: 0.9rem;
-  margin-top: 6px;
-  margin-bottom: 10px;
   outline: none;
+  transition: var(--transition);
 }
 
+.form-input:focus, 
 input[type="text"]:focus {
   border-color: var(--accent-gold);
 }
 
-/* تنسيق مستويات الفريق (Level 1, Level 2, Level 3) لتظهر في مربعات */
-.team-level-card,
-.level-item {
-  background: var(--bg-secondary);
-  border: 1px solid var(--glass-border);
+/* أزرار الإرسال والنسخ */
+.submit-btn, button {
+  padding: 10px 16px;
   border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
+  border: none;
+  background: linear-gradient(135deg, var(--accent-gold), #d97706);
+  color: #0b1021;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-glow);
+  transition: var(--transition);
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.submit-btn:hover, button:hover {
+  background: linear-gradient(135deg, var(--accent-gold-hover), var(--accent-gold));
+  transform: translateY(-2px);
+}
+
+/* إحصائيات الأرصدة (في الفريق أو غيره) */
+.balance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.balance-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.balance-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.balance-value {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.balance-value.available { color: var(--accent-blue); }
+.balance-value.deposit { color: var(--accent-green); }
+
+/* مستويات الفريق (Level 1, Level 2, Level 3) داخل مربعات */
+#tasksContainer {
+  padding: 0 20px;
 }
 
 /* القائمة السفلية العائمة */
@@ -300,7 +216,7 @@ input[type="text"]:focus {
   background: rgba(19, 27, 46, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--border-color);
   border-radius: 30px;
   display: flex;
   justify-content: space-around;
@@ -314,7 +230,7 @@ input[type="text"]:focus {
   flex-direction: column;
   align-items: center;
   text-decoration: none;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   font-size: 0.7rem;
   font-weight: 600;
   gap: 4px;
@@ -327,30 +243,5 @@ input[type="text"]:focus {
 
 .nav-item.active, .nav-item:hover {
   color: var(--accent-gold);
-  transform: translateY(-2px);
-}
-
-/* الأزرار العامة */
-.btn-primary, button {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: var(--radius-md);
-  border: none;
-  background: linear-gradient(135deg, var(--accent-gold), #d97706);
-  color: #0b1021;
-  font-weight: 800;
-  font-size: 0.95rem;
-  cursor: pointer;
-  box-shadow: var(--shadow-glow);
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  text-align: center;
-}
-
-.btn-primary:hover, button:hover {
-  background: linear-gradient(135deg, var(--accent-gold-hover), var(--accent-gold));
   transform: translateY(-2px);
 }
