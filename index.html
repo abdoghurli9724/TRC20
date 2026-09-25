@@ -4,102 +4,93 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VirtualMall - الصفحة الرئيسية</title>
-  <link rel="stylesheet" href="profile.css">
+  <!-- ربط خط كيرو العربي ومكتبة الأيقونات الحديثة وملف التصميم الموحد -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="profile.css">
 </head>
 <body>
 
   <!-- Header Bar -->
-  <header class="header-bar">
-    <div class="brand-logo">
+  <header class="app-header">
+    <div class="logo-area">
       <i class="fa-solid fa-store" style="color: var(--accent-blue);"></i>
       Virtual<span>Mall</span>
     </div>
-    <div class="cart-icon-btn" onclick="window.location.href='tasks.html'">
+    <div class="cart-icon-btn" onclick="window.location.href='tasks.html'" style="cursor: pointer; font-size: 1.2rem; color: var(--text-main);">
       <i class="fa-solid fa-cart-shopping"></i>
     </div>
   </header>
 
   <!-- Ticker Bar -->
   <div class="ticker-bar">
-    <div class="ticker-badge">
-      <i class="fa-solid fa-bell"></i> سحب جديد
-    </div>
-    <div class="ticker-content" id="tickerText">
-      قام المستخدم 09***432 بسحب $150.00 بنجاح ... قام المستخدم 08***911 بسحب $45.50 بنجاح ... مرحباً بك في منصة VirtualMall الرسمية!
-    </div>
+    <i class="fa-solid fa-bullhorn"></i>
+    <span>قام المستخدم 09***432 بسحب $150.00 بنجاح ... قام المستخدم 08***911 بسحب $45.50 بنجاح ... مرحباً بك في منصة VirtualMall الرسمية!</span>
   </div>
 
-  <!-- Main Balance Card -->
-  <section class="balance-card">
-    <div class="user-info-row">
-      <div class="username-display" id="displayUsername">
-        <i class="fa-solid fa-user-circle" style="margin-left: 6px; color: var(--accent-blue);"></i>
-        <span id="usernameText">جاري التحميل...</span>
+  <div class="container">
+    <!-- Main Balance Card (Glassmorphism) -->
+    <div class="glass-card" style="text-align: center; position: relative; overflow: hidden;">
+      
+      <!-- User Info & VIP Badge Row -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;">
+        <div id="displayUsername" style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.95rem;">
+          <i class="fa-solid fa-user-circle" style="color: var(--accent-blue); font-size: 1.2rem;"></i>
+          <span id="usernameText">جاري التحميل...</span>
+        </div>
+        <div id="displayVipRank" style="background: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px;">
+          <i class="fa-solid fa-crown"></i>
+          <span id="vipRankText">VIP0</span>
+        </div>
       </div>
-      <div class="vip-badge" id="displayVipRank">
-        <i class="fa-solid fa-crown"></i>
-        <span id="vipRankText">VIP0</span>
+
+      <!-- Balances Grid -->
+      <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 4px;">الرصيد المتاح</p>
+      <h1 id="availableBalanceVal" style="font-size: 2.2rem; font-weight: 900; color: var(--accent-gold); margin-bottom: 16px;">$0.00</h1>
+      
+      <div style="display: flex; justify-content: center; gap: 20px; background: var(--bg-secondary); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); margin-bottom: 16px;">
+        <div>
+          <span style="font-size: 0.7rem; color: var(--text-muted); display: block;">إجمالي الإيداع</span>
+          <span id="totalDepositVal" style="font-size: 0.9rem; font-weight: 700; color: var(--text-main);">$0.00</span>
+        </div>
+      </div>
+
+      <!-- Quick Actions Grid -->
+      <div class="actions-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+        <a href="deposit.html" class="action-btn">
+          <i class="fa-solid fa-wallet"></i>
+          <span>إيداع</span>
+        </a>
+        <a href="withdraw.html" class="action-btn">
+          <i class="fa-solid fa-hand-holding-dollar"></i>
+          <span>سحب</span>
+        </a>
+        <a href="account.html" class="action-btn">
+          <i class="fa-solid fa-sliders"></i>
+          <span>حسابي</span>
+        </a>
+        <a href="records.html" class="action-btn">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>سجلات</span>
+        </a>
       </div>
     </div>
 
-    <div class="balance-grid">
-      <div class="balance-item">
-        <span class="balance-label">إجمالي الإيداع</span>
-        <span class="balance-value deposit" id="totalDepositVal">$0.00</span>
-      </div>
-      <div class="balance-item">
-        <span class="balance-label">الرصيد المتاح</span>
-        <span class="balance-value available" id="availableBalanceVal">$0.00</span>
-      </div>
+    <!-- Logout Strip -->
+    <div style="margin-top: 20px;">
+      <button id="logoutBtn" style="width: 100%; padding: 12px; background-color: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; border-radius: var(--radius-md); font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; transition: var(--transition);">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        تسجيل الخروج من الحساب
+      </button>
     </div>
-  </section>
-
-  <!-- Quick Actions Grid -->
-  <section class="quick-actions-grid">
-    <a href="deposit.html" class="action-btn">
-      <div class="action-icon deposit">
-        <i class="fa-solid fa-wallet"></i>
-      </div>
-      <span class="action-title">إيداع</span>
-    </a>
-
-    <a href="withdraw.html" class="action-btn">
-      <div class="action-icon withdraw">
-        <i class="fa-solid fa-hand-holding-dollar"></i>
-      </div>
-      <span class="action-title">يسحب</span>
-    </a>
-
-    <a href="account.html" class="action-btn">
-      <div class="action-icon account">
-        <i class="fa-solid fa-sliders"></i>
-      </div>
-      <span class="action-title">حسابي</span>
-    </a>
-
-    <a href="records.html" class="action-btn">
-      <div class="action-icon records">
-        <i class="fa-solid fa-clock-rotate-left"></i>
-      </div>
-      <span class="action-title">سجلات</span>
-    </a>
-  </section>
-
-  <!-- Logout Strip -->
-  <div style="margin: 0 20px 24px 20px;">
-    <button id="logoutBtn" style="width: 100%; padding: 12px; background-color: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); border-radius: var(--radius-md); font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer;">
-      <i class="fa-solid fa-right-from-bracket"></i>
-      تسجيل الخروج من الحساب
-    </button>
   </div>
 
   <!-- Floating Telegram Support Button -->
-  <a href="https://t.me" target="_blank" class="floating-support-btn" title="الدعم الفني">
+  <a href="https://t.me" target="_blank" class="floating-support-btn" title="الدعم الفني" style="position: fixed; bottom: 90px; left: 20px; background: var(--accent-blue); color: #fff; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 99;">
     <i class="fa-solid fa-paper-plane"></i>
   </a>
 
-  <!-- Bottom Navigation Bar -->
+  <!-- Floating Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item active">
       <i class="fa-solid fa-house"></i>
@@ -124,7 +115,6 @@
 
   <!-- Dashboard Controller Script -->
   <script>
-    // Verify Session and Load Cloud Data
     window.addEventListener('DOMContentLoaded', async () => {
       const activeUsername = localStorage.getItem('currentUser');
       
@@ -134,7 +124,6 @@
       }
 
       try {
-        // Fetch Live Data from JSONBin Cloud
         const user = await getCurrentUser();
 
         if (!user) {
@@ -144,7 +133,7 @@
         }
 
         // Render Dashboard Data
-        document.getElementById('usernameText').innerText = user.username;
+        document.getElementById('usernameText').innerText = user.username || activeUsername;
         document.getElementById('vipRankText').innerText = user.vip || 'VIP0';
         document.getElementById('totalDepositVal').innerText = '$' + parseFloat(user.totalDeposit || 0).toFixed(2);
         document.getElementById('availableBalanceVal').innerText = '$' + parseFloat(user.balance || 0).toFixed(2);
