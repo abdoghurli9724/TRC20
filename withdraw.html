@@ -6,7 +6,7 @@
   <title>VirtualMall - سحب الأرباح</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   
-  <!-- استبدال مكتبة FontAwesome بمكتبة Bootstrap Icons المجانية والمستقرة -->
+  <!-- مكتبة Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="profile.css">
 </head>
@@ -15,11 +15,11 @@
   <!-- Header Bar -->
   <header class="header-bar">
     <div class="brand-logo">
-      <i class="fa-solid fa-hand-holding-dollar" style="color: var(--accent-gold);"></i>
+      <i class="bi bi-cash-stack" style="color: var(--accent-gold);"></i>
       سحب <span>الأرباح</span>
     </div>
     <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
     </a>
   </header>
 
@@ -33,7 +33,7 @@
 
     <!-- Notice Box -->
     <div style="background-color: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-gold); padding: 12px; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-primary); margin-bottom: 20px;">
-      <i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-gold); margin-left: 6px;"></i>
+      <i class="bi bi-exclamation-triangle-fill" style="color: var(--accent-gold); margin-left: 6px;"></i>
       تنبيه: الحد الأدنى للسحب هو <strong>$2.00</strong>. يتم معالجة طلبات السحب فوراً وتصلك خلال فترة من 5 دقائق إلى 24 ساعة.
     </div>
 
@@ -43,7 +43,7 @@
     <!-- Withdraw Form -->
     <form id="withdrawForm" class="card-box">
       <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-        <i class="fa-solid fa-money-bill-transfer" style="color: var(--accent-gold); margin-left: 6px;"></i>بيانات طلب السحب
+        <i class="bi bi-wallet2" style="color: var(--accent-gold); margin-left: 6px;"></i>بيانات طلب السحب
       </h3>
 
       <div class="form-group">
@@ -72,19 +72,19 @@
   <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
       <span>الرئيسية</span>
     </a>
     <a href="tasks.html" class="nav-item">
-      <i class="fa-solid fa-list-check"></i>
+      <i class="bi bi-check2-square"></i>
       <span>المهام</span>
     </a>
     <a href="team.html" class="nav-item">
-      <i class="fa-solid fa-users"></i>
+      <i class="bi bi-people-fill"></i>
       <span>الفريق</span>
     </a>
     <a href="vip.html" class="nav-item">
-      <i class="fa-solid fa-crown"></i>
+      <i class="bi bi-award-fill"></i>
       <span>VIP</span>
     </a>
   </nav>
@@ -96,7 +96,6 @@
   <script>
     let currentUserObj = null;
 
-    // Load User Data
     window.addEventListener('DOMContentLoaded', async () => {
       const activeUsername = localStorage.getItem('currentUser');
       if (!activeUsername) {
@@ -118,7 +117,6 @@
       }
     });
 
-    // Alert Helper
     function showAlert(message, type) {
       const alertBox = document.getElementById('alertBox');
       alertBox.style.display = 'block';
@@ -134,7 +132,6 @@
       }
     }
 
-    // Submit Withdrawal Request
     document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -144,7 +141,6 @@
 
       const currentBalance = parseFloat(currentUserObj.balance || 0);
 
-      // Input Validations
       if (isNaN(amount) || amount < 2) {
         showAlert('الحد الأدنى للسحب هو $2.00', 'error');
         return;
@@ -180,12 +176,10 @@
         if (userIndex !== -1) {
           const user = db.users[userIndex];
 
-          // Deduct Amount Instantly
           user.balance = parseFloat(user.balance || 0) - amount;
 
           if (!user.history) user.history = [];
 
-          // Record withdrawal transaction
           user.history.unshift({
             id: generateTransactionId(),
             type: "withdraw",
@@ -196,7 +190,6 @@
             date: new Date().toLocaleString('ar-EG')
           });
 
-          // Sync with Cloud Database
           const success = await updateCloudDB(db);
 
           if (success) {
