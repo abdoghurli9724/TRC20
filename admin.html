@@ -13,12 +13,15 @@
     th, td { padding: 10px 6px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); word-break: break-word; }
     th { color: var(--accent-gold); background: var(--bg-secondary); }
     
-    .action-btns { display: flex; gap: 4px; justify-content: flex-start; }
+    .action-btns { display: flex; gap: 4px; justify-content: flex-start; flex-wrap: wrap; }
     .btn-approve { background: var(--accent-green); color: #fff; padding: 5px 8px; font-size: 0.7rem; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
     .btn-reject { background: #ef4444; color: #fff; padding: 5px 8px; font-size: 0.7rem; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
-    .btn-balance { background: #3b82f6; color: #fff; padding: 6px 12px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
-    .btn-vip { background: #8b5cf6; color: #fff; padding: 6px 12px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
-    
+    .btn-balance { background: #3b82f6; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-vip { background: #8b5cf6; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-edit-user { background: #f59e0b; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-delete-user { background: #991b1b; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    .btn-global-wallet { background: #10b981; color: #fff; padding: 8px 14px; font-size: 0.8rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
     .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
     .stat-card { background: var(--bg-secondary); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
     .stat-card h4 { font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px; }
@@ -33,6 +36,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
     .user-info div { font-size: 0.85rem; margin-bottom: 3px; color: var(--text-primary); }
 
@@ -53,9 +58,11 @@
       padding: 20px;
       border-radius: 12px;
       width: 100%;
-      max-width: 340px;
+      max-width: 360px;
       text-align: center;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      max-height: 90vh;
+      overflow-y: auto;
     }
     .modal-content h3 { color: var(--accent-gold); font-size: 1rem; margin-bottom: 15px; }
     .modal-content input, .modal-content select {
@@ -184,26 +191,30 @@
 
     <!-- قسم إدارة المستخدمين والرصيد -->
     <div class="card-box admin-section">
-      <h3 style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px;">إدارة أرصدة ومستويات المستخدمين</h3>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
+        <h3 style="color: var(--accent-gold); font-size: 0.95rem;">إدارة أرصدة ومستويات المستخدمين</h3>
+      </div>
+      
+      <!-- زر تعديل محفظة الكل -->
+      <button class="btn-global-wallet" onclick="openGlobalWalletModal()">
+        <i class="fa-solid fa-wallet"></i> تعديل عنوان المحفظة لجميع المستخدمين
+      </button>
+
       <div id="usersListContainer">
         <div style="text-align: center; color: var(--text-secondary);">جاري جلب المستخدمين...</div>
       </div>
     </div>
   </div>
 
-  <!-- نافذة تعديل الرصيد المخصصة مع خيار نوع الرصيد -->
+  <!-- نافذة تعديل الرصيد المخصصة -->
   <div id="balanceModal" class="custom-modal">
     <div class="modal-content">
       <h3 id="balanceModalTitle">إدارة رصيد المستخدم</h3>
-      
-      <!-- اختيار نوع الرصيد المراد تعديله -->
       <select id="balanceTypeSelect">
         <option value="balance">الرصيد الحالي</option>
         <option value="depositBalance">رصيد الإيداع</option>
       </select>
-
       <input type="number" id="balanceInputAmount" placeholder="أدخل المبلغ (USDT)" step="any">
-      
       <div class="modal-actions">
         <button class="btn-modal-cancel" onclick="closeModals()">إلغاء</button>
         <button class="btn-modal-sub" onclick="processBalance('sub')">حذف (-)</button>
@@ -227,6 +238,43 @@
       <div class="modal-actions">
         <button class="btn-modal-cancel" onclick="closeModals()">إلغاء</button>
         <button class="btn-modal-confirm" onclick="processVip()">تأكيد التغيير</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة تعديل محفظة جميع المستخدمين -->
+  <div id="globalWalletModal" class="custom-modal">
+    <div class="modal-content">
+      <h3>تعديل محفظة كل المستخدمين</h3>
+      <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 12px;">سيتم تطبيق هذا العنوان كعنوان افتراضي ومحفظة سحب لكل المسجلين في الموقع.</p>
+      <input type="text" id="globalWalletInput" placeholder="أدخل عنوان المحفظة الجديد (USDT)">
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeModals()">إلغاء</button>
+        <button class="btn-modal-confirm" onclick="processGlobalWallet()">تحديث للجميع</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة التعديل الشامل لبيانات المستخدم الفردي -->
+  <div id="editUserModal" class="custom-modal">
+    <div class="modal-content">
+      <h3 id="editUserModalTitle">تعديل بيانات المستخدم</h3>
+      
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 4px;">كلمة المرور الجديدة:</label>
+      <input type="text" id="editUserPassword" placeholder="اتركه فارغاً لعدم التغيير">
+
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 4px;">عنوان المحفظة:</label>
+      <input type="text" id="editUserWallet" placeholder="عنوان محفظة السحب (USDT)">
+
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 4px;">حالة الحساب:</label>
+      <select id="editUserStatus">
+        <option value="active">نشط (Active)</option>
+        <option value="suspended">مجمّد / محظور (Suspended)</option>
+      </select>
+
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeModals()">إلغاء</button>
+        <button class="btn-modal-confirm" onclick="processEditUser()">حفظ التعديلات</button>
       </div>
     </div>
   </div>
@@ -328,17 +376,21 @@
             const ubal = Number(u.balance || 0).toFixed(2);
             const udbal = Number(u.depositBalance || 0).toFixed(2);
             const uvip = u.vip || 'VIP0';
+            const ustatus = u.status === 'suspended' ? '<span style="color:#ef4444;">(مجمّد)</span>' : '<span style="color:#10b981;">(نشط)</span>';
+            const uwallet = u.walletAddress || u.wallet || 'غير محددة';
             
             usersContainer.innerHTML += `
               <div class="user-card-item">
                 <div class="user-info">
-                  <div style="color: var(--accent-gold); font-weight: bold;">👤 ${uname}</div>
+                  <div style="color: var(--accent-gold); font-weight: bold;">👤 ${uname} ${ustatus}</div>
                   <div>الرصيد: <span style="color: #10b981;">${ubal} USDT</span> | الإيداع: <span style="color: #3b82f6;">${udbal}</span></div>
-                  <div>المستوى: ${uvip}</div>
+                  <div>المستوى: ${uvip} | المحفظة: <span style="font-family: monospace; font-size: 0.75rem;">${uwallet}</span></div>
                 </div>
                 <div class="action-btns">
                   <button class="btn-balance" onclick="openBalanceModal('${uname}')">الرصيد</button>
                   <button class="btn-vip" onclick="openVipModal('${uname}', '${uvip}')">VIP</button>
+                  <button class="btn-edit-user" onclick="openEditUserModal('${uname}')">تعديل</button>
+                  <button class="btn-delete-user" onclick="deleteUser('${uname}')">حذف</button>
                 </div>
               </div>
             `;
@@ -413,15 +465,34 @@
       document.getElementById("vipModal").style.display = "flex";
     }
 
+    async function openEditUserModal(username) {
+      activeUser = username;
+      const db = await getCloudDB();
+      const user = (db.users || []).find(u => u.username === username);
+      
+      document.getElementById("editUserModalTitle").innerText = `تعديل بيانات: ${username}`;
+      document.getElementById("editUserPassword").value = "";
+      document.getElementById("editUserWallet").value = user && (user.walletAddress || user.wallet) ? (user.walletAddress || user.wallet) : "";
+      document.getElementById("editUserStatus").value = user && user.status ? user.status : "active";
+      document.getElementById("editUserModal").style.display = "flex";
+    }
+
+    function openGlobalWalletModal() {
+      document.getElementById("globalWalletInput").value = "";
+      document.getElementById("globalWalletModal").style.display = "flex";
+    }
+
     function closeModals() {
       document.getElementById("balanceModal").style.display = "none";
       document.getElementById("vipModal").style.display = "none";
+      document.getElementById("editUserModal").style.display = "none";
+      document.getElementById("globalWalletModal").style.display = "none";
       activeUser = "";
     }
 
     async function processBalance(actionType) {
       const amountVal = parseFloat(document.getElementById("balanceInputAmount").value);
-      const balanceType = document.getElementById("balanceTypeSelect").value; // 'balance' أو 'depositBalance'
+      const balanceType = document.getElementById("balanceTypeSelect").value;
 
       if (isNaN(amountVal) || amountVal <= 0) {
         showToast("الرجاء إدخال مبلغ صحيح", "error");
@@ -460,6 +531,66 @@
       await updateCloudDB(db);
       closeModals();
       showToast(`تم ترقية مستوى المستخدم إلى ${selectedVip} بنجاح`, "success");
+      loadAdminData();
+    }
+
+    async function processEditUser() {
+      const newPassword = document.getElementById("editUserPassword").value.trim();
+      const newWallet = document.getElementById("editUserWallet").value.trim();
+      const newStatus = document.getElementById("editUserStatus").value;
+
+      const db = await getCloudDB();
+      if (!db.users) return;
+      const userIndex = db.users.findIndex(u => u.username === activeUser);
+      if (userIndex === -1) return;
+
+      if (newPassword !== "") {
+        db.users[userIndex].password = newPassword;
+      }
+      db.users[userIndex].walletAddress = newWallet;
+      db.users[userIndex].wallet = newWallet;
+      db.users[userIndex].status = newStatus;
+
+      await updateCloudDB(db);
+      closeModals();
+      showToast("تم تحديث بيانات المحفظة والحساب بنجاح", "success");
+      loadAdminData();
+    }
+
+    async function processGlobalWallet() {
+      const newWallet = document.getElementById("globalWalletInput").value.trim();
+      if (newWallet === "") {
+        showToast("الرجاء إدخال عنوان محفظة صحيح", "error");
+        return;
+      }
+
+      const db = await getCloudDB();
+      if (!db.users || db.users.length === 0) {
+        showToast("لا يوجد مستخدمون لتحديث محافظهم", "error");
+        return;
+      }
+
+      // تحديث عنوان المحفظة لكل المستخدمين المسجلين في القاعدة
+      db.users.forEach(u => {
+        u.walletAddress = newWallet;
+        u.wallet = newWallet;
+      });
+
+      await updateCloudDB(db);
+      closeModals();
+      showToast("تم تحديث عنوان المحفظة لجميع المستخدمين بنجاح", "success");
+      loadAdminData();
+    }
+
+    async function deleteUser(username) {
+      if (!confirm(`هل أنت متأكد من حذف المستخدم (${username}) نهائياً؟`)) return;
+
+      const db = await getCloudDB();
+      if (!db.users) return;
+
+      db.users = db.users.filter(u => u.username !== username);
+      await updateCloudDB(db);
+      showToast(`تم حذف المستخدم ${username} بنجاح`, "success");
       loadAdminData();
     }
 
