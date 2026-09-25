@@ -3,388 +3,265 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VirtualMall - لوحة تحكم المسؤول</title>
+  <title>لوحة تحكم الأدمن - VirtualMall</title>
   <link rel="stylesheet" href="profile.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
-    .admin-tab-btn {
-      flex: 1;
-      padding: 10px;
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      text-align: center;
-    }
-    .admin-tab-btn.active {
-      background-color: var(--accent-blue);
-      color: #ffffff;
-      border-color: var(--accent-blue);
-    }
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.8rem;
-    }
-    .data-table th, .data-table td {
-      padding: 10px 8px;
-      border-bottom: 1px solid var(--border-color);
-      text-align: center;
-    }
-    .data-table th {
-      background-color: rgba(255, 255, 255, 0.05);
-      color: var(--text-secondary);
-    }
-    .action-btn-sm {
-      padding: 4px 8px;
-      border-radius: 4px;
-      border: none;
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin: 2px;
-    }
+    .admin-section { margin-bottom: 24px; }
+    .table-container { overflow-x: auto; margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; text-align: right; font-size: 0.85rem; }
+    th, td { padding: 10px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
+    th { color: var(--accent-gold); background: var(--bg-secondary); }
+    .action-btns { display: flex; gap: 6px; }
+    .btn-approve { background: var(--accent-green); color: #fff; padding: 6px 10px; font-size: 0.75rem; }
+    .btn-reject { background: #ef4444; color: #fff; padding: 6px 10px; font-size: 0.75rem; }
   </style>
 </head>
 <body>
 
-  <!-- Header Bar -->
-  <header class="header-bar">
-    <div class="brand-logo">
-      <i class="bi bi-shield-fill-exclamation" style="color: var(--accent-red);"></i>
-      لوحة تحكم <span>المسؤول</span>
-    </div>
-    <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
-      <i class="bi bi-house-fill"></i>
-    </a>
-  </header>
+  <div class="header-bar">
+    <div class="brand-logo"><i class="fa-solid fa-user-shield" style="color: var(--accent-gold);"></i> لوحة تحكم <span>الآدمن</span></div>
+    <button onclick="logoutUser()" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; padding: 6px 12px; font-size: 0.8rem;">خروج</button>
+  </div>
 
-  <main style="max-width: 700px; margin: 20px auto 80px auto; padding: 0 16px;">
-
-    <!-- Alert Notification Box -->
-    <div id="alertBox" style="display: none; padding: 12px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 0.85rem; text-align: center;"></div>
-
-    <!-- Overview Financial Stats -->
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;">
-      <div class="card-box" style="padding: 10px; text-align: center;">
-        <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px;">إجمالي المستخدمين</div>
-        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-blue);" id="statUsersCount">0</div>
-      </div>
-      <div class="card-box" style="padding: 10px; text-align: center;">
-        <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px;">طلبات معلقة</div>
-        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-gold);" id="statPendingRequests">0</div>
-      </div>
-      <div class="card-box" style="padding: 10px; text-align: center;">
-        <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px;">إجمالي الإيداعات</div>
-        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green);" id="statTotalDeposits">$0.00</div>
+  <div style="padding: 20px;">
+    <!-- قسم طلبات الإيداع -->
+    <div class="card-box admin-section">
+      <h3 style="color: var(--accent-gold); font-size: 1rem; margin-bottom: 10px;"><i class="fa-solid fa-file-arrow-down"></i> طلبات الإيداع المعلقة</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>المستخدم</th>
+              <th>المبلغ</th>
+              <th>رقم المعاملة (TXID)</th>
+              <th>التاريخ</th>
+              <th>الإجراء</th>
+            </tr>
+          </thead>
+          <tbody id="depositRequestsTable">
+            <tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">جاري التحميل...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <!-- Admin Section Tabs -->
-    <div style="display: flex; gap: 8px; margin-bottom: 20px;">
-      <button class="admin-tab-btn active" id="tabReqBtn" onclick="switchAdminTab('requests')">طلبات الشحن/السحب</button>
-      <button class="admin-tab-btn" id="tabUsersBtn" onclick="switchAdminTab('users')">إدارة الحسابات</button>
+    <!-- قسم طلبات السحب -->
+    <div class="card-box admin-section">
+      <h3 style="color: var(--accent-gold); font-size: 1rem; margin-bottom: 10px;"><i class="fa-solid fa-file-arrow-up"></i> طلبات السحب المعلقة</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>المستخدم</th>
+              <th>المبلغ</th>
+              <th>المحفظة</th>
+              <th>التاريخ</th>
+              <th>الإجراء</th>
+            </tr>
+          </thead>
+          <tbody id="withdrawRequestsTable">
+            <tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">جاري التحميل...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- Section 1: Deposit & Withdrawal Requests -->
-    <div id="sectionRequests" class="card-box" style="padding: 12px; overflow-x: auto;">
-      <h3 style="font-size: 0.95rem; color: var(--text-primary); margin-bottom: 12px;">
-        <i class="bi bi-card-checklist" style="color: var(--accent-blue); margin-left: 6px;"></i>طلبات الإيداع والسحب المعلقة
-      </h3>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>النوع</th>
-            <th>المستخدم</th>
-            <th>المبلغ</th>
-            <th>التفاصيل/العنوان</th>
-            <th>الإجراء</th>
-          </tr>
-        </thead>
-        <tbody id="requestsTableBody">
-          <tr>
-            <td colspan="5" style="padding: 20px; color: var(--text-secondary);">جاري تحميل الطلبات...</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Section 2: User Accounts Management -->
-    <div id="sectionUsers" class="card-box" style="display: none; padding: 12px; overflow-x: auto;">
-      <h3 style="font-size: 0.95rem; color: var(--text-primary); margin-bottom: 12px;">
-        <i class="bi bi-people-fill" style="color: var(--accent-purple); margin-left: 6px;"></i>قائمة كافة المستخدمين
-      </h3>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>اسم المستخدم</th>
-            <th>الرصيد المتاح</th>
-            <th>VIP</th>
-            <th>كلمة المرور</th>
-            <th>تعديل</th>
-          </tr>
-        </thead>
-        <tbody id="usersTableBody">
-          <tr>
-            <td colspan="5" style="padding: 20px; color: var(--text-secondary);">جاري تحميل الحسابات...</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-  </main>
-
-  <!-- Edit User Modal -->
-  <div id="editUserModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 16px;">
-    <div class="card-box" style="width: 100%; max-width: 400px; padding: 20px; background-color: var(--card-bg);">
-      <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 16px; text-align: center;">تعديل بيانات المستخدم: <span id="modalTargetUsername" style="color: var(--accent-blue);"></span></h3>
-      
-      <div class="form-group">
-        <label class="form-label" for="editBalanceInput">الرصيد المتاح الحالي ($):</label>
-        <input type="number" step="0.01" id="editBalanceInput" class="form-input">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="editVipSelect">مستوى VIP:</label>
-        <select id="editVipSelect" class="form-input">
-          <option value="VIP0">VIP0</option>
-          <option value="VIP1">VIP1</option>
-          <option value="VIP2">VIP2</option>
-          <option value="VIP3">VIP3</option>
-          <option value="VIP4">VIP4</option>
-          <option value="VIP5">VIP5</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="editPasswordInput">كلمة المرور الجديدة:</label>
-        <input type="text" id="editPasswordInput" class="form-input" placeholder="اتركه فارغاً لعدم التغيير">
-      </div>
-
-      <div style="display: flex; gap: 10px; margin-top: 16px;">
-        <button onclick="saveUserEdit()" class="submit-btn" style="flex: 1; background-color: var(--accent-green);">حفظ</button>
-        <button onclick="closeEditModal()" class="submit-btn" style="flex: 1; background-color: rgba(239, 68, 68, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red);">إلغاء</button>
+    <!-- قسم إدارة المستخدمين والرصيد -->
+    <div class="card-box admin-section">
+      <h3 style="color: var(--accent-gold); font-size: 1rem; margin-bottom: 10px;"><i class="fa-solid fa-users-gear"></i> إدارة أرصدة المستخدمين</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>المستخدم</th>
+              <th>الرصيد الحالي</th>
+              <th>مستوى VIP</th>
+              <th>تعديل الرصيد</th>
+            </tr>
+          </thead>
+          <tbody id="usersTable">
+            <tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">جاري التحميل...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- Database Script -->
   <script src="db.js"></script>
-
-  <!-- Admin Logic Script -->
   <script>
-    let globalDB = null;
-    let selectedUsernameForEdit = null;
-
-    // Load Admin Data on Load
-    window.addEventListener('DOMContentLoaded', async () => {
-      const activeUsername = localStorage.getItem('currentUser');
-      if (!activeUsername || activeUsername !== 'admin') {
-        alert('عذراً، هذه الصفحة مخصصة لمدير النظام فقط!');
-        window.location.href = 'index.html';
+    async function loadAdminData() {
+      const currentUser = await getCurrentUser();
+      // تحقق مبدئي بسيط لصلاحية الأدمن (يمكن جعله مخصصاً لرقم حساب معين مثل 088888888 أو حساب الآدمن)
+      if (!currentUser) {
+        window.location.href = "login.html";
         return;
       }
 
-      await refreshAdminData();
-    });
+      const db = await getCloudDB();
 
-    // Alert Message Helper
-    function showAlert(message, type) {
-      const alertBox = document.getElementById('alertBox');
-      alertBox.style.display = 'block';
-      alertBox.innerText = message;
-      if (type === 'error') {
-        alertBox.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
-        alertBox.style.color = 'var(--accent-red)';
-        alertBox.style.border = '1px solid var(--accent-red)';
+      // عرض طلبات الإيداع المعلقة
+      const depositTbody = document.getElementById("depositRequestsTable");
+      depositTbody.innerHTML = "";
+      if (!db.depositRequests || db.depositRequests.filter(r => r.status === 'pending').length === 0) {
+        depositTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">لا توجد طلبات إيداع معلقة</td></tr>`;
       } else {
-        alertBox.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
-        alertBox.style.color = 'var(--accent-green)';
-        alertBox.style.border = '1px solid var(--accent-green)';
+        db.depositRequests.filter(r => r.status === 'pending').forEach((req, index) => {
+          depositTbody.innerHTML += `
+            <tr>
+              <td>${req.username}</td>
+              <td>${req.amount} USDT</td>
+              <td>${req.txid}</td>
+              <td>${req.date}</td>
+              <td>
+                <div class="action-btns">
+                  <button class="btn-approve" onclick="handleDeposit('${req.id}', 'approve')">قبول</button>
+                  <button class="btn-reject" onclick="handleDeposit('${req.id}', 'reject')">رفض</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
       }
-      setTimeout(() => { alertBox.style.display = 'none'; }, 4000);
-    }
 
-    // Refresh Data from JSONBin Cloud
-    async function refreshAdminData() {
-      try {
-        globalDB = await getCloudDB();
-        if (!globalDB) return;
-
-        renderStats();
-        renderRequestsTable();
-        renderUsersTable();
-
-      } catch (error) {
-        console.error('Error fetching admin data:', error);
-        showAlert('فشل جلب البيانات من السحابة', 'error');
-      }
-    }
-
-    // Render Stats
-    function renderStats() {
-      const users = globalDB.users || [];
-      const records = globalDB.records || [];
-
-      document.getElementById('statUsersCount').innerText = users.length;
-
-      const pendingReqs = records.filter(r => r.status === 'قيد الانتظار');
-      document.getElementById('statPendingRequests').innerText = pendingReqs.length;
-
-      const approvedDeposits = records
-        .filter(r => r.type === 'إيداع' && r.status === 'مقبول')
-        .reduce((sum, r) => sum + parseFloat(r.amount || 0), 0);
-      
-      document.getElementById('statTotalDeposits').innerText = '$' + approvedDeposits.toFixed(2);
-    }
-
-    // Tab Switching
-    function switchAdminTab(tabName) {
-      if (tabName === 'requests') {
-        document.getElementById('sectionRequests').style.display = 'block';
-        document.getElementById('sectionUsers').style.display = 'none';
-        document.getElementById('tabReqBtn').classList.add('active');
-        document.getElementById('tabUsersBtn').classList.remove('active');
+      // عرض طلبات السحب المعلقة
+      const withdrawTbody = document.getElementById("withdrawRequestsTable");
+      withdrawTbody.innerHTML = "";
+      if (!db.withdrawRequests || db.withdrawRequests.filter(r => r.status === 'pending').length === 0) {
+        withdrawTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">لا توجد طلبات سحب معلقة</td></tr>`;
       } else {
-        document.getElementById('sectionRequests').style.display = 'none';
-        document.getElementById('sectionUsers').style.display = 'block';
-        document.getElementById('tabReqBtn').classList.remove('active');
-        document.getElementById('tabUsersBtn').classList.add('active');
+        db.withdrawRequests.filter(r => r.status === 'pending').forEach((req) => {
+          withdrawTbody.innerHTML += `
+            <tr>
+              <td>${req.username}</td>
+              <td>${req.amount} USDT</td>
+              <td>${req.address}</td>
+              <td>${req.date}</td>
+              <td>
+                <div class="action-btns">
+                  <button class="btn-approve" onclick="handleWithdraw('${req.id}', 'approve')">قبول</button>
+                  <button class="btn-reject" onclick="handleWithdraw('${req.id}', 'reject')">رفض</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
       }
+
+      // عرض قائمة المستخدمين للتحكم بأرصدتهم
+      const usersTbody = document.getElementById("usersTable");
+      usersTbody.innerHTML = "";
+      db.users.forEach(u => {
+        usersTbody.innerHTML += `
+          <tr>
+            <td>${u.username}</td>
+            <td>${(u.balance || 0).toFixed(2)} USDT</td>
+            <td>${u.vip || 'VIP0'}</td>
+            <td>
+              <button style="padding: 4px 8px; font-size: 0.75rem;" onclick="modifyUserBalance('${u.username}')">تعديل الرصيد</button>
+            </td>
+          </tr>
+        `;
+      });
     }
 
-    // Render Pending Requests Table
-    function renderRequestsTable() {
-      const tbody = document.getElementById('requestsTableBody');
-      const pendingRecords = (globalDB.records || []).filter(r => r.status === 'قيد الانتظار');
+    async function handleDeposit(reqId, action) {
+      const db = await getCloudDB();
+      const reqIndex = db.depositRequests.findIndex(r => r.id === reqId);
+      if (reqIndex === -1) return;
 
-      if (pendingRecords.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="padding: 20px; color: var(--text-secondary);">لا توجد طلبات معلقة حالياً</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = pendingRecords.map(req => `
-        <tr>
-          <td><span style="color: ${req.type === 'إيداع' ? 'var(--accent-green)' : 'var(--accent-gold)'}; font-weight:700;">${req.type}</span></td>
-          <td>${req.username}</td>
-          <td>$${parseFloat(req.amount).toFixed(2)}</td>
-          <td style="font-size:0.7rem; max-width: 120px; word-break: break-all;">${req.details || req.address || '-'}</td>
-          <td>
-            <button onclick="handleRequest('${req.id}', 'approve')" class="action-btn-sm" style="background-color: var(--accent-green); color: #fff;">قبول</button>
-            <button onclick="handleRequest('${req.id}', 'reject')" class="action-btn-sm" style="background-color: var(--accent-red); color: #fff;">رفض</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    // Handle Approve / Reject Request
-    async function handleRequest(recordId, action) {
-      const recordIndex = globalDB.records.findIndex(r => r.id === recordId);
-      if (recordIndex === -1) return;
-
-      const record = globalDB.records[recordIndex];
-      const userIndex = globalDB.users.findIndex(u => u.username === record.username);
+      const req = db.depositRequests[reqIndex];
+      const userIndex = db.users.findIndex(u => u.username === req.username);
 
       if (action === 'approve') {
-        globalDB.records[recordIndex].status = 'مقبول';
-
         if (userIndex !== -1) {
-          const amount = parseFloat(record.amount);
-          if (record.type === 'إيداع') {
-            globalDB.users[userIndex].balance = (parseFloat(globalDB.users[userIndex].balance || 0) + amount).toFixed(2);
-            globalDB.users[userIndex].totalDeposit = (parseFloat(globalDB.users[userIndex].totalDeposit || 0) + amount).toFixed(2);
-          } else if (record.type === 'سحب') {
-            globalDB.users[userIndex].totalWithdraw = (parseFloat(globalDB.users[userIndex].totalWithdraw || 0) + amount).toFixed(2);
+          db.users[userIndex].balance = (db.users[userIndex].balance || 0) + req.amount;
+          db.users[userIndex].totalDeposit = (db.users[userIndex].totalDeposit || 0) + req.amount;
+          
+          // تحديث حالة السجل في تاريخ المستخدم
+          if (db.users[userIndex].history) {
+            const hist = db.users[userIndex].history.find(h => h.id === reqId);
+            if (hist) {
+              hist.status = 'completed';
+              hist.title = 'إيداع مقبول';
+            }
           }
         }
+        req.status = 'approved';
+        alert("تمت الموافقة على الإيداع وإضافة الرصيد للمستخدم بنجاح.");
       } else {
-        globalDB.records[recordIndex].status = 'مرفوض';
-
-        // Refund balance if withdrawal was rejected
-        if (record.type === 'سحب' && userIndex !== -1) {
-          const amount = parseFloat(record.amount);
-          globalDB.users[userIndex].balance = (parseFloat(globalDB.users[userIndex].balance || 0) + amount).toFixed(2);
+        req.status = 'rejected';
+        if (userIndex !== -1 && db.users[userIndex].history) {
+          const hist = db.users[userIndex].history.find(h => h.id === reqId);
+          if (hist) {
+            hist.status = 'rejected';
+            hist.title = 'إيداع مرفوض';
+          }
         }
+        alert("تم رفض طلب الإيداع.");
       }
 
-      // Sync to Cloud DB
-      const success = await updateCloudDB(globalDB);
-      if (success) {
-        showAlert(`تم ${action === 'approve' ? 'قبول' : 'رفض'} الطلب بنجاح وتحديث البيانات!`, 'success');
-        refreshAdminData();
+      await updateCloudDB(db);
+      loadAdminData();
+    }
+
+    async function handleWithdraw(reqId, action) {
+      const db = await getCloudDB();
+      const reqIndex = db.withdrawRequests.findIndex(r => r.id === reqId);
+      if (reqIndex === -1) return;
+
+      const req = db.withdrawRequests[reqIndex];
+      const userIndex = db.users.findIndex(u => u.username === req.username);
+
+      if (action === 'approve') {
+        req.status = 'approved';
+        if (userIndex !== -1 && db.users[userIndex].history) {
+          const hist = db.users[userIndex].history.find(h => h.id === reqId);
+          if (hist) {
+            hist.status = 'completed';
+            hist.title = 'سحب مقبول';
+          }
+        }
+        alert("تمت الموافقة على طلب السحب.");
       } else {
-        showAlert('حدث خطأ أثناء حفظ التعديلات في السحابة', 'error');
+        // إذا رُفض السحب، يُعاد المبلغ إلى رصيد المستخدم
+        if (userIndex !== -1) {
+          db.users[userIndex].balance = (db.users[userIndex].balance || 0) + req.amount;
+          if (db.users[userIndex].history) {
+            const hist = db.users[userIndex].history.find(h => h.id === reqId);
+            if (hist) {
+              hist.status = 'rejected';
+              hist.title = 'سحب مرفوض (مسترجع)';
+            }
+          }
+        }
+        req.status = 'rejected';
+        alert("تم رفض طلب السحب وإعادة المبلغ لحساب المستخدم.");
+      }
+
+      await updateCloudDB(db);
+      loadAdminData();
+    }
+
+    async function modifyUserBalance(username) {
+      const newBalanceStr = prompt(`أدخل الرصيد الجديد للمستخدم ${username}:`);
+      if (newBalanceStr === null) return;
+      const newBalance = parseFloat(newBalanceStr);
+      if (isNaN(newBalance)) {
+        alert("قيمة غير صالحة.");
+        return;
+      }
+
+      const db = await getCloudDB();
+      const userIndex = db.users.findIndex(u => u.username === username);
+      if (userIndex !== -1) {
+        db.users[userIndex].balance = newBalance;
+        await updateCloudDB(db);
+        alert("تم تحديث الرصيد بنجاح!");
+        loadAdminData();
       }
     }
 
-    // Render Users Table
-    function renderUsersTable() {
-      const tbody = document.getElementById('usersTableBody');
-      const users = globalDB.users || [];
-
-      tbody.innerHTML = users.map(u => `
-        <tr>
-          <td><strong>${u.username}</strong></td>
-          <td style="color: var(--accent-green); font-weight:700;">$${parseFloat(u.balance || 0).toFixed(2)}</td>
-          <td><span style="color: var(--accent-gold); font-size:0.75rem;">${u.vip || 'VIP0'}</span></td>
-          <td style="font-size:0.7rem;">${u.password}</td>
-          <td>
-            <button onclick="openEditModal('${u.username}')" class="action-btn-sm" style="background-color: var(--accent-blue); color: #fff;">تعديل الرصيد</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    // Open User Edit Modal
-    function openEditModal(username) {
-      const user = globalDB.users.find(u => u.username === username);
-      if (!user) return;
-
-      selectedUsernameForEdit = username;
-      document.getElementById('modalTargetUsername').innerText = username;
-      document.getElementById('editBalanceInput').value = parseFloat(user.balance || 0).toFixed(2);
-      document.getElementById('editVipSelect').value = user.vip || 'VIP0';
-      document.getElementById('editPasswordInput').value = '';
-      
-      document.getElementById('editUserModal').style.display = 'flex';
-    }
-
-    // Close Edit Modal
-    function closeEditModal() {
-      document.getElementById('editUserModal').style.display = 'none';
-      selectedUsernameForEdit = null;
-    }
-
-    // Save User Edit
-    async function saveUserEdit() {
-      if (!selectedUsernameForEdit) return;
-
-      const userIndex = globalDB.users.findIndex(u => u.username === selectedUsernameForEdit);
-      if (userIndex === -1) return;
-
-      const newBalance = parseFloat(document.getElementById('editBalanceInput').value || 0).toFixed(2);
-      const newVip = document.getElementById('editVipSelect').value;
-      const newPass = document.getElementById('editPasswordInput').value.trim();
-
-      globalDB.users[userIndex].balance = newBalance;
-      globalDB.users[userIndex].vip = newVip;
-      if (newPass !== '') {
-        globalDB.users[userIndex].password = newPass;
-      }
-
-      // Sync Changes to JSONBin Cloud
-      const success = await updateCloudDB(globalDB);
-      if (success) {
-        closeEditModal();
-        showAlert('تم تحديث بيانات ورصيد المستخدم بنجاح!', 'success');
-        refreshAdminData();
-      } else {
-        showAlert('فشل حفظ البيانات في السحابة', 'error');
-      }
-    }
+    loadAdminData();
   </script>
 </body>
 </html>
