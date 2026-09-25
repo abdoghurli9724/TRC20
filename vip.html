@@ -317,36 +317,17 @@
       const currentDeposit = parseFloat(currentUserObj.depositBalance || currentUserObj.totalDeposit || 0);
 
       let refundAmount = 0;
-      let isWithinFirstMonth = false;
-
-      // البحث عن بيانات الباقة الحالية للمستخدم لمعرفة سعرها السابق واحتساب الفارق أو الاسترداد
       const currentPkg = cloudVipLevels.find(p => p.id === currentVip || p.name === currentVip);
 
       if (currentVip !== "VIP0" && currentPkg && currentPkg.price) {
-        // إذا كان لدى المستخدم تاريخ بدء اشتراك، نتحقق إن كان ضمن أول 30 يوماً
-        if (currentUserObj.vipStartDate) {
-          const startDate = new Date(currentUserObj.vipStartDate);
-          const now = new Date();
-          const diffDays = (now - startDate) / (1000 * 60 * 60 * 24);
-
-          if (diffDays <= 30) {
-            isWithinFirstMonth = true;
-            // استرداد جزء من الشهر الأول أو خصم قيمة الاشتراك القديم كاملاً كخصم ترقية
-            refundAmount = parseFloat(currentPkg.price); 
-          }
-        } else {
-          // في حال لم يكن التاريخ مخزناً مسبقاً، نخصم سعر الباقة القديمة كقيمة مستردة/محسوبة لتسهيل الترقية
-          refundAmount = parseFloat(currentPkg.price);
-        }
+        refundAmount = parseFloat(currentPkg.price);
       }
 
-      // التكلفة الفعلية للترقية بعد خصم قيمة الاشتراك السابق
-      const finalCost = Math.max(0, targetPrice - refundAmount);
-
-      if (currentDeposit < finalCost) {
+      // التحقق مما إذا كان رصيد الإيداع يكفي لشراء الباقة الجديدة
+      if (currentDeposit < targetPrice) {
         showCustomModal(
           "تنبيه الرصيد",
-          `إجمالي الإيداع لديك ($${currentDeposit.toFixed(2)}) لا يكفي للترقية إلى ${targetVipId} (المطلوب بعد احتساب خصم الباقة السابقة: $${finalCost.toFixed(2)}). هل ترغب بفتح صفحة الإيداع الآن؟`,
+          `إجمالي رصيد الإيداع لديك ($${currentDeposit.toFixed(2)}) لا يكفي لشراء الباقة الجديدة المطلوبة ($${targetPrice}). هل ترغب بفتح صفحة الإيداع الآن؟`,
           "💡",
           true,
           "نعم، فتح الإيداع",
@@ -357,10 +338,7 @@
         return;
       }
 
-      let confirmMessage = `هل أنت متأكد من الترقية إلى مستوى ${targetVipId} مقابل خصم $${targetPrice} من رصيد الإيداع؟`;
-      if (refundAmount > 0) {
-        confirmMessage = `لدى اشتراك سابق (${currentVip}) بقيمة $${refundAmount}، سيتم خصمها من سعر الباقة الجديدة لتصبح التكلفة الفعلية للترقية $${finalCost.toFixed(2)}. هل تريد المتابعة؟`;
-      }
+      let confirmMessage = `هل أنت متأكد من الترقية إلى مستوى ${targetVipId} مقابل $${targetPrice}؟ (سيتم إعادة قيمة اشتراكك السابق بقيمة $${refundAmount} إلى رصيدك المتاح).`;
 
       showCustomModal(
         "تأكيد الترقية",
@@ -376,39 +354,53 @@
             if (userIndex !== -1) {
               const user = db.users[userIndex];
 
-              user.depositBalance = parseFloat(user.depositBalance || user.totalDeposit || 0) - finalCost;
+              // 1. خصم سعر الباقة الجديدة من رصيد الإيداع
+              let userDep = parseFloat(user.depositBalance || user.totalDeposit || 0);
+              userDep -= targetPrice;
+              if (userDep < 0) userDep = 0;
+              user.depositBalance = parseFloat(userDep.toFixed(2));
               user.totalDeposit = user.depositBalance;
+
+              // 2. إعادة وإضافة قيمة الاشتراك السابق إلى "الرصيد المتاح" (Balance)
+              let userBal = parseFloat(user.balance || 0);
+              if (currentVip !== "VIP0" && currentPkg && currentPkg.price) {
+                userBal += parseFloat(currentPkg.price);
+              }
+              user.balance = parseFloat(userBal.toFixed(2));
+
               user.vip = targetVipId;
-              user.vipStartDate = new Date().toISOString(); // تحديث تاريخ بدء الباقة الجديدة
+              user.vipStartDate = new Date().toISOString();
 
               if (!user.history) user.history = [];
 
-              user.history.unshift({
-                id: generateTransactionId(),
-                type: "upgrade",
-                title: `ترقية العضوية إلى ${targetVipId}`,
-                amount: -finalCost,
-                status: "completed",
-                date: new Date().toLocaleString('ar-EG')
-              });
-
-              if (refundAmount > 0) {
+              // تسجيل عملية الاسترداد في السجل (إلى الرصيد المتاح)
+              if (currentVip !== "VIP0" && currentPkg && currentPkg.price) {
                 user.history.unshift({
                   id: generateTransactionId(),
                   type: "refund",
-                  title: `خصم قيمة الاشتراك السابق (${currentVip})`,
-                  amount: refundAmount,
+                  title: `إعادة أموال الاشتراك السابق (${currentVip}) للرصيد المتاح`,
+                  amount: parseFloat(currentPkg.price),
                   status: "completed",
                   date: new Date().toLocaleString('ar-EG')
                 });
               }
+
+              // تسجيل عملية الخصم للترقية الجديدة
+              user.history.unshift({
+                id: generateTransactionId(),
+                type: "upgrade",
+                title: `ترقية العضوية إلى ${targetVipId}`,
+                amount: -targetPrice,
+                status: "completed",
+                date: new Date().toLocaleString('ar-EG')
+              });
 
               const success = await updateCloudDB(db);
 
               if (success) {
                 currentUserObj = user;
                 renderVipPage();
-                showCustomModal("نجاح الترقية", `مبروك! تم ترقية حسابك بنجاح إلى مستوى ${targetVipId}.`, "🎉", false, "حسناً");
+                showCustomModal("نجاح الترقية", `مبروك! تم إعادة أموال الاشتراك السابق إلى رصيدك المتاح وترقية حسابك بنجاح إلى مستوى ${targetVipId}.`, "🎉", false, "حسناً");
               } else {
                 alert('حدث خطأ أثناء معالجة الترقية في السحابة، يرجى إعادة المحاولة.');
                 renderVipPage();
