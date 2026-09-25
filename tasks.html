@@ -1,326 +1,254 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مركز المهام والتقييم - VirtualMall</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #0b1120; color: #f8fafc; min-height: 100vh; padding-bottom: 90px; }
-        .container { max-width: 480px; margin: 0 auto; padding: 15px; }
-
-        .timer-box { 
-            background: linear-gradient(135deg, #1e293b, #0f172a); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 16px; padding: 15px; text-align: center; margin-bottom: 20px; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-        .timer-box p { font-size: 12px; color: #94a3b8; }
-        .timer-box h3 { font-size: 22px; color: #38bdf8; margin-top: 4px; font-weight: 800; letter-spacing: 1px; }
-
-        .status-badge {
-            background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2);
-            color: #38bdf8; padding: 10px 15px; border-radius: 12px; font-size: 13px;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .vip0-upgrade-card {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.05));
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 18px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .vip0-upgrade-card h4 {
-            color: #f59e0b;
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-        .vip0-upgrade-card p {
-            color: #cbd5e1;
-            font-size: 12px;
-            margin-bottom: 15px;
-            line-height: 1.5;
-        }
-        .btn-upgrade-now {
-            display: inline-block;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #ffffff;
-            text-decoration: none;
-            padding: 10px 22px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 13px;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-            transition: all 0.3s ease;
-        }
-        .btn-upgrade-now:active {
-            transform: scale(0.96);
-        }
-
-        .task-card { 
-            background: rgba(30, 41, 59, 0.6); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 20px; padding: 15px; margin-bottom: 16px; 
-            display: flex; gap: 15px; align-items: center;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .product-img { 
-            width: 85px; height: 85px; border-radius: 14px; 
-            object-fit: cover; flex-shrink: 0; 
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background-color: #0f172a;
-        }
-
-        .task-details { flex: 1; min-width: 0; }
-        .product-title { font-size: 13px; font-weight: 700; color: #f8fafc; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .product-desc { font-size: 11px; color: #94a3b8; line-height: 1.4; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        .rating { color: #f59e0b; font-size: 10px; margin-bottom: 8px; display: flex; align-items: center; gap: 3px; }
-        .rating span { color: #cbd5e1; font-size: 10px; margin-right: 3px; }
-
-        .task-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
-        .reward-tag { color: #10b981; font-weight: 800; font-size: 14px; }
-
-        .btn-complete { 
-            background: linear-gradient(135deg, #38bdf8, #0284c7); 
-            color: #fff; border: none; padding: 8px 14px; 
-            border-radius: 10px; font-size: 11px; font-weight: 700; 
-            cursor: pointer; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
-            transition: all 0.2s ease;
-        }
-        .btn-complete:active { transform: scale(0.95); }
-        .btn-complete.done { 
-            background: rgba(100, 116, 139, 0.2); 
-            color: #64748b; border: 1px solid rgba(255, 255, 255, 0.05); 
-            box-shadow: none; cursor: default; 
-        }
-
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); display: flex; justify-content: space-around; align-items: center; padding: 12px 0; border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 9999; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; }
-        .nav-item i { font-size: 18px; margin-bottom: 4px; }
-        .nav-item.active { color: #38bdf8; }
-
-        #toastBox { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px; }
-        .toast { background: #1e293b; color: #fff; padding: 12px 16px; border-radius: 12px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-right: 4px solid #38bdf8; font-size: 13px; }
-        .toast.success { border-right-color: #10b981; }
-        .toast.error { border-right-color: #ef4444; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VirtualMall - مركز المهام والتقييمات</title>
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-<div id="toastBox"></div>
-
-<div class="container">
-    <div class="timer-box">
-        <p><i class="fa-solid fa-clock"></i> توقيت تجديد المهام اليومية</p>
-        <h3 id="countdown">00:00:00</h3>
+  <!-- Header Bar -->
+  <header class="header-bar">
+    <div class="brand-logo">
+      <i class="fa-solid fa-list-check" style="color: var(--accent-blue);"></i>
+      مركز <span>المهام</span>
     </div>
-
-    <div class="status-badge">
-        <span>رتبتك الحالية: <span id="currentVipTag" style="color: #f59e0b;">VIP0</span></span>
-        <a href="vip.html" style="color: #38bdf8; text-decoration: none; font-size: 12px;">ترقية الرتبة <i class="fa-solid fa-arrow-left"></i></a>
+    <div class="vip-badge" id="vipHeaderBadge">
+      <i class="fa-solid fa-crown"></i>
+      <span id="userVipText">VIP0</span>
     </div>
+  </header>
 
-    <div id="vip0UpgradeCard" class="vip0-upgrade-card" style="display: none;">
-        <h4><i class="fa-solid fa-crown"></i> اشترك الآن لفتح المهام اليومية</h4>
-        <p>أنت حالياً على المستوى المجاني (VIP0). يرجى الانضمام لأحد مستويات VIP لبدء تقييم المنتجات وجني الأرباح اليومية.</p>
-        <a href="vip.html" class="btn-upgrade-now"><i class="fa-solid fa-bolt"></i> الانقسام إلى قسم VIP للاشتراك</a>
+  <!-- Countdown Timer Box -->
+  <div class="timer-box">
+    <i class="fa-solid fa-clock" style="margin-left: 6px;"></i>
+    الوقت المتبقي لتجديد المهام اليومية: <span id="countdownTimer">24:00:00</span>
+  </div>
+
+  <!-- User Status Header -->
+  <div style="margin: 0 20px 16px 20px; background-color: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <div style="font-size: 0.85rem; color: var(--text-secondary);">المهام المكتملة اليوم</div>
+      <div style="font-size: 1.2rem; font-weight: 800; color: var(--accent-blue);" id="taskProgressText">0 / 0</div>
     </div>
-    
-    <div id="tasksContainer">جاري تحميل قائمة المنتجات والمهام...</div>
-</div>
+    <a href="vip.html" style="background-color: rgba(245, 158, 11, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700;">
+      <i class="fa-solid fa-arrow-up-right-dots"></i> ترقية VIP
+    </a>
+  </div>
 
-<div class="bottom-nav">
-    <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
-    <a href="tasks.html" class="nav-item active"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
-    <a href="team.html" class="nav-item"><i class="fa-solid fa-users"></i><span>الفريق</span></a>
-    <a href="vip.html" class="nav-item"><i class="fa-solid fa-crown"></i><span>VIP</span></a>
-</div>
+  <!-- Tasks Container -->
+  <main id="tasksContainer">
+    <!-- Dynamic Tasks Will Be Rendered Here -->
+  </main>
 
-<script src="db.js"></script>
-<script>
-    const vipData = {
-        'VIP0': { 
-            name: 'VIP0 (مجاني)', 
-            tasks: [
-                { name: 'ساعة Smart Watch Ultra 2', desc: 'شاشة AMOLED مقاس 2.02 بوصة مع تتبع المؤشرات الحيوية.', image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400&auto=format&fit=crop&q=80', reward: 0.25, rating: 4.8 },
-                { name: 'سماعات Sony WH-1000XM5', desc: 'تقنية إلغاء الضوضاء المتقدمة، بطارية تدوم حتى 30 ساعة.', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80', reward: 0.25, rating: 4.9 }
-            ]
-        },
-        'VIP1': { 
-            name: 'VIP1', 
-            tasks: [
-                { name: 'نظارات Ray-Ban Meta الذكية', desc: 'كاميرا فائقة الدقة بوضوح 12 ميجابكسل ومكبرات صوت مدمجة.', image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&auto=format&fit=crop&q=80', reward: 0.80, rating: 4.9 },
-                { name: 'حذاء Nike Air Max Flyknit', desc: 'وسادة هواء للأنشطة الرياضية اليومية وتصميم مريح.', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&auto=format&fit=crop&q=80', reward: 0.80, rating: 4.7 },
-                { name: 'عطر Sauvage Elixir للرجال', desc: 'تركيبة عطرية فريدة تمزج بين التوابل المركزة وجوهر الخشب.', image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&auto=format&fit=crop&q=80', reward: 0.80, rating: 5.0 }
-            ]
-        },
-        'VIP2': { 
-            name: 'VIP2', 
-            tasks: [
-                { name: 'كاميرا Canon EOS R6 Mark II', desc: 'مستشعر فول فريم بدقة 24.2 ميجابكسل وتصوير 4K.', image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&auto=format&fit=crop&q=80', reward: 2.50, rating: 4.9 },
-                { name: 'جهاز iPad Pro M2 12.9 بوصة', desc: 'شاشة Liquid Retina XDR مع شريحة M2 فائقة السرعة.', image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&auto=format&fit=crop&q=80', reward: 2.50, rating: 5.0 }
-            ]
-        },
-        'VIP3': { 
-            name: 'VIP3', 
-            tasks: [
-                { name: 'ماك بوك MacBook Pro 16 M3', desc: 'معالج M3 Max مع ذاكرة موحدة 36GB للتصميم والبرمجة.', image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80', reward: 8.00, rating: 5.0 },
-                { name: 'هاتف iPhone 15 Pro Max', desc: 'هيكل من التيتانيوم وشريحة A17 Pro مع زوم 5x احترافي.', image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&auto=format&fit=crop&q=80', reward: 8.00, rating: 4.9 }
-            ]
-        }
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <i class="fa-solid fa-house"></i>
+      <span>الرئيسية</span>
+    </a>
+    <a href="tasks.html" class="nav-item active">
+      <i class="fa-solid fa-list-check"></i>
+      <span>المهام</span>
+    </a>
+    <a href="team.html" class="nav-item">
+      <i class="fa-solid fa-users"></i>
+      <span>الفريق</span>
+    </a>
+    <a href="vip.html" class="nav-item">
+      <i class="fa-solid fa-crown"></i>
+      <span>VIP</span>
+    </a>
+  </nav>
+
+  <!-- Database Script -->
+  <script src="db.js"></script>
+
+  <!-- Tasks Logic Script -->
+  <script>
+    // Configurable VIP Tasks Limits and Rewards
+    const VIP_CONFIG = {
+      "VIP0": { dailyLimit: 2, rewardPerTask: 0.25, title: "منتج تقييم أساسي" },
+      "VIP1": { dailyLimit: 4, rewardPerTask: 1.25, title: "منتج تقييم مميز" },
+      "VIP2": { dailyLimit: 6, rewardPerTask: 3.50, title: "منتج تقييم احترافي" },
+      "VIP3": { dailyLimit: 10, rewardPerTask: 8.00, title: "منتج تقييم ذهبي" }
     };
 
-    document.addEventListener("DOMContentLoaded", async function() {
-        let currentUser = localStorage.getItem('currentUser');
-        if (!currentUser) {
-            currentUser = 'demo';
-            localStorage.setItem('currentUser', currentUser);
+    // Dummy Mock Products Catalog
+    const PRODUCTS_CATALOG = [
+      { name: "ساعة ذكية مقاومة للماء - الإصدار الرياضي", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80" },
+      { name: "سماعات لاسلكية عازلة للضوضاء", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80" },
+      { name: "نظارات شمسية كلاسيكية متطورة", img: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&q=80" },
+      { name: "حقيبة ظهر جلدية فاخرة للأعمال", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&q=80" },
+      { name: "كاميرا تصوير رقمية احترافية", img: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200&q=80" },
+      { name: "حذاء رياضي مريح للجري والتمارين", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&q=80" },
+      { name: "ماكينة إعداد القهوة السريعة", img: "https://images.unsplash.com/photo-1517668808822-9ebd02f2a888?w=200&q=80" },
+      { name: "عطر فاخر بزيوث طبيعية مركزة", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=200&q=80" },
+      { name: "مكبر صوت بلوتوث محمول عالي الدقة", img: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=200&q=80" },
+      { name: "لوحة مفاتيح ميكانيكية مضيئة للألعاب", img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=200&q=80" }
+    ];
+
+    let currentUserObj = null;
+
+    // Load Tasks Logic
+    window.addEventListener('DOMContentLoaded', async () => {
+      const activeUsername = localStorage.getItem('currentUser');
+      if (!activeUsername) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      startCountdownTimer();
+
+      try {
+        currentUserObj = await getCurrentUser();
+        if (!currentUserObj) {
+          logoutUser();
+          return;
         }
-        
-        startTimer();
-        await renderTasks();
+
+        // Check & Reset Daily Tasks if a new day has arrived
+        const todayStr = new Date().toISOString().split('T')[0];
+        if (currentUserObj.lastTaskResetDate !== todayStr) {
+          currentUserObj.completedTasksToday = [];
+          currentUserObj.lastTaskResetDate = todayStr;
+          await updateUserData(currentUserObj.username, {
+            completedTasksToday: [],
+            lastTaskResetDate: todayStr
+          });
+        }
+
+        renderTasksPage();
+
+      } catch (error) {
+        console.error('Error loading tasks:', error);
+      }
     });
 
-    function showToast(msg, type = 'info') {
-        const toastBox = document.getElementById('toastBox');
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        let icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-xmark' : 'fa-circle-info');
-        toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${msg}</span>`;
-        toastBox.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+    // Render Page Tasks UI
+    function renderTasksPage() {
+      const userVip = currentUserObj.vip || "VIP0";
+      const config = VIP_CONFIG[userVip] || VIP_CONFIG["VIP0"];
+
+      document.getElementById('userVipText').innerText = userVip;
+
+      const completedCount = (currentUserObj.completedTasksToday || []).length;
+      document.getElementById('taskProgressText').innerText = `${completedCount} / ${config.dailyLimit}`;
+
+      const container = document.getElementById('tasksContainer');
+      container.innerHTML = '';
+
+      for (let i = 0; i < config.dailyLimit; i++) {
+        const taskId = `TASK_${userVip}_${i + 1}`;
+        const isCompleted = (currentUserObj.completedTasksToday || []).includes(taskId);
+        const product = PRODUCTS_CATALOG[i % PRODUCTS_CATALOG.length];
+
+        const card = document.createElement('div');
+        card.className = 'task-card';
+        card.innerHTML = `
+          <div class="task-main">
+            <img src="${product.img}" alt="${product.name}" class="task-img">
+            <div class="task-info">
+              <div class="task-title">${product.name}</div>
+              <div class="task-stars">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <div class="task-footer">
+            <div>
+              <span style="font-size: 0.75rem; color: var(--text-secondary);">عمولة التقييم:</span>
+              <div class="task-profit">+$${config.rewardPerTask.toFixed(2)}</div>
+            </div>
+            <button class="task-action-btn ${isCompleted ? 'completed' : ''}" 
+                    id="btn_${taskId}" 
+                    onclick="processTask('${taskId}', ${config.rewardPerTask})" 
+                    ${isCompleted ? 'disabled' : ''}>
+              ${isCompleted ? 'تم التقييم' : 'تقييم المنتج'}
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      }
     }
 
-    async function renderTasks() {
-        const currentUser = localStorage.getItem('currentUser');
+    // Process Task Completion
+    async function processTask(taskId, reward) {
+      const btn = document.getElementById(`btn_${taskId}`);
+      if (!btn || btn.disabled) return;
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner" style="width:16px; height:16px;"></span> جاري المعالجة...';
+
+      try {
         const db = await getCloudDB();
-        let u = db.usersDB?.[currentUser] || { vip: 'VIP0', completedTasks: [] };
-        let userVip = u.vip || 'VIP0';
+        const userIndex = db.users.findIndex(u => u.username === currentUserObj.username);
 
-        document.getElementById('currentVipTag').innerText = userVip;
+        if (userIndex !== -1) {
+          const user = db.users[userIndex];
+          
+          if (!user.completedTasksToday) user.completedTasksToday = [];
+          if (!user.history) user.history = [];
 
-        const container = document.getElementById('tasksContainer');
-        const vip0Card = document.getElementById('vip0UpgradeCard');
-        container.innerHTML = '';
+          user.completedTasksToday.push(taskId);
+          user.balance = parseFloat(user.balance || 0) + parseFloat(reward);
 
-        if (userVip === 'VIP0') {
-            vip0Card.style.display = 'block';
-        } else {
-            vip0Card.style.display = 'none';
+          // Add transaction to history
+          user.history.unshift({
+            id: generateTransactionId(),
+            type: "task",
+            title: "عمولة تقييم منتج",
+            amount: parseFloat(reward),
+            status: "completed",
+            date: new Date().toLocaleString('ar-EG')
+          });
+
+          // Update Cloud Storage
+          const success = await updateCloudDB(db);
+
+          if (success) {
+            currentUserObj = user;
+            renderTasksPage();
+            alert(`تم تقييم المنتج بنجاح! تم إضافة $${reward.toFixed(2)} إلى رصيدك المتاح.`);
+          } else {
+            alert('حدث خطأ في تحديث البيانات بالسحابة، حاول ثانية');
+            btn.disabled = false;
+            btn.innerText = 'تقييم المنتج';
+          }
         }
-
-        let activeLevels = [userVip];
-
-        activeLevels.forEach(levelKey => {
-            let levelInfo = vipData[levelKey];
-            if (!levelInfo) return;
-
-            levelInfo.tasks.forEach((prod, taskIdx) => {
-                let globalTaskId = `${levelKey}_${taskIdx}`;
-                let completed = u.completedTasks || [];
-                let isDone = completed.includes(globalTaskId);
-
-                let card = document.createElement('div');
-                card.className = `task-card`;
-                
-                card.innerHTML = `
-                    <img src="${prod.image}" alt="${prod.name}" class="product-img">
-                    <div class="task-details">
-                        <div class="product-title">${prod.name} <small style="color:#38bdf8; font-size:10px;">(${levelKey})</small></div>
-                        <div class="product-desc">${prod.desc}</div>
-                        <div class="rating">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <span>${prod.rating}</span>
-                        </div>
-                        <div class="task-footer">
-                            <div class="reward-tag">+$${prod.reward.toFixed(2)}</div>
-                            <button class="btn-complete ${isDone ? 'done' : ''}" onclick="completeTask('${globalTaskId}', ${prod.reward})" ${isDone ? 'disabled' : ''}>
-                                ${isDone ? '<i class="fa-solid fa-check"></i> تم التقييم' : 'تقييم المنتج'}
-                            </button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        });
+      } catch (error) {
+        console.error('Task error:', error);
+        alert('فشل الاتصال الخادم');
+        btn.disabled = false;
+        btn.innerText = 'تقييم المنتج';
+      }
     }
 
-    async function completeTask(taskId, reward) {
-        const currentUser = localStorage.getItem('currentUser');
-        showToast('جاري معالجة الطلب والتأكد من التقييم...', 'info');
+    // Countdown Timer logic to midnight
+    function startCountdownTimer() {
+      function updateTimer() {
+        const now = new Date();
+        const midnight = new Date();
+        midnight.setHours(24, 0, 0, 0);
 
-        try {
-            let db = await getCloudDB();
-            if (!db.usersDB || !db.usersDB[currentUser]) {
-                if (!db.usersDB) db.usersDB = {};
-                db.usersDB[currentUser] = { balance: 0, totalDeposit: 0, vip: 'VIP0', completedTasks: [], history: [] };
-            }
+        const diff = midnight - now;
 
-            let u = db.usersDB[currentUser];
-            if (!u.completedTasks) u.completedTasks = [];
+        const hours = Math.floor(diff / (1000 * 60 * 60)).toString().padStart(2, '0');
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
 
-            if (u.completedTasks.includes(taskId)) {
-                return showToast('لقد قمت بتقييم هذا المنتج مسبقاً!', 'error');
-            }
+        document.getElementById('countdownTimer').innerText = `${hours}:${minutes}:${seconds}`;
+      }
 
-            await new Promise(res => setTimeout(res, 1000));
-
-            u.completedTasks.push(taskId);
-
-            // زيادة الرصيد المتاح عند إكمال المهمة
-            let currentBalance = parseFloat(u.balance) || 0;
-            let taskReward = parseFloat(reward) || 0;
-            u.balance = currentBalance + taskReward;
-
-            if (!u.history) u.history = [];
-            u.history.unshift({ 
-                type: 'مهمة', 
-                amount: `+$${taskReward.toFixed(2)}`, 
-                title: 'عمولة تقييم منتج', 
-                date: new Date().toLocaleString('ar-EG') 
-            });
-
-            await updateCloudDB(db);
-
-            if (typeof confetti === 'function') {
-                confetti({
-                    particleCount: 80,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-            }
-
-            showToast(`تم التقييم بنجاح! أضيف +$${taskReward.toFixed(2)} لرصيدك المتاح. الرصيد الحالي: $${u.balance.toFixed(2)}`, 'success');
-            await renderTasks();
-
-        } catch (err) {
-            console.error(err);
-            showToast('حدث خطأ أثناء الاتصال، حاول مجدداً', 'error');
-        }
+      updateTimer();
+      setInterval(updateTimer, 1000);
     }
-
-    function startTimer() {
-        setInterval(() => {
-            let now = new Date();
-            let hours = 23 - now.getHours();
-            let mins = 59 - now.getMinutes();
-            let secs = 59 - now.getSeconds();
-            document.getElementById('countdown').innerText = 
-                `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }, 1000);
-    }
-</script>
+  </script>
 </body>
 </html>
