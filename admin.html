@@ -11,30 +11,40 @@
       overflow-x: auto; 
       margin-top: 10px; 
       width: 100%;
-      -webkit-overflow-scrolling: touch;
     }
     table { 
       width: 100%; 
       border-collapse: collapse; 
       text-align: right; 
       font-size: 0.8rem; 
-      min-width: 550px;
     }
     th, td { 
-      padding: 10px 8px; 
+      padding: 10px 6px; 
       border-bottom: 1px solid var(--border-color); 
       color: var(--text-primary); 
-      white-space: nowrap;
     }
     th { color: var(--accent-gold); background: var(--bg-secondary); }
-    .action-btns { display: flex; gap: 6px; }
-    .btn-approve { background: var(--accent-green); color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 4px; border: none; cursor: pointer; }
-    .btn-reject { background: #ef4444; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 4px; border: none; cursor: pointer; }
-    .btn-edit { background: #3b82f6; color: #fff; padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; border: none; cursor: pointer; }
-    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-    .stat-card { background: var(--bg-secondary); padding: 12px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
-    .stat-card h4 { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 5px; }
-    .stat-card p { font-size: 1.1rem; color: var(--accent-gold); font-weight: bold; }
+    .action-btns { display: flex; gap: 4px; }
+    .btn-approve { background: var(--accent-green); color: #fff; padding: 5px 8px; font-size: 0.7rem; border-radius: 4px; border: none; cursor: pointer; }
+    .btn-reject { background: #ef4444; color: #fff; padding: 5px 8px; font-size: 0.7rem; border-radius: 4px; border: none; cursor: pointer; }
+    .btn-edit { background: #3b82f6; color: #fff; padding: 5px 8px; font-size: 0.7rem; border-radius: 4px; border: none; cursor: pointer; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+    .stat-card { background: var(--bg-secondary); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
+    .stat-card h4 { font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px; }
+    .stat-card p { font-size: 1rem; color: var(--accent-gold); font-weight: bold; }
+    
+    /* تصميم بطاقات المستخدمين لتكون واضحة جداً للموبايل */
+    .user-card-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .user-info div { font-size: 0.8rem; margin-bottom: 2px; }
   </style>
 </head>
 <body>
@@ -44,7 +54,7 @@
     <button onclick="logoutUser()" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer;">خروج</button>
   </div>
 
-  <div style="padding: 20px;">
+  <div style="padding: 15px;">
     
     <!-- إحصائيات عامة سريعة -->
     <div class="stats-grid">
@@ -64,20 +74,19 @@
 
     <!-- قسم طلبات الإيداع -->
     <div class="card-box admin-section">
-      <h3 style="color: var(--accent-gold); font-size: 1rem; margin-bottom: 10px;"><i class="fa-solid fa-file-arrow-down"></i> طلبات الإيداع المعلقة</h3>
+      <h3 style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px;"><i class="fa-solid fa-file-arrow-down"></i> طلبات الإيداع المعلقة</h3>
       <div class="table-container">
         <table>
           <thead>
             <tr>
               <th>المستخدم</th>
               <th>المبلغ</th>
-              <th>رقم المعاملة (TXID)</th>
-              <th>التاريخ</th>
+              <th>TXID</th>
               <th>الإجراء</th>
             </tr>
           </thead>
           <tbody id="depositRequestsTable">
-            <tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">جاري التحميل...</td></tr>
+            <tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">جاري التحميل...</td></tr>
           </tbody>
         </table>
       </div>
@@ -85,7 +94,7 @@
 
     <!-- قسم طلبات السحب -->
     <div class="card-box admin-section">
-      <h3 style="color: var(--accent-gold); font-size: 1rem; margin-bottom: 10px;"><i class="fa-solid fa-file-arrow-up"></i> طلبات السحب المعلقة</h3>
+      <h3 style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px;"><i class="fa-solid fa-file-arrow-up"></i> طلبات السحب المعلقة</h3>
       <div class="table-container">
         <table>
           <thead>
@@ -93,12 +102,11 @@
               <th>المستخدم</th>
               <th>المبلغ</th>
               <th>المحفظة</th>
-              <th>التاريخ</th>
               <th>الإجراء</th>
             </tr>
           </thead>
           <tbody id="withdrawRequestsTable">
-            <tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">جاري التحميل...</td></tr>
+            <tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">جاري التحميل...</td></tr>
           </tbody>
         </table>
       </div>
@@ -106,21 +114,9 @@
 
     <!-- قسم إدارة المستخدمين والرصيد -->
     <div class="card-box admin-section">
-      <h3 style="color: var(--accent-gold); font-size: 1rem; margin-bottom: 10px;"><i class="fa-solid fa-users-gear"></i> إدارة أرصدة ومستويات المستخدمين</h3>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>المستخدم</th>
-              <th>الرصيد الحالي</th>
-              <th>مستوى VIP</th>
-              <th>التحكم</th>
-            </tr>
-          </thead>
-          <tbody id="usersTable">
-            <tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">جاري التحميل...</td></tr>
-          </tbody>
-        </table>
+      <h3 style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px;"><i class="fa-solid fa-users-gear"></i> إدارة أرصدة ومستويات المستخدمين</h3>
+      <div id="usersListContainer">
+        <div style="text-align: center; color: var(--text-secondary);">جاري التحميل...</div>
       </div>
     </div>
   </div>
@@ -151,15 +147,14 @@
       const depositTbody = document.getElementById("depositRequestsTable");
       depositTbody.innerHTML = "";
       if (pendingDeposits.length === 0) {
-        depositTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">لا توجد طلبات إيداع معلقة</td></tr>`;
+        depositTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">لا توجد طلبات إيداع معلقة</td></tr>`;
       } else {
         pendingDeposits.forEach((req) => {
           depositTbody.innerHTML += `
             <tr>
               <td>${req.username || 'مجهول'}</td>
-              <td>${req.amount || 0} USDT</td>
+              <td>${req.amount || 0}</td>
               <td>${req.txid || '-'}</td>
-              <td>${req.date || '-'}</td>
               <td>
                 <div class="action-btns">
                   <button class="btn-approve" onclick="handleDeposit('${req.id}', 'approve')">قبول</button>
@@ -175,15 +170,14 @@
       const withdrawTbody = document.getElementById("withdrawRequestsTable");
       withdrawTbody.innerHTML = "";
       if (pendingWithdraws.length === 0) {
-        withdrawTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">لا توجد طلبات سحب معلقة</td></tr>`;
+        withdrawTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">لا توجد طلبات سحب معلقة</td></tr>`;
       } else {
         pendingWithdraws.forEach((req) => {
           withdrawTbody.innerHTML += `
             <tr>
               <td>${req.username || 'مجهول'}</td>
-              <td>${req.amount || 0} USDT</td>
-              <td>${req.address || '-'}</td>
-              <td>${req.date || '-'}</td>
+              <td>${req.amount || 0}</td>
+              <td>${req.address ? req.address.substring(0,6) + '...' : '-'}</td>
               <td>
                 <div class="action-btns">
                   <button class="btn-approve" onclick="handleWithdraw('${req.id}', 'approve')">قبول</button>
@@ -195,25 +189,29 @@
         });
       }
 
-      // عرض قائمة المستخدمين للتحكم بأرصدتهم ومستوياتهم
-      const usersTbody = document.getElementById("usersTable");
-      usersTbody.innerHTML = "";
+      // عرض قائمة المستخدمين بطريقة البطاقات الواضحة تماماً
+      const usersContainer = document.getElementById("usersListContainer");
+      usersContainer.innerHTML = "";
       if (usersList.length === 0) {
-        usersTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">لا يوجد مستخدمون مسجلون حالياً</td></tr>`;
+        usersContainer.innerHTML = `<div style="text-align: center; color: var(--text-secondary);">لا يوجد مستخدمون مسجلون حالياً</div>`;
       } else {
         usersList.forEach(u => {
-          usersTbody.innerHTML += `
-            <tr>
-              <td>${u.username}</td>
-              <td>${(u.balance || 0).toFixed(2)} USDT</td>
-              <td>${u.vip || 'VIP0'}</td>
-              <td>
-                <div class="action-btns">
-                  <button class="btn-edit" onclick="modifyUserBalance('${u.username}')">الرصيد</button>
-                  <button class="btn-approve" style="background:#8b5cf6;" onclick="modifyUserVip('${u.username}')">VIP</button>
-                </div>
-              </td>
-            </tr>
+          const uname = u.username || u.name || 'مستخدم';
+          const ubal = (u.balance || 0).toFixed(2);
+          const uvip = u.vip || 'VIP0';
+          
+          usersContainer.innerHTML += `
+            <div class="user-card-item">
+              <div class="user-info">
+                <div style="color: var(--accent-gold); font-weight: bold;">👤 ${uname}</div>
+                <div>الرصيد: <span style="color: var(--accent-green);">${ubal} USDT</span></div>
+                <div>المستوى: ${uvip}</div>
+              </div>
+              <div class="action-btns">
+                <button class="btn-edit" onclick="modifyUserBalance('${uname}')">الرصيد</button>
+                <button class="btn-approve" style="background:#8b5cf6;" onclick="modifyUserVip('${uname}')">VIP</button>
+              </div>
+            </div>
           `;
         });
       }
@@ -232,26 +230,11 @@
         if (userIndex !== -1) {
           db.users[userIndex].balance = (db.users[userIndex].balance || 0) + Number(req.amount);
           db.users[userIndex].totalDeposit = (db.users[userIndex].totalDeposit || 0) + Number(req.amount);
-          
-          if (db.users[userIndex].history) {
-            const hist = db.users[userIndex].history.find(h => h.id === reqId);
-            if (hist) {
-              hist.status = 'completed';
-              hist.title = 'إيداع مقبول';
-            }
-          }
         }
         req.status = 'approved';
-        alert("تمت الموافقة على الإيداع وإضافة الرصيد للمستخدم بنجاح.");
+        alert("تمت الموافقة على الإيداع وإضافة الرصيد بنجاح.");
       } else {
         req.status = 'rejected';
-        if (userIndex !== -1 && db.users[userIndex].history) {
-          const hist = db.users[userIndex].history.find(h => h.id === reqId);
-          if (hist) {
-            hist.status = 'rejected';
-            hist.title = 'إيداع مرفوض';
-          }
-        }
         alert("تم رفض طلب الإيداع.");
       }
 
@@ -270,27 +253,13 @@
 
       if (action === 'approve') {
         req.status = 'approved';
-        if (userIndex !== -1 && db.users[userIndex].history) {
-          const hist = db.users[userIndex].history.find(h => h.id === reqId);
-          if (hist) {
-            hist.status = 'completed';
-            hist.title = 'سحب مقبول';
-          }
-        }
         alert("تمت الموافقة على طلب السحب.");
       } else {
         if (userIndex !== -1) {
           db.users[userIndex].balance = (db.users[userIndex].balance || 0) + Number(req.amount);
-          if (db.users[userIndex].history) {
-            const hist = db.users[userIndex].history.find(h => h.id === reqId);
-            if (hist) {
-              hist.status = 'rejected';
-              hist.title = 'سحب مرفوض (مسترجع)';
-            }
-          }
         }
         req.status = 'rejected';
-        alert("تم رفض طلب السحب وإعادة المبلغ لحساب المستخدم.");
+        alert("تم رفض طلب السحب وإعادة المبلغ للمستخدم.");
       }
 
       await updateCloudDB(db);
@@ -318,7 +287,7 @@
     }
 
     async function modifyUserVip(username) {
-      const newVip = prompt(`أدخل مستوى الـ VIP الجديد للمستخدم ${username} (مثال: VIP1, VIP2, VIP3):`);
+      const newVip = prompt(`أدخل مستوى الـ VIP الجديد للمستخدم ${username} (مثال: VIP1, VIP2):`);
       if (!newVip) return;
 
       const db = await getCloudDB();
