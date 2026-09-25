@@ -1,37 +1,226 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>السجلات - VirtualMall</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/profile.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VirtualMall - سجل المعاملات المالية</title>
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<div class="app-container">
-    <div class="top-bar">
-        <a href="profile.html" style="color: #0f172a; text-decoration: none; font-size: 20px;"><i class="fa-solid fa-arrow-right"></i></a>
-        <span class="brand-title">سجل العمليات</span>
-        <div></div>
+
+  <!-- Header Bar -->
+  <header class="header-bar">
+    <div class="brand-logo">
+      <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-blue);"></i>
+      سجل <span>المعاملات</span>
+    </div>
+    <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
+      <i class="fa-solid fa-house"></i>
+    </a>
+  </header>
+
+  <main style="max-width: 600px; margin: 20px auto 80px auto; padding: 0 16px;">
+
+    <!-- Filter Buttons Horizontal Scroll -->
+    <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 16px; scrollbar-width: none;">
+      <button class="filter-chip active" onclick="filterRecords('all', this)">الكل</button>
+      <button class="filter-chip" onclick="filterRecords('deposit', this)">الإيداعات</button>
+      <button class="filter-chip" onclick="filterRecords('withdraw', this)">السحوبات</button>
+      <button class="filter-chip" onclick="filterRecords('task', this)">عمولات المهام</button>
+      <button class="filter-chip" onclick="filterRecords('transfer', this)">التحويلات</button>
+      <button class="filter-chip" onclick="filterRecords('upgrade', this)">الترقيات</button>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-        <div class="user-card" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
-                <span>إيداع USDT</span>
-                <span style="color: #2e7d32;">+1250.00</span>
-            </div>
-            <div style="font-size: 12px; color: #64748b;">الحالة: ناجح | 2026-09-23</div>
-        </div>
-
-        <div class="user-card" style="margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px;">
-                <span>ربح مهمة يومية</span>
-                <span style="color: #2e7d32;">+50.00</span>
-            </div>
-            <div style="font-size: 12px; color: #64748b;">الحالة: اكتمال | 2026-09-23</div>
-        </div>
+    <!-- Records History List Container -->
+    <div id="recordsContainer">
+      <div style="text-align: center; color: var(--text-secondary); padding: 40px 0;">
+        <span class="spinner" style="width: 24px; height: 24px; margin-bottom: 12px;"></span>
+        <div>جاري جلب سجل المعاملات من السحابة...</div>
+      </div>
     </div>
-</div>
+
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <i class="fa-solid fa-house"></i>
+      <span>الرئيسية</span>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <i class="fa-solid fa-list-check"></i>
+      <span>المهام</span>
+    </a>
+    <a href="team.html" class="nav-item">
+      <i class="fa-solid fa-users"></i>
+      <span>الفريق</span>
+    </a>
+    <a href="vip.html" class="nav-item">
+      <i class="fa-solid fa-crown"></i>
+      <span>VIP</span>
+    </a>
+  </nav>
+
+  <!-- Database Script -->
+  <script src="db.js"></script>
+
+  <!-- Records Controller Script -->
+  <script>
+    let rawHistoryList = [];
+
+    // Load History Data on Page Load
+    window.addEventListener('DOMContentLoaded', async () => {
+      const activeUsername = localStorage.getItem('currentUser');
+      if (!activeUsername) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      try {
+        const user = await getCurrentUser();
+        if (!user) {
+          logoutUser();
+          return;
+        }
+
+        rawHistoryList = user.history || [];
+        renderRecords(rawHistoryList);
+
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+        document.getElementById('recordsContainer').innerHTML = `
+          <div style="text-align: center; color: var(--accent-red); padding: 20px;">
+            حدث خطأ أثناء تحميل السجلات من السحابة. يرجى إعادة المحاولة.
+          </div>
+        `;
+      }
+    });
+
+    // Render Transaction Cards
+    function renderRecords(records) {
+      const container = document.getElementById('recordsContainer');
+
+      if (!records || records.length === 0) {
+        container.innerHTML = `
+          <div class="card-box" style="text-align: center; color: var(--text-muted); padding: 32px 16px;">
+            <i class="fa-solid fa-receipt" style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4;"></i>
+            <div>لا يوجد أي سجل معاملات في الوقت الحالي</div>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '<div style="display: flex; flex-direction: column; gap: 12px;">';
+
+      records.forEach(item => {
+        const isPositive = parseFloat(item.amount) > 0;
+        const formattedAmount = (isPositive ? '+' : '') + parseFloat(item.amount).toFixed(2);
+        
+        let statusBadge = '';
+        if (item.status === 'completed') {
+          statusBadge = '<span style="background-color: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 2px 8px; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: 700;">مكتمل</span>';
+        } else if (item.status === 'pending') {
+          statusBadge = '<span style="background-color: rgba(245, 158, 11, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 2px 8px; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: 700;">قيد الانتظار</span>';
+        } else {
+          statusBadge = '<span style="background-color: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); padding: 2px 8px; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: 700;">مرفوض</span>';
+        }
+
+        let iconClass = 'fa-circle-dollar-to-slot';
+        let iconColor = 'var(--accent-blue)';
+
+        if (item.type === 'deposit') {
+          iconClass = 'fa-wallet';
+          iconColor = 'var(--accent-green)';
+        } else if (item.type === 'withdraw') {
+          iconClass = 'fa-hand-holding-dollar';
+          iconColor = 'var(--accent-gold)';
+        } else if (item.type === 'task') {
+          iconClass = 'fa-list-check';
+          iconColor = 'var(--accent-blue)';
+        } else if (item.type === 'upgrade') {
+          iconClass = 'fa-crown';
+          iconColor = 'var(--accent-purple)';
+        } else if (item.type === 'transfer_in' || item.type === 'transfer_out') {
+          iconClass = 'fa-arrow-right-arrow-left';
+          iconColor = 'var(--accent-blue)';
+        }
+
+        html += `
+          <div class="card-box" style="padding: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--bg-main); display: flex; justify-content: center; align-items: center; border: 1px solid var(--border-color);">
+                  <i class="fa-solid ${iconClass}" style="color: ${iconColor};"></i>
+                </div>
+                <div>
+                  <div style="font-weight: 700; color: var(--text-primary); font-size: 0.9rem;">${item.title || 'معاملة مالية'}</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">${item.date || ''}</div>
+                </div>
+              </div>
+              <div style="text-align: left;">
+                <div style="font-weight: 800; font-size: 1rem; color: ${isPositive ? 'var(--accent-green)' : 'var(--accent-red)'}; font-family: sans-serif;">
+                  $${formattedAmount}
+                </div>
+                <div style="margin-top: 4px;">${statusBadge}</div>
+              </div>
+            </div>
+
+            ${item.txHash ? `
+              <div style="font-size: 0.75rem; color: var(--text-secondary); background-color: var(--bg-main); padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: monospace; word-break: break-all; margin-top: 8px;">
+                <span style="color: var(--text-muted);">TXID:</span> ${item.txHash}
+              </div>
+            ` : ''}
+
+            ${item.address ? `
+              <div style="font-size: 0.75rem; color: var(--text-secondary); background-color: var(--bg-main); padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: monospace; word-break: break-all; margin-top: 8px;">
+                <span style="color: var(--text-muted);">Address:</span> ${item.address}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // Filter Chips Action
+    function filterRecords(type, btnElement) {
+      document.querySelectorAll('.filter-chip').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+
+      if (type === 'all') {
+        renderRecords(rawHistoryList);
+      } else if (type === 'transfer') {
+        const filtered = rawHistoryList.filter(item => item.type === 'transfer_in' || item.type === 'transfer_out');
+        renderRecords(filtered);
+      } else {
+        const filtered = rawHistoryList.filter(item => item.type === type);
+        renderRecords(filtered);
+      }
+    }
+  </script>
+
+  <!-- Filter Chips Dynamic Styling -->
+  <style>
+    .filter-chip {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .filter-chip.active {
+      background-color: var(--accent-blue);
+      color: #ffffff;
+      border-color: var(--accent-blue);
+    }
+  </style>
 </body>
 </html>
