@@ -7,20 +7,36 @@
   <link rel="stylesheet" href="profile.css">
   <style>
     .admin-section { margin-bottom: 24px; }
-    .table-container { overflow-x: auto; margin-top: 10px; }
-    table { width: 100%; border-collapse: collapse; text-align: right; font-size: 0.85rem; }
-    th, td { padding: 10px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
+    .table-container { 
+      overflow-x: auto; 
+      margin-top: 10px; 
+      width: 100%;
+      -webkit-overflow-scrolling: touch;
+    }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      text-align: right; 
+      font-size: 0.8rem; 
+      min-width: 500px;
+    }
+    th, td { 
+      padding: 10px 8px; 
+      border-bottom: 1px solid var(--border-color); 
+      color: var(--text-primary); 
+      white-space: nowrap;
+    }
     th { color: var(--accent-gold); background: var(--bg-secondary); }
     .action-btns { display: flex; gap: 6px; }
-    .btn-approve { background: var(--accent-green); color: #fff; padding: 6px 10px; font-size: 0.75rem; }
-    .btn-reject { background: #ef4444; color: #fff; padding: 6px 10px; font-size: 0.75rem; }
+    .btn-approve { background: var(--accent-green); color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 4px; border: none; cursor: pointer; }
+    .btn-reject { background: #ef4444; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 4px; border: none; cursor: pointer; }
   </style>
 </head>
 <body>
 
   <div class="header-bar">
     <div class="brand-logo"><i class="fa-solid fa-user-shield" style="color: var(--accent-gold);"></i> لوحة تحكم <span>الآدمن</span></div>
-    <button onclick="logoutUser()" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; padding: 6px 12px; font-size: 0.8rem;">خروج</button>
+    <button onclick="logoutUser()" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer;">خروج</button>
   </div>
 
   <div style="padding: 20px;">
@@ -91,27 +107,31 @@
   <script>
     async function loadAdminData() {
       const currentUser = await getCurrentUser();
-      // تحقق مبدئي بسيط لصلاحية الأدمن (يمكن جعله مخصصاً لرقم حساب معين مثل 088888888 أو حساب الآدمن)
       if (!currentUser) {
         window.location.href = "login.html";
         return;
       }
 
       const db = await getCloudDB();
+      // استخراج المستخدمين وقوائم الطلبات بأمان تام بغض النظر عن طريقة هيكلة قاعدة البيانات
+      const usersList = db.users || (Array.isArray(db) ? db : []) || [];
+      const depositReqs = db.depositRequests || [];
+      const withdrawReqs = db.withdrawRequests || [];
 
       // عرض طلبات الإيداع المعلقة
       const depositTbody = document.getElementById("depositRequestsTable");
       depositTbody.innerHTML = "";
-      if (!db.depositRequests || db.depositRequests.filter(r => r.status === 'pending').length === 0) {
+      const pendingDeposits = depositReqs.filter(r => r.status === 'pending');
+      if (pendingDeposits.length === 0) {
         depositTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">لا توجد طلبات إيداع معلقة</td></tr>`;
       } else {
-        db.depositRequests.filter(r => r.status === 'pending').forEach((req, index) => {
+        pendingDeposits.forEach((req) => {
           depositTbody.innerHTML += `
             <tr>
-              <td>${req.username}</td>
-              <td>${req.amount} USDT</td>
-              <td>${req.txid}</td>
-              <td>${req.date}</td>
+              <td>${req.username || 'مجهول'}</td>
+              <td>${req.amount || 0} USDT</td>
+              <td>${req.txid || '-'}</td>
+              <td>${req.date || '-'}</td>
               <td>
                 <div class="action-btns">
                   <button class="btn-approve" onclick="handleDeposit('${req.id}', 'approve')">قبول</button>
@@ -126,16 +146,17 @@
       // عرض طلبات السحب المعلقة
       const withdrawTbody = document.getElementById("withdrawRequestsTable");
       withdrawTbody.innerHTML = "";
-      if (!db.withdrawRequests || db.withdrawRequests.filter(r => r.status === 'pending').length === 0) {
+      const pendingWithdraws = withdrawReqs.filter(r => r.status === 'pending');
+      if (pendingWithdraws.length === 0) {
         withdrawTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">لا توجد طلبات سحب معلقة</td></tr>`;
       } else {
-        db.withdrawRequests.filter(r => r.status === 'pending').forEach((req) => {
+        pendingWithdraws.forEach((req) => {
           withdrawTbody.innerHTML += `
             <tr>
-              <td>${req.username}</td>
-              <td>${req.amount} USDT</td>
-              <td>${req.address}</td>
-              <td>${req.date}</td>
+              <td>${req.username || 'مجهول'}</td>
+              <td>${req.amount || 0} USDT</td>
+              <td>${req.address || '-'}</td>
+              <td>${req.date || '-'}</td>
               <td>
                 <div class="action-btns">
                   <button class="btn-approve" onclick="handleWithdraw('${req.id}', 'approve')">قبول</button>
@@ -150,22 +171,27 @@
       // عرض قائمة المستخدمين للتحكم بأرصدتهم
       const usersTbody = document.getElementById("usersTable");
       usersTbody.innerHTML = "";
-      db.users.forEach(u => {
-        usersTbody.innerHTML += `
-          <tr>
-            <td>${u.username}</td>
-            <td>${(u.balance || 0).toFixed(2)} USDT</td>
-            <td>${u.vip || 'VIP0'}</td>
-            <td>
-              <button style="padding: 4px 8px; font-size: 0.75rem;" onclick="modifyUserBalance('${u.username}')">تعديل الرصيد</button>
-            </td>
-          </tr>
-        `;
-      });
+      if (usersList.length === 0) {
+        usersTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">لا يوجد مستخدمون مسجلون حالياً</td></tr>`;
+      } else {
+        usersList.forEach(u => {
+          usersTbody.innerHTML += `
+            <tr>
+              <td>${u.username || 'غير معروف'}</td>
+              <td>${(u.balance || 0).toFixed(2)} USDT</td>
+              <td>${u.vip || 'VIP0'}</td>
+              <td>
+                <button class="btn-approve" style="padding: 4px 8px; font-size: 0.75rem;" onclick="modifyUserBalance('${u.username}')">تعديل</button>
+              </td>
+            </tr>
+          `;
+        });
+      }
     }
 
     async function handleDeposit(reqId, action) {
       const db = await getCloudDB();
+      if (!db.depositRequests) return;
       const reqIndex = db.depositRequests.findIndex(r => r.id === reqId);
       if (reqIndex === -1) return;
 
@@ -174,10 +200,9 @@
 
       if (action === 'approve') {
         if (userIndex !== -1) {
-          db.users[userIndex].balance = (db.users[userIndex].balance || 0) + req.amount;
-          db.users[userIndex].totalDeposit = (db.users[userIndex].totalDeposit || 0) + req.amount;
+          db.users[userIndex].balance = (db.users[userIndex].balance || 0) + Number(req.amount);
+          db.users[userIndex].totalDeposit = (db.users[userIndex].totalDeposit || 0) + Number(req.amount);
           
-          // تحديث حالة السجل في تاريخ المستخدم
           if (db.users[userIndex].history) {
             const hist = db.users[userIndex].history.find(h => h.id === reqId);
             if (hist) {
@@ -206,6 +231,7 @@
 
     async function handleWithdraw(reqId, action) {
       const db = await getCloudDB();
+      if (!db.withdrawRequests) return;
       const reqIndex = db.withdrawRequests.findIndex(r => r.id === reqId);
       if (reqIndex === -1) return;
 
@@ -223,9 +249,8 @@
         }
         alert("تمت الموافقة على طلب السحب.");
       } else {
-        // إذا رُفض السحب، يُعاد المبلغ إلى رصيد المستخدم
         if (userIndex !== -1) {
-          db.users[userIndex].balance = (db.users[userIndex].balance || 0) + req.amount;
+          db.users[userIndex].balance = (db.users[userIndex].balance || 0) + Number(req.amount);
           if (db.users[userIndex].history) {
             const hist = db.users[userIndex].history.find(h => h.id === reqId);
             if (hist) {
@@ -252,6 +277,7 @@
       }
 
       const db = await getCloudDB();
+      if (!db.users) return;
       const userIndex = db.users.findIndex(u => u.username === username);
       if (userIndex !== -1) {
         db.users[userIndex].balance = newBalance;
