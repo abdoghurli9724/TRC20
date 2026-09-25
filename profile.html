@@ -1,137 +1,205 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الملف الشخصي - VirtualMall</title>
-    <!-- مكتبة الأيقونات FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- ربط ملف CSS المنفصل -->
-    <link rel="stylesheet" href="css/profile.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VirtualMall - المركز الشخصي</title>
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-<div class="app-container">
-    <!-- الشريط العلوي -->
-    <div class="top-bar">
-        <div class="brand-info">
-            <div class="logo-box"><i class="fa-solid fa-cart-shopping"></i></div>
-            <span class="brand-title">VirtualMall</span>
-        </div>
-        <div class="top-actions">
-            <i class="fa-regular fa-camera icon-btn"></i>
-            <i class="fa-solid fa-magnifying-glass icon-btn"></i>
-            <div class="lang-selector">
-                <i class="fa-solid fa-globe"></i>
-                <span>عربي</span>
-            </div>
-        </div>
+  <!-- Header Bar -->
+  <header class="header-bar">
+    <div class="brand-logo">
+      <i class="fa-solid fa-user-gear" style="color: var(--accent-blue);"></i>
+      المركز <span>الشخصي</span>
     </div>
+    <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
+      <i class="fa-solid fa-house"></i>
+    </a>
+  </header>
 
-    <!-- بطاقة المستخدم والبيانات المالية -->
-    <div class="user-card">
-        <div class="user-header-info">
-            <div class="user-avatar-box">
-                <div class="avatar">
-                    <i class="fa-solid fa-user-ninja" style="color: #5d4037;"></i>
-                </div>
-                <span class="user-email" id="userEmail">virvip@gmail.com</span>
-            </div>
-            <div class="vip-badge">
-                <i class="fa-regular fa-gem"></i>
-                <span>VIP7</span>
-            </div>
-        </div>
+  <main style="max-width: 500px; margin: 20px auto 80px auto; padding: 0 16px;">
 
-        <div class="balances-container">
-            <div class="balance-box">
-                <div class="balance-title">(USDT) مبلغ الايداع</div>
-                <div class="balance-amount" id="depositAmount">1250</div>
-            </div>
-            <div class="balance-box">
-                <div class="balance-title">(USDT) الرصيد الاجمالي</div>
-                <div class="balance-amount" id="totalBalance">3500</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- الأزرار السريعة -->
-    <div class="quick-actions-grid">
-        <a href="deposit.html" class="action-item">
-            <div class="action-icon bg-deposit"><i class="fa-solid fa-wallet"></i></div>
-            <span class="action-label">إيداع</span>
-        </a>
-
-        <a href="withdraw.html" class="action-item">
-            <div class="action-icon bg-withdraw"><i class="fa-solid fa-hand-holding-dollar"></i></div>
-            <span class="action-label">يسحب</span>
-        </a>
-
-        <a href="account.html" class="action-item">
-            <div class="action-icon bg-account"><i class="fa-solid fa-landmark"></i></div>
-            <span class="action-label">حساب</span>
-        </a>
-
-        <a href="records.html" class="action-item">
-            <div class="action-icon bg-records"><i class="fa-solid fa-chart-line"></i></div>
-            <span class="action-label">سجلات</span>
-        </a>
-    </div>
-
-    <!-- القائمة الرئيسية -->
-    <div class="menu-section">
-        <a href="transfer.html" class="menu-card">
-            <div class="menu-left">
-                <div class="menu-icon-box"><i class="fa-solid fa-right-left"></i></div>
-                <span class="menu-text">تحويل</span>
-            </div>
-            <i class="fa-solid fa-chevron-left menu-arrow"></i>
-        </a>
-
-        <a href="change-password.html" class="menu-card">
-            <div class="menu-left">
-                <div class="menu-icon-box"><i class="fa-solid fa-square-minus"></i></div>
-                <span class="menu-text">تغيير كلمة المرور</span>
-            </div>
-            <i class="fa-solid fa-chevron-left menu-arrow"></i>
-        </a>
-
-        <div class="menu-card" onclick="handleLogout()">
-            <div class="menu-left">
-                <div class="menu-icon-box"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
-                <span class="menu-text">تسجيل الخروج</span>
-            </div>
-            <i class="fa-solid fa-chevron-left menu-arrow"></i>
-        </div>
-    </div>
-
-    <!-- شريط التنقل السفلي -->
-    <div class="bottom-nav">
-        <a href="index.html" class="nav-item">
-            <i class="fa-solid fa-house"></i>
-            <span>الرئيسية</span>
-        </a>
-        <a href="#" class="nav-item">
-            <i class="fa-solid fa-list-check"></i>
-            <span>المهام</span>
-        </a>
-        <a href="#" class="nav-item">
-            <i class="fa-solid fa-users"></i>
-            <span>الفريق</span>
-        </a>
-        <a href="#" class="nav-item">
-            <i class="fa-solid fa-crown"></i>
-            <span>VIP</span>
-        </a>
-        <a href="profile.html" class="nav-item active">
+    <!-- User Header Banner Card -->
+    <div class="card-box" style="margin-bottom: 20px; padding: 20px 16px; background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9)); border: 1px solid var(--border-color);">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
             <i class="fa-solid fa-user"></i>
-            <span>حسابي</span>
-        </a>
+          </div>
+          <div>
+            <div id="profileUsername" style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary);">جاري التحميل...</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">
+              كود الدعوة: <span id="profileRefCode" style="color: var(--accent-gold); font-weight: 700;">-----</span>
+            </div>
+          </div>
+        </div>
+        <div style="background-color: rgba(245, 158, 11, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">
+          <i class="fa-solid fa-crown"></i> <span id="profileVip">VIP0</span>
+        </div>
+      </div>
     </div>
-</div>
 
-<!-- ربط ملف JavaScript المنفصل -->
-<script src="js/profile.js"></script>
+    <!-- Main Balance Card -->
+    <div class="balance-card" style="margin-bottom: 20px; text-align: center; padding: 20px;">
+      <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">رصيد الحساب الكلي المتاح</div>
+      <div style="font-size: 2.2rem; font-weight: 900; color: var(--accent-green); font-family: sans-serif;" id="profileBalance">$0.00</div>
+      
+      <!-- Quick Action Buttons -->
+      <div style="display: flex; gap: 12px; margin-top: 16px;">
+        <a href="recharge.html" style="flex: 1; text-align: center; padding: 10px; background-color: var(--accent-blue); color: #ffffff; border-radius: var(--radius-md); text-decoration: none; font-weight: 700; font-size: 0.85rem;">
+          <i class="fa-solid fa-wallet" style="margin-left: 4px;"></i>إيداع
+        </a>
+        <a href="withdraw.html" style="flex: 1; text-align: center; padding: 10px; background-color: rgba(245, 158, 11, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); border-radius: var(--radius-md); text-decoration: none; font-weight: 700; font-size: 0.85rem;">
+          <i class="fa-solid fa-hand-holding-dollar" style="margin-left: 4px;"></i>سحب
+        </a>
+      </div>
+    </div>
 
+    <!-- Financial Stats Grid -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+      <div class="card-box" style="padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px;">أرباح اليوم</div>
+        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-blue);" id="profileTodayEarnings">$0.00</div>
+      </div>
+      <div class="card-box" style="padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px;">عمولات الفريق</div>
+        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-purple);" id="profileTeamCommissions">$0.00</div>
+      </div>
+      <div class="card-box" style="padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px;">إجمالي الإيداعات</div>
+        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-green);" id="profileTotalDeposit">$0.00</div>
+      </div>
+      <div class="card-box" style="padding: 12px; text-align: center;">
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px;">إجمالي السحوبات</div>
+        <div style="font-size: 1.1rem; font-weight: 800; color: var(--accent-gold);" id="profileTotalWithdraw">$0.00</div>
+      </div>
+    </div>
+
+    <!-- Navigation Services Grid -->
+    <div class="card-box" style="padding: 0; margin-bottom: 24px; overflow: hidden;">
+      <a href="account.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <i class="fa-solid fa-sliders" style="color: var(--accent-blue); width: 20px;"></i>
+          <span>إعدادات الحساب وكلمة المرور</span>
+        </div>
+        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+      </a>
+
+      <a href="transfer.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <i class="fa-solid fa-arrow-right-arrow-left" style="color: var(--accent-blue); width: 20px;"></i>
+          <span>التحويل الداخلي</span>
+        </div>
+        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+      </a>
+
+      <a href="records.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-gold); width: 20px;"></i>
+          <span>سجل المعاملات المالية</span>
+        </div>
+        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+      </a>
+
+      <a href="team.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <i class="fa-solid fa-users" style="color: var(--accent-purple); width: 20px;"></i>
+          <span>تقرير وإحصائيات الفريق</span>
+        </div>
+        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+      </a>
+
+      <a href="vip.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; color: var(--text-primary); text-decoration: none;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <i class="fa-solid fa-crown" style="color: var(--accent-gold); width: 20px;"></i>
+          <span>مستويات قاعات الـ VIP</span>
+        </div>
+        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+      </a>
+    </div>
+
+    <!-- Logout Action Button -->
+    <button id="profileLogoutBtn" style="width: 100%; padding: 14px; background-color: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); border-radius: var(--radius-md); font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer;">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      تسجيل الخروج
+    </button>
+
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <i class="fa-solid fa-house"></i>
+      <span>الرئيسية</span>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <i class="fa-solid fa-list-check"></i>
+      <span>المهام</span>
+    </a>
+    <a href="team.html" class="nav-item">
+      <i class="fa-solid fa-users"></i>
+      <span>الفريق</span>
+    </a>
+    <a href="vip.html" class="nav-item">
+      <i class="fa-solid fa-crown"></i>
+      <span>VIP</span>
+    </a>
+  </nav>
+
+  <!-- Database Script -->
+  <script src="db.js"></script>
+
+  <!-- Profile View Logic Script -->
+  <script>
+    let currentUserObj = null;
+
+    // Load User Details from JSONBin Cloud Database
+    window.addEventListener('DOMContentLoaded', async () => {
+      const activeUsername = localStorage.getItem('currentUser');
+      if (!activeUsername) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      try {
+        currentUserObj = await getCurrentUser();
+        if (!currentUserObj) {
+          logoutUser();
+          return;
+        }
+
+        // Populate User Info
+        document.getElementById('profileUsername').innerText = currentUserObj.username;
+        document.getElementById('profileRefCode').innerText = currentUserObj.referralCode || '-----';
+        document.getElementById('profileVip').innerText = currentUserObj.vip || 'VIP0';
+
+        // Balance & Totals
+        const balance = parseFloat(currentUserObj.balance || 0);
+        const todayEarnings = parseFloat(currentUserObj.todayEarnings || 0);
+        const teamCommissions = parseFloat(currentUserObj.teamCommissions || 0);
+        const totalDeposit = parseFloat(currentUserObj.totalDeposit || 0);
+        const totalWithdraw = parseFloat(currentUserObj.totalWithdraw || 0);
+
+        document.getElementById('profileBalance').innerText = '$' + balance.toFixed(2);
+        document.getElementById('profileTodayEarnings').innerText = '$' + todayEarnings.toFixed(2);
+        document.getElementById('profileTeamCommissions').innerText = '$' + teamCommissions.toFixed(2);
+        document.getElementById('profileTotalDeposit').innerText = '$' + totalDeposit.toFixed(2);
+        document.getElementById('profileTotalWithdraw').innerText = '$' + totalWithdraw.toFixed(2);
+
+      } catch (error) {
+        console.error('Error rendering profile page:', error);
+      }
+    });
+
+    // Handle Logout Event
+    document.getElementById('profileLogoutBtn').addEventListener('click', () => {
+      if (confirm('هل أنت تأكد من رغبتك في تسجيل الخروج؟')) {
+        logoutUser();
+      }
+    });
+  </script>
 </body>
 </html>
