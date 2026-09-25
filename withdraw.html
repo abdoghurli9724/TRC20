@@ -3,219 +3,120 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VirtualMall - سحب الأرباح</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  
-  <!-- مكتبة Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <title>سحب الأموال - VirtualMall</title>
   <link rel="stylesheet" href="profile.css">
 </head>
 <body>
 
-  <!-- Header Bar -->
-  <header class="header-bar">
-    <div class="brand-logo">
-      <i class="bi bi-cash-stack" style="color: var(--accent-gold);"></i>
-      سحب <span>الأرباح</span>
-    </div>
-    <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
-      <i class="bi bi-house-fill"></i>
-    </a>
-  </header>
+  <div class="header-bar">
+    <div class="brand-logo"><i class="fa-solid fa-money-bill-transfer" style="color: var(--accent-gold);"></i> سحب <span>الأموال</span></div>
+    <div class="vip-badge" id="userVipBadge">جاري التحميل...</div>
+  </div>
 
-  <main style="max-width: 500px; margin: 20px auto 80px auto; padding: 0 16px;">
-
-    <!-- Balance Summary Card -->
-    <div class="balance-card" style="margin-bottom: 20px;">
-      <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px;">الرصيد المتاح للسحب</div>
-      <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-green);" id="displayAvailableBalance">$0.00</div>
+  <div style="padding: 20px;">
+    <div class="card-box" style="margin-bottom: 20px;">
+      <span class="form-label">الرصيد المتاح للسحب</span>
+      <h2 id="availableBalance" style="color: var(--accent-green); font-size: 1.8rem; font-weight: 800; margin-top: 5px;">0.00 USDT</h2>
     </div>
 
-    <!-- Notice Box -->
-    <div style="background-color: rgba(245, 158, 11, 0.15); border: 1px solid var(--accent-gold); padding: 12px; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-primary); margin-bottom: 20px;">
-      <i class="bi bi-exclamation-triangle-fill" style="color: var(--accent-gold); margin-left: 6px;"></i>
-      تنبيه: الحد الأدنى للسحب هو <strong>$2.00</strong>. يتم معالجة طلبات السحب فوراً وتصلك خلال فترة من 5 دقائق إلى 24 ساعة.
+    <div class="card-box">
+      <h3 style="margin-bottom: 16px; font-size: 1rem; color: var(--accent-gold);">تفاصيل عملية السحب</h3>
+
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label class="form-label">مبلغ السحب (USDT)</label>
+        <input type="number" id="withdrawAmount" class="form-input" placeholder="أدخل المبلغ المراد سحبه">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label class="form-label">عنوان محفظة الاستلام (TRC20)</label>
+        <input type="text" id="withdrawAddress" class="form-input" placeholder="أدخل عنوان محفظتك هنا">
+      </div>
+
+      <button type="button" class="submit-btn" style="width: 100%;" onclick="submitWithdrawRequest()">تأكيد طلب السحب</button>
     </div>
+  </div>
 
-    <!-- Alert Box -->
-    <div id="alertBox" style="display: none; padding: 12px; border-radius: var(--radius-md); margin-bottom: 16px; font-size: 0.85rem; text-align: center;"></div>
+  <!-- القائمة السفلية -->
+  <div class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
+    <a href="tasks.html" class="nav-item"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
+    <a href="team.html" class="nav-item"><i class="fa-solid fa-users"></i><span>الفريق</span></a>
+    <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
+  </div>
 
-    <!-- Withdraw Form -->
-    <form id="withdrawForm" class="card-box">
-      <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-        <i class="bi bi-wallet2" style="color: var(--accent-gold); margin-left: 6px;"></i>بيانات طلب السحب
-      </h3>
-
-      <div class="form-group">
-        <label class="form-label" for="withdrawAmount">المبلغ المراد سحبه (USD / USDT):</label>
-        <input type="number" id="withdrawAmount" class="form-input" min="2" step="any" placeholder="أدخل المبلغ (الحد الأدنى $2)" required>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="withdrawAddress">عنوان محفظتك (USDT - TRC20):</label>
-        <input type="text" id="withdrawAddress" class="form-input" placeholder="أدخل عنوان محفظة TRC20 الخاص بك" style="direction: ltr; text-align: left;" required>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="securityPassword">كلمة مرور الحساب للتأكيد:</label>
-        <input type="password" id="securityPassword" class="form-input" placeholder="أدخل كلمة المرور لتأكيد الطلب" required>
-      </div>
-
-      <button type="submit" id="submitBtn" class="submit-btn" style="background-color: var(--accent-gold);">
-        <span id="btnText">تأكيد إرسال طلب السحب</span>
-        <span id="btnSpinner" class="spinner" style="display: none;"></span>
-      </button>
-    </form>
-
-  </main>
-
-  <!-- Bottom Navigation Bar -->
-  <nav class="bottom-nav">
-    <a href="index.html" class="nav-item">
-      <i class="bi bi-house-fill"></i>
-      <span>الرئيسية</span>
-    </a>
-    <a href="tasks.html" class="nav-item">
-      <i class="bi bi-check2-square"></i>
-      <span>المهام</span>
-    </a>
-    <a href="team.html" class="nav-item">
-      <i class="bi bi-people-fill"></i>
-      <span>الفريق</span>
-    </a>
-    <a href="vip.html" class="nav-item">
-      <i class="bi bi-award-fill"></i>
-      <span>VIP</span>
-    </a>
-  </nav>
-
-  <!-- Database Script -->
   <script src="db.js"></script>
-
-  <!-- Withdraw Logic Script -->
   <script>
-    let currentUserObj = null;
+    async function initPage() {
+      const user = await getCurrentUser();
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+      document.getElementById("userVipBadge").innerHTML = `<i class="fa-solid fa-crown"></i> ${user.vip || 'VIP0'}`;
+      document.getElementById("availableBalance").innerText = (user.balance || 0).toFixed(2) + " USDT";
+    }
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      const activeUsername = localStorage.getItem('currentUser');
-      if (!activeUsername) {
-        window.location.href = 'login.html';
+    async function submitWithdrawRequest() {
+      const amount = parseFloat(document.getElementById("withdrawAmount").value);
+      const address = document.getElementById("withdrawAddress").value.trim();
+
+      if (!amount || amount <= 0) {
+        alert("يرجى إدخال مبلغ صحيح للسحب.");
+        return;
+      }
+      if (!address) {
+        alert("يرجى إدخال عنوان المحفظة.");
         return;
       }
 
-      try {
-        currentUserObj = await getCurrentUser();
-        if (!currentUserObj) {
-          logoutUser();
-          return;
-        }
-
-        document.getElementById('displayAvailableBalance').innerText = '$' + parseFloat(currentUserObj.balance || 0).toFixed(2);
-
-      } catch (error) {
-        console.error('Error loading withdraw page:', error);
+      const user = await getCurrentUser();
+      if (amount > user.balance) {
+        alert("رصيدك المتاح لا يكفي لإتمام عملية السحب.");
+        return;
       }
-    });
 
-    function showAlert(message, type) {
-      const alertBox = document.getElementById('alertBox');
-      alertBox.style.display = 'block';
-      alertBox.innerText = message;
-      if (type === 'error') {
-        alertBox.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
-        alertBox.style.color = 'var(--accent-red)';
-        alertBox.style.border = '1px solid var(--accent-red)';
+      const db = await getCloudDB();
+
+      const requestObj = {
+        id: generateTransactionId(),
+        username: user.username,
+        amount: amount,
+        address: address,
+        type: "withdraw",
+        status: "pending",
+        date: new Date().toLocaleString('ar-EG')
+      };
+
+      // خصم المبلغ مؤقتاً من رصيد المستخدم وحفظه في الطلبات العامة
+      user.balance -= amount;
+      if (!db.withdrawRequests) db.withdrawRequests = [];
+      db.withdrawRequests.push(requestObj);
+
+      if (!user.history) user.history = [];
+      user.history.unshift({
+        id: requestObj.id,
+        type: "withdraw",
+        title: "طلب سحب قيد المراجعة",
+        amount: amount,
+        status: "pending",
+        date: requestObj.date
+      });
+
+      const userIndex = db.users.findIndex(u => u.username === user.username);
+      if (userIndex !== -1) {
+        db.users[userIndex] = user;
+      }
+
+      const success = await updateCloudDB(db);
+      if (success) {
+        alert("تم إرسال طلب السحب بنجاح وهو قيد المراجعة من الإدارة.");
+        window.location.href = "profile.html";
       } else {
-        alertBox.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
-        alertBox.style.color = 'var(--accent-green)';
-        alertBox.style.border = '1px solid var(--accent-green)';
+        alert("حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.");
       }
     }
 
-    document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const amount = parseFloat(document.getElementById('withdrawAmount').value);
-      const address = document.getElementById('withdrawAddress').value.trim();
-      const password = document.getElementById('securityPassword').value;
-
-      const currentBalance = parseFloat(currentUserObj.balance || 0);
-
-      if (isNaN(amount) || amount < 2) {
-        showAlert('الحد الأدنى للسحب هو $2.00', 'error');
-        return;
-      }
-
-      if (amount > currentBalance) {
-        showAlert(`رصيدك المتاح ($${currentBalance.toFixed(2)}) لا يكفي لإتمام هذا السحب`, 'error');
-        return;
-      }
-
-      if (!address || address.length < 15) {
-        showAlert('يرجى كتابة عنوان محفظة TRC20 صحيح', 'error');
-        return;
-      }
-
-      if (password !== currentUserObj.password) {
-        showAlert('كلمة المرور غير صحيحة', 'error');
-        return;
-      }
-
-      const submitBtn = document.getElementById('submitBtn');
-      const btnText = document.getElementById('btnText');
-      const btnSpinner = document.getElementById('btnSpinner');
-
-      submitBtn.disabled = true;
-      btnText.style.display = 'none';
-      btnSpinner.style.display = 'inline-block';
-
-      try {
-        const db = await getCloudDB();
-        const userIndex = db.users.findIndex(u => u.username === currentUserObj.username);
-
-        if (userIndex !== -1) {
-          const user = db.users[userIndex];
-
-          user.balance = parseFloat(user.balance || 0) - amount;
-
-          if (!user.history) user.history = [];
-
-          user.history.unshift({
-            id: generateTransactionId(),
-            type: "withdraw",
-            title: "طلب سحب أرباح (USDT-TRC20)",
-            amount: -amount,
-            address: address,
-            status: "pending",
-            date: new Date().toLocaleString('ar-EG')
-          });
-
-          const success = await updateCloudDB(db);
-
-          if (success) {
-            currentUserObj = user;
-            document.getElementById('displayAvailableBalance').innerText = '$' + user.balance.toFixed(2);
-            showAlert('تم تقديم طلب السحب بنجاح! سيتم تحويل المبلغ لعنوان محفظتك فوراً.', 'success');
-            document.getElementById('withdrawForm').reset();
-            
-            setTimeout(() => {
-              window.location.href = 'records.html';
-            }, 2000);
-          } else {
-            showAlert('حدث خطأ أثناء الاتصال بالسحابة، حاول ثانية.', 'error');
-            submitBtn.disabled = false;
-            btnText.style.display = 'inline';
-            btnSpinner.style.display = 'none';
-          }
-        }
-      } catch (error) {
-        console.error('Withdraw Error:', error);
-        showAlert('فشل الاتصال بالسيرفر، يرجى المحاولة لاحقاً', 'error');
-        submitBtn.disabled = false;
-        btnText.style.display = 'inline';
-        btnSpinner.style.display = 'none';
-      }
-    });
+    initPage();
   </script>
 </body>
 </html>
