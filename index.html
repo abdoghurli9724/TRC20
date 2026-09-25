@@ -147,7 +147,7 @@
         document.getElementById('availableBalanceVal').innerText = '$' + parseFloat(user.balance || 0).toFixed(2);
 
         // التحقق مما إذا كان المستخدم هو الأدمن لإظهار زر لوحة التحكم في الهيدر العلوي
-        if (user.username === "088888888") {
+        if (user.username === "admin") {
           const adminContainer = document.getElementById('adminNavBtnContainer');
           if (adminContainer) {
             adminContainer.innerHTML = `
