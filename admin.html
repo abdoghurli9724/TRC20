@@ -20,7 +20,7 @@
     .btn-vip { background: #8b5cf6; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
     .btn-edit-user { background: #f59e0b; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
     .btn-delete-user { background: #991b1b; color: #fff; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
-    .btn-global-wallet { background: #10b981; color: #fff; padding: 8px 14px; font-size: 0.8rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-global-wallet { background: #10b981; color: #fff; padding: 8px 14px; font-size: 0.8rem; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
     .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
     .stat-card { background: var(--bg-secondary); padding: 10px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
@@ -149,6 +149,18 @@
       </div>
     </div>
 
+    <!-- قسم إدارة محفظة الإيداع العامة للموقع -->
+    <div class="card-box admin-section">
+      <h3 style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px;">إدارة محفظة الإيداع (المنصة)</h3>
+      <div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 10px;">
+        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px;">العنوان الحالي في صفحة الإيداع:</div>
+        <div id="currentDepositWalletDisplay" style="font-family: monospace; color: var(--accent-gold); font-size: 0.9rem; margin-bottom: 10px; word-break: break-all;">جاري التحميل...</div>
+        <button class="btn-global-wallet" onclick="openDepositWalletModal()">
+          <i class="fa-solid fa-wallet"></i> تعديل عنوان محفظة الإيداع
+        </button>
+      </div>
+    </div>
+
     <!-- قسم طلبات الإيداع -->
     <div class="card-box admin-section">
       <h3 style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px;">طلبات الإيداع المعلقة</h3>
@@ -191,17 +203,22 @@
 
     <!-- قسم إدارة المستخدمين والرصيد -->
     <div class="card-box admin-section">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap;">
-        <h3 style="color: var(--accent-gold); font-size: 0.95rem;">إدارة أرصدة ومستويات المستخدمين</h3>
-      </div>
-      
-      <!-- زر تعديل محفظة الكل -->
-      <button class="btn-global-wallet" onclick="openGlobalWalletModal()">
-        <i class="fa-solid fa-wallet"></i> تعديل عنوان المحفظة لجميع المستخدمين
-      </button>
-
+      <h3 style="color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px;">إدارة أرصدة ومستويات المستخدمين</h3>
       <div id="usersListContainer">
         <div style="text-align: center; color: var(--text-secondary);">جاري جلب المستخدمين...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة تعديل محفظة الإيداع للمنصة -->
+  <div id="depositWalletModal" class="custom-modal">
+    <div class="modal-content">
+      <h3>تعديل محفظة الإيداع العامة</h3>
+      <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 12px;">أدخل العنوان الجديد الذي سيظهر للمستخدمين عند محاولة الإيداع:</p>
+      <input type="text" id="depositWalletInput" placeholder="أدخل عنوان محفظة الإيداع الجديد">
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeModals()">إلغاء</button>
+        <button class="btn-modal-confirm" onclick="processUpdateDepositWallet()">حفظ التعديل</button>
       </div>
     </div>
   </div>
@@ -242,19 +259,6 @@
     </div>
   </div>
 
-  <!-- نافذة تعديل محفظة جميع المستخدمين -->
-  <div id="globalWalletModal" class="custom-modal">
-    <div class="modal-content">
-      <h3>تعديل محفظة كل المستخدمين</h3>
-      <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 12px;">سيتم تطبيق هذا العنوان كعنوان افتراضي ومحفظة سحب لكل المسجلين في الموقع.</p>
-      <input type="text" id="globalWalletInput" placeholder="أدخل عنوان المحفظة الجديد (USDT)">
-      <div class="modal-actions">
-        <button class="btn-modal-cancel" onclick="closeModals()">إلغاء</button>
-        <button class="btn-modal-confirm" onclick="processGlobalWallet()">تحديث للجميع</button>
-      </div>
-    </div>
-  </div>
-
   <!-- نافذة التعديل الشامل لبيانات المستخدم الفردي -->
   <div id="editUserModal" class="custom-modal">
     <div class="modal-content">
@@ -263,8 +267,8 @@
       <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 4px;">كلمة المرور الجديدة:</label>
       <input type="text" id="editUserPassword" placeholder="اتركه فارغاً لعدم التغيير">
 
-      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 4px;">عنوان المحفظة:</label>
-      <input type="text" id="editUserWallet" placeholder="عنوان محفظة السحب (USDT)">
+      <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 4px;">محفظة السحب للمستخدم:</label>
+      <input type="text" id="editUserWallet" placeholder="عنوان محفظة السحب">
 
       <label style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right; margin-bottom: 4px;">حالة الحساب:</label>
       <select id="editUserStatus">
@@ -303,10 +307,13 @@
     async function loadAdminData() {
       try {
         const db = await getCloudDB();
-        if (!db || !db.users) {
-          document.getElementById("usersListContainer").innerHTML = `<div style="text-align: center; color: red;">فشل الاتصال بقاعدة البيانات</div>`;
+        if (!db) {
           return;
         }
+
+        // عرض محفظة الإيداع الحالية للمنصة
+        const currentDepositWallet = db.depositWallet || "...TXYZ999MockWalletA";
+        document.getElementById("currentDepositWalletDisplay").innerText = currentDepositWallet;
 
         const usersList = db.users || [];
         const depositReqs = db.depositRequests || [];
@@ -450,6 +457,11 @@
       loadAdminData();
     }
 
+    function openDepositWalletModal() {
+      document.getElementById("depositWalletInput").value = document.getElementById("currentDepositWalletDisplay").innerText;
+      document.getElementById("depositWalletModal").style.display = "flex";
+    }
+
     function openBalanceModal(username) {
       activeUser = username;
       document.getElementById("balanceModalTitle").innerText = `إدارة رصيد: ${username}`;
@@ -477,17 +489,29 @@
       document.getElementById("editUserModal").style.display = "flex";
     }
 
-    function openGlobalWalletModal() {
-      document.getElementById("globalWalletInput").value = "";
-      document.getElementById("globalWalletModal").style.display = "flex";
-    }
-
     function closeModals() {
+      document.getElementById("depositWalletModal").style.display = "none";
       document.getElementById("balanceModal").style.display = "none";
       document.getElementById("vipModal").style.display = "none";
       document.getElementById("editUserModal").style.display = "none";
-      document.getElementById("globalWalletModal").style.display = "none";
       activeUser = "";
+    }
+
+    async function processUpdateDepositWallet() {
+      const newWallet = document.getElementById("depositWalletInput").value.trim();
+      if (!newWallet) {
+        showToast("الرجاء إدخال عنوان محفظة صحيح", "error");
+        return;
+      }
+
+      const db = await getCloudDB();
+      if (!db) return;
+
+      db.depositWallet = newWallet;
+      await updateCloudDB(db);
+      closeModals();
+      showToast("تم تحديث محفظة الإيداع للمنصة بنجاح", "success");
+      loadAdminData();
     }
 
     async function processBalance(actionType) {
@@ -554,31 +578,6 @@
       await updateCloudDB(db);
       closeModals();
       showToast("تم تحديث بيانات المحفظة والحساب بنجاح", "success");
-      loadAdminData();
-    }
-
-    async function processGlobalWallet() {
-      const newWallet = document.getElementById("globalWalletInput").value.trim();
-      if (newWallet === "") {
-        showToast("الرجاء إدخال عنوان محفظة صحيح", "error");
-        return;
-      }
-
-      const db = await getCloudDB();
-      if (!db.users || db.users.length === 0) {
-        showToast("لا يوجد مستخدمون لتحديث محافظهم", "error");
-        return;
-      }
-
-      // تحديث عنوان المحفظة لكل المستخدمين المسجلين في القاعدة
-      db.users.forEach(u => {
-        u.walletAddress = newWallet;
-        u.wallet = newWallet;
-      });
-
-      await updateCloudDB(db);
-      closeModals();
-      showToast("تم تحديث عنوان المحفظة لجميع المستخدمين بنجاح", "success");
       loadAdminData();
     }
 
