@@ -71,9 +71,49 @@
     .btn-modal-add { background: #10b981; color: #fff; }
     .btn-modal-sub { background: #ef4444; color: #fff; }
     .btn-modal-confirm { background: #8b5cf6; color: #fff; width: 100%; }
+
+    /* تصميم الإشعارات العائمة الاحترافية (Toast Notifications) */
+    #toastContainer {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      width: 90%;
+      max-width: 350px;
+      pointer-events: none;
+    }
+    .toast-msg {
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateY(20px);
+      text-align: center;
+      width: 100%;
+      pointer-events: auto;
+    }
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .toast-success { border-right: 4px solid #10b981; }
+    .toast-error { border-right: 4px solid #ef4444; }
   </style>
 </head>
 <body>
+
+  <!-- حاوية الإشعارات العائمة -->
+  <div id="toastContainer"></div>
 
   <div class="header-bar">
     <div class="brand-logo"><i class="fa-solid fa-user-shield" style="color: var(--accent-gold);"></i> لوحة تحكم <span>الآدمن</span></div>
@@ -182,6 +222,24 @@
   <script src="db.js"></script>
   <script>
     let activeUser = "";
+
+    // دالة عرض الإشعارات الاحترافية بدل الـ alert
+    function showToast(message, type = 'success') {
+      const container = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      toast.className = `toast-msg ${type === 'success' ? 'toast-success' : 'toast-error'}`;
+      toast.innerText = message;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add("show");
+      }, 50);
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
 
     async function loadAdminData() {
       try {
@@ -293,10 +351,10 @@
           db.users[userIndex].balance = Number(db.users[userIndex].balance || 0) + Number(req.amount);
         }
         req.status = 'approved';
-        alert("تمت الموافقة على الإيداع.");
+        showToast("تمت الموافقة على طلب الإيداع بنجاح", "success");
       } else {
         req.status = 'rejected';
-        alert("تم رفض طلب الإيداع.");
+        showToast("تم رفض طلب الإيداع", "error");
       }
 
       await updateCloudDB(db);
@@ -314,13 +372,13 @@
 
       if (action === 'approve') {
         req.status = 'approved';
-        alert("تمت الموافقة على السحب.");
+        showToast("تمت الموافقة على طلب السحب بنجاح", "success");
       } else {
         if (userIndex !== -1) {
           db.users[userIndex].balance = Number(db.users[userIndex].balance || 0) + Number(req.amount);
         }
         req.status = 'rejected';
-        alert("تم رفض السحب وإعادة المبلغ.");
+        showToast("تم رفض السحب وإعادة المبلغ للمستخدم", "error");
       }
 
       await updateCloudDB(db);
@@ -351,7 +409,7 @@
     async function processBalance(actionType) {
       const amountVal = parseFloat(document.getElementById("balanceInputAmount").value);
       if (isNaN(amountVal) || amountVal <= 0) {
-        alert("الرجاء إدخال مبلغ صحيح.");
+        showToast("الرجاء إدخال مبلغ صحيح", "error");
         return;
       }
 
@@ -371,7 +429,7 @@
       db.users[userIndex].balance = Number(currentBalance.toFixed(2));
       await updateCloudDB(db);
       closeModals();
-      alert("تم تحديث الرصيد وحفظه بنجاح!");
+      showToast("تم تحديث الرصيد وحفظه في السحابة بنجاح", "success");
       loadAdminData();
     }
 
@@ -385,7 +443,7 @@
       db.users[userIndex].vip = selectedVip;
       await updateCloudDB(db);
       closeModals();
-      alert(`تم تحديث مستوى الـ VIP إلى ${selectedVip} بنجاح!`);
+      showToast(`تم ترقية مستوى المستخدم إلى ${selectedVip} بنجاح`, "success");
       loadAdminData();
     }
 
