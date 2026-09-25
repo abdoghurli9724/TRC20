@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VirtualMall - إنشاء حساب جديد</title>
   <link rel="stylesheet" href="profile.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 
   <!-- Header Bar -->
   <header class="header-bar">
     <div class="brand-logo">
-      <i class="fa-solid fa-store" style="color: var(--accent-blue);"></i>
+      <i class="bi bi-shop" style="color: var(--accent-blue);"></i>
       Virtual<span>Mall</span>
     </div>
   </header>
@@ -31,7 +31,7 @@
       <!-- Username / Phone -->
       <div class="form-group">
         <label class="form-label" for="username">
-          <i class="fa-solid fa-phone" style="margin-left: 6px;"></i>رقم الهاتف / اسم المستخدم
+          <i class="bi bi-phone-fill" style="margin-left: 6px;"></i>رقم الهاتف / اسم المستخدم
         </label>
         <input type="text" id="username" class="form-input" placeholder="أدخل رقم الهاتف (مثال: 088888888)" required>
       </div>
@@ -39,18 +39,18 @@
       <!-- Password -->
       <div class="form-group">
         <label class="form-label" for="password">
-          <i class="fa-solid fa-lock" style="margin-left: 6px;"></i>كلمة المرور
+          <i class="bi bi-lock-fill" style="margin-left: 6px;"></i>كلمة المرور
         </label>
         <div style="position: relative;">
           <input type="password" id="password" class="form-input" placeholder="أدخل كلمة المرور" required>
-          <i class="fa-solid fa-eye" id="togglePassword" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); cursor: pointer;"></i>
+          <i class="bi bi-eye-fill" id="togglePassword" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); cursor: pointer;"></i>
         </div>
       </div>
 
       <!-- Confirm Password -->
       <div class="form-group">
         <label class="form-label" for="confirmPassword">
-          <i class="fa-solid fa-shield-halved" style="margin-left: 6px;"></i>تأكيد كلمة المرور
+          <i class="bi bi-shield-lock-fill" style="margin-left: 6px;"></i>تأكيد كلمة المرور
         </label>
         <input type="password" id="confirmPassword" class="form-input" placeholder="أعد إدخال كلمة المرور" required>
       </div>
@@ -58,7 +58,7 @@
       <!-- Referral Code -->
       <div class="form-group">
         <label class="form-label" for="referralCode">
-          <i class="fa-solid fa-user-plus" style="margin-left: 6px;"></i>كود الدعوة (اختياري)
+          <i class="bi bi-person-plus-fill" style="margin-left: 6px;"></i>كود الدعوة (اختياري)
         </label>
         <input type="text" id="referralCode" class="form-input" placeholder="أدخل كود الدعوة إذا توفر">
       </div>
@@ -86,15 +86,22 @@
 
   <!-- Page JS Script -->
   <script>
-    // Toggle Password Visibility
+    // Toggle Password Visibility (Updated for Bootstrap Icons)
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
 
     togglePassword.addEventListener('click', () => {
       const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
       passwordInput.setAttribute('type', type);
-      togglePassword.classList.toggle('fa-eye');
-      togglePassword.classList.toggle('fa-eye-slash');
+      
+      // التبديل بين شكل العين المفتوحة والمغلقة في Bootstrap Icons
+      if (type === 'text') {
+        togglePassword.classList.remove('bi-eye-fill');
+        togglePassword.classList.add('bi-eye-slash-fill');
+      } else {
+        togglePassword.classList.remove('bi-eye-slash-fill');
+        togglePassword.classList.add('bi-eye-fill');
+      }
     });
 
     // Alert Display Utility
@@ -131,7 +138,6 @@
       const confirmPassword = document.getElementById('confirmPassword').value;
       const referralCodeInput = document.getElementById('referralCode').value.trim();
 
-      // Input Validations
       if (username.length < 3) {
         showAlert('يرجى إدخال اسم مستخدم أو رقم هاتف صحيح (3 حروف/أرقام على الأقل)', 'error');
         return;
@@ -147,7 +153,6 @@
         return;
       }
 
-      // UI Loading State
       const submitBtn = document.getElementById('submitBtn');
       const btnText = document.getElementById('btnText');
       const btnSpinner = document.getElementById('btnSpinner');
@@ -157,10 +162,8 @@
       btnSpinner.style.display = 'inline-block';
 
       try {
-        // Fetch Cloud Database
         const db = await getCloudDB();
 
-        // Check if user already exists
         const userExists = db.users.some(u => u.username === username);
         if (userExists) {
           showAlert('اسم المستخدم أو رقم الهاتف هذا مسجل بالفعل', 'error');
@@ -170,7 +173,6 @@
           return;
         }
 
-        // Validate Referral Code if provided
         let invitedBy = null;
         if (referralCodeInput) {
           const inviter = db.users.find(u => u.referralCode === referralCodeInput);
@@ -185,7 +187,6 @@
           }
         }
 
-        // Create New User Object
         const newUser = {
           username: username,
           password: password,
@@ -208,7 +209,6 @@
           ]
         };
 
-        // Update Cloud Database
         db.users.push(newUser);
         const success = await updateCloudDB(db);
 
@@ -226,7 +226,7 @@
 
       } catch (error) {
         console.error('Register Error:', error);
-        showAlert('فشل الاتصال الخادم، يرجى إعادة المحاولة', 'error');
+        showAlert('فشل الاتصال بالخادم، يرجى إعادة المحاولة', 'error');
         submitBtn.disabled = false;
         btnText.style.display = 'inline';
         btnSpinner.style.display = 'none';
