@@ -175,54 +175,8 @@
 
   <!-- VIP Controller Script -->
   <script>
-    const VIP_LEVELS = [
-      {
-        id: "VIP0",
-        title: "عضوية VIP0 (تجريبي)",
-        price: 0,
-        dailyTasks: 2,
-        taskReward: 0.25,
-        dailyProfit: 0.50,
-        monthlyProfit: 15.00,
-        headerClass: "vip-0",
-        iconColor: "#3b82f6"
-      },
-      {
-        id: "VIP1",
-        title: "عضوية VIP1 الاحترافية",
-        price: 20,
-        dailyTasks: 4,
-        taskReward: 1.25,
-        dailyProfit: 5.00,
-        monthlyProfit: 150.00,
-        headerClass: "vip-1",
-        iconColor: "#64748b"
-      },
-      {
-        id: "VIP2",
-        title: "عضوية VIP2 الذهبية",
-        price: 50,
-        dailyTasks: 6,
-        taskReward: 3.50,
-        dailyProfit: 21.00,
-        monthlyProfit: 630.00,
-        headerClass: "vip-2",
-        iconColor: "#f59e0b"
-      },
-      {
-        id: "VIP3",
-        title: "عضوية VIP3 الماسية",
-        price: 150,
-        dailyTasks: 10,
-        taskReward: 8.00,
-        dailyProfit: 80.00,
-        monthlyProfit: 2400.00,
-        headerClass: "vip-3",
-        iconColor: "#10b981"
-      }
-    ];
-
     let currentUserObj = null;
+    let cloudVipLevels = [];
 
     function showCustomModal(title, text, icon = "⚠️", showCancel = true, confirmText = "موافق", onConfirm = null) {
         const modal = document.getElementById('customVipModal');
@@ -266,6 +220,20 @@
           logoutUser();
           return;
         }
+
+        const db = await getCloudDB();
+        if (db && db.vipPackages && db.vipPackages.length > 0) {
+          cloudVipLevels = db.vipPackages;
+        } else {
+          // الباقات الافتراضية في حال لم يتم إضافتها من الآدمن بعد
+          cloudVipLevels = [
+            { id: "VIP0", name: "عضوية VIP0 (تجريبي)", price: 0, tasks: 2, taskProfit: 0.25, dailyIncome: 0.50, monthlyIncome: 15.00 },
+            { id: "VIP1", name: "عضوية VIP1 الاحترافية", price: 20, tasks: 4, taskProfit: 1.25, dailyIncome: 5.00, monthlyIncome: 150.00 },
+            { id: "VIP2", name: "عضوية VIP2 الذهبية", price: 50, tasks: 6, taskProfit: 3.50, dailyIncome: 21.00, monthlyIncome: 630.00 },
+            { id: "VIP3", name: "عضوية VIP3 الماسية", price: 150, tasks: 10, taskProfit: 8.00, dailyIncome: 80.00, monthlyIncome: 2400.00 }
+          ];
+        }
+
         renderVipPage();
       } catch (error) {
         console.error('Error fetching VIP page data:', error);
@@ -275,7 +243,7 @@
     function renderVipPage() {
       const userVip = currentUserObj.vip || "VIP0";
       const userBalance = parseFloat(currentUserObj.balance || 0);
-      const userTotalDeposit = parseFloat(currentUserObj.totalDeposit || 0);
+      const userTotalDeposit = parseFloat(currentUserObj.depositBalance || currentUserObj.totalDeposit || 0);
 
       document.getElementById('headerVipText').innerText = userVip;
       document.getElementById('userBalanceText').innerText = '$' + userBalance.toFixed(2);
@@ -284,8 +252,9 @@
       const container = document.getElementById('vipCardsContainer');
       container.innerHTML = '';
 
-      VIP_LEVELS.forEach(level => {
-        const isCurrentLevel = (userVip === level.id);
+      cloudVipLevels.forEach((level, index) => {
+        const levelId = level.id || `VIP${index}`;
+        const isCurrentLevel = (userVip === levelId || userVip === level.name);
 
         const card = document.createElement('div');
         card.className = `vip-tier-card ${isCurrentLevel ? 'active-level' : ''}`;
@@ -294,36 +263,39 @@
           card.style.boxShadow = '0 0 25px rgba(245, 158, 11, 0.25)';
         }
 
+        const headerClasses = ["vip-0", "vip-1", "vip-2", "vip-3", "vip-4", "vip-5"];
+        const headerClass = headerClasses[index % headerClasses.length];
+
         card.innerHTML = `
-          <div class="vip-header ${level.headerClass}">
+          <div class="vip-header ${headerClass}">
             <span style="display: flex; align-items: center; gap: 8px;">
-              <i class="bi bi-award-fill"></i> ${level.title}
+              <i class="bi bi-award-fill"></i> ${level.name || levelId}
             </span>
-            <span>$${level.price.toFixed(2)}</span>
+            <span>$${parseFloat(level.price || 0).toFixed(2)}</span>
           </div>
           <div class="vip-body">
             <div class="vip-feature-row">
               <span><i class="bi bi-list-check" style="color:var(--accent-blue);"></i> المهام اليومية:</span>
-              <span>${level.dailyTasks} مهام</span>
+              <span>${level.tasks || level.dailyTasks || 0} مهام</span>
             </div>
             <div class="vip-feature-row">
               <span><i class="bi bi-coin" style="color:var(--accent-gold);"></i> ربح المهمة:</span>
-              <span>$${level.taskReward.toFixed(2)}</span>
+              <span>$${parseFloat(level.taskProfit || 0).toFixed(2)}</span>
             </div>
             <div class="vip-feature-row">
               <span><i class="bi bi-graph-up-arrow" style="color:var(--accent-green);"></i> الإيراد اليومي:</span>
-              <span style="color: var(--accent-green);">$${level.dailyProfit.toFixed(2)}</span>
+              <span style="color: var(--accent-green);">$${parseFloat(level.dailyIncome || 0).toFixed(2)}</span>
             </div>
             <div class="vip-feature-row">
               <span><i class="bi bi-wallet2" style="color:var(--accent-gold);"></i> الإيراد الشهري:</span>
-              <span style="color: var(--accent-gold);">$${level.monthlyProfit.toFixed(2)}</span>
+              <span style="color: var(--accent-gold);">$${parseFloat(level.monthlyIncome || 0).toFixed(2)}</span>
             </div>
             <button class="btn-primary" 
-                    id="btn_upgrade_${level.id}"
-                    onclick="handleUpgrade('${level.id}', ${level.price})" 
+                    id="btn_upgrade_${index}"
+                    onclick="handleUpgrade('${levelId}', ${parseFloat(level.price || 0)})" 
                     style="margin-top: 20px; ${isCurrentLevel ? 'background: rgba(255,255,255,0.1); color: var(--text-muted); cursor: not-allowed; box-shadow: none;' : ''}"
                     ${isCurrentLevel ? 'disabled' : ''}>
-              ${isCurrentLevel ? 'مستواك الحالي' : 'ترقية الآن مقابل $' + level.price}
+              ${isCurrentLevel ? 'مستواك الحالي' : 'ترقية الآن مقابل $' + parseFloat(level.price || 0)}
             </button>
           </div>
         `;
@@ -335,7 +307,7 @@
     async function handleUpgrade(targetVipId, price) {
       if (!currentUserObj) return;
 
-      const currentTotalDeposit = parseFloat(currentUserObj.totalDeposit || 0);
+      const currentTotalDeposit = parseFloat(currentUserObj.depositBalance || currentUserObj.totalDeposit || 0);
 
       if (currentTotalDeposit < price) {
         showCustomModal(
@@ -353,17 +325,11 @@
 
       showCustomModal(
         "تأكيد الترقية",
-        `هل أنت متأكد من الترقية إلى مستوى ${targetVipId} مقابل خصم $${price} من إجمالي الإيداع؟`,
+        `هل أنت متأكد من الترقية إلى مستوى ${targetVipId} مقابل خصم $${price} من رصيد الإيداع؟`,
         "👑",
         true,
         "نعم، تفعيل الآن",
         async () => {
-          const btn = document.getElementById(`btn_upgrade_${targetVipId}`);
-          if (btn) {
-            btn.disabled = true;
-            btn.innerHTML = '<i class="bi bi-arrow-repeat" style="animation: spin 1s linear infinite;"></i> جاري الترقية...';
-          }
-
           try {
             const db = await getCloudDB();
             const userIndex = db.users.findIndex(u => u.username === currentUserObj.username);
@@ -371,7 +337,8 @@
             if (userIndex !== -1) {
               const user = db.users[userIndex];
 
-              user.totalDeposit = parseFloat(user.totalDeposit || 0) - parseFloat(price);
+              user.depositBalance = parseFloat(user.depositBalance || user.totalDeposit || 0) - parseFloat(price);
+              user.totalDeposit = user.depositBalance;
               user.vip = targetVipId;
 
               if (!user.history) user.history = [];
