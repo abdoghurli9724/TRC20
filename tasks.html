@@ -166,13 +166,8 @@
 
   <!-- Tasks Logic Script -->
   <script>
-    // إعدادات الباقات الافتراضية كاحتياط
-    let VIP_CONFIG = {
-      "VIP0": { dailyLimit: 2, rewardPerTask: 0.25, title: "منتج تقييم أساسي" },
-      "VIP1": { dailyLimit: 4, rewardPerTask: 1.25, title: "منتج تقييم مميز" },
-      "VIP2": { dailyLimit: 6, rewardPerTask: 3.50, title: "منتج تقييم احترافي" },
-      "VIP3": { dailyLimit: 10, rewardPerTask: 8.00, title: "منتج تقييم ذهبي" }
-    };
+    // إعدادات الباقات الديناميكية المستوردة من السحابة
+    let cloudVipConfig = {};
 
     const PRODUCTS_CATALOG = [
       { name: "ساعة ذكية مقاومة للماء - الإصدار الرياضي", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80" },
@@ -228,10 +223,26 @@
       startCountdownTimer();
 
       try {
-        // جلب الإعدادات والباقات من السحابة لضمان التزامن مع أي باقة جديدة (مثل VIP7)
+        // جلب الإعدادات والباقات المحدثة من السحابة (بما في ذلك الباقات الجديدة مثل VIP7 المضافة من الأدمن)
         const db = await getCloudDB();
-        if (db && db.vipConfig) {
-          VIP_CONFIG = db.vipConfig;
+        if (db && db.vipPackages) {
+          db.vipPackages.forEach(pkg => {
+            cloudVipConfig[pkg.id] = {
+              dailyLimit: parseInt(pkg.tasks || 2),
+              rewardPerTask: parseFloat(pkg.taskProfit || 0.25),
+              title: pkg.name || pkg.id
+            };
+          });
+        }
+
+        // إعدادات افتراضية كاحتياطية في حال لم تكن محملة
+        if (Object.keys(cloudVipConfig).length === 0) {
+          cloudVipConfig = {
+            "VIP0": { dailyLimit: 2, rewardPerTask: 0.25, title: "منتج تقييم أساسي" },
+            "VIP1": { dailyLimit: 4, rewardPerTask: 1.25, title: "منتج تقييم مميز" },
+            "VIP2": { dailyLimit: 6, rewardPerTask: 3.50, title: "منتج تقييم احترافي" },
+            "VIP3": { dailyLimit: 10, rewardPerTask: 8.00, title: "منتج تقييم ذهبي" }
+          };
         }
 
         currentUserObj = await getCurrentUser();
@@ -259,8 +270,7 @@
 
     function renderTasksPage() {
       const userVip = currentUserObj.vip || "VIP0";
-      // جلب إعدادات الباقة الخاصة بالمستخدم من السحابة ديناميكياً
-      const config = VIP_CONFIG[userVip] || { dailyLimit: 2, rewardPerTask: 1.00 };
+      const config = cloudVipConfig[userVip] || { dailyLimit: 2, rewardPerTask: 1.00 };
 
       document.getElementById('userVipText').innerText = userVip;
 
@@ -270,7 +280,6 @@
       const container = document.getElementById('tasksContainer');
       container.innerHTML = '';
 
-      // توليد عدد المهام حسب الحد اليومي للباقة (مثلاً 5 مهام لـ VIP7)
       for (let i = 0; i < config.dailyLimit; i++) {
         const taskId = `TASK_${userVip}_${i + 1}`;
         const isCompleted = (currentUserObj.completedTasksToday || []).includes(taskId);
