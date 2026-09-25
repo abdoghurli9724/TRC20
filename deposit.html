@@ -3,220 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VirtualMall - إيداع الرصيد</title>
+  <title>إيداع الأموال - VirtualMall</title>
   <link rel="stylesheet" href="profile.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 
-  <!-- Header Bar -->
-  <header class="header-bar">
-    <div class="brand-logo">
-      <i class="bi bi-wallet2" style="color: var(--accent-green);"></i>
-      إيداع <span>الرصيد</span>
-    </div>
-    <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
-      <i class="bi bi-house-fill"></i>
-    </a>
-  </header>
+  <div class="header-bar">
+    <div class="brand-logo"><i class="fa-solid fa-wallet" style="color: var(--accent-gold);"></i> إيداع <span>الرصيد</span></div>
+    <div class="vip-badge" id="userVipBadge">جاري التحميل...</div>
+  </div>
 
-  <main style="max-width: 500px; margin: 20px auto 80px auto; padding: 0 16px;">
-    
-    <!-- Network Alert -->
-    <div style="background-color: rgba(59, 130, 246, 0.15); border: 1px solid var(--accent-blue); padding: 12px; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-primary); margin-bottom: 20px; text-align: center;">
-      <i class="bi bi-info-circle-fill" style="color: var(--accent-blue); margin-left: 6px;"></i>
-      يرجى التحويل حصراً عبر شبكة <strong>TRC20 (USDT)</strong> لضمان وصول الإيداع بنجاح.
-    </div>
+  <div style="padding: 20px;">
+    <div class="card-box">
+      <h3 style="margin-bottom: 12px; font-size: 1rem; color: var(--accent-gold);">تعليمات الإيداع عبر TRC20</h3>
+      <p style="font-size: 0.850rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px;">
+        قم بتحويل المبلغ المطلوب إلى عنوان المحفظة أدناه، ثم أدخل رقم المعاملة (TXID) أو قم برفع صورة إثبات التحويل لتأكيد الطلب.
+      </p>
 
-    <!-- QR Code & Address Box -->
-    <div class="card-box" style="text-align: center; margin-bottom: 20px;">
-      <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 12px;">
-        عنوان محفظة الإيداع (USDT-TRC20)
-      </h3>
-
-      <div style="background-color: #ffffff; padding: 12px; display: inline-block; border-radius: var(--radius-md); margin-bottom: 16px;">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=T9xY1z8Q2wE4rR6tY8uI0oP1aS3dF5gH7j" alt="QR Code" style="width: 150px; height: 150px; display: block;">
-      </div>
-
-      <div class="form-group" style="text-align: right;">
-        <label class="form-label">عنوان المحفظة:</label>
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label class="form-label">عنوان محفظة الإيداع (USDT - TRC20)</label>
         <div style="display: flex; gap: 8px;">
-          <input type="text" id="walletAddress" class="form-input" readonly value="T9xY1z8Q2wE4rR6tY8uI0oP1aS3dF5gH7j" style="direction: ltr; font-size: 0.8rem; text-align: center;">
-          <button class="submit-btn" style="width: auto; padding: 0 16px; font-size: 0.85rem;" onclick="copyWalletAddress()">
-            <i class="bi bi-copy"></i> نسخ
-          </button>
+          <input type="text" id="walletAddress" class="form-input" value="TXYZ999MockWalletAddressForDemoTrc20..." readonly>
+          <button type="button" onclick="copyWallet()" style="background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--accent-gold);"><i class="fa-solid fa-copy"></i></button>
         </div>
       </div>
+
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label class="form-label">المبلغ المراد إيداعه (USDT)</label>
+        <input type="number" id="depositAmount" class="form-input" placeholder="أدخل المبلغ مثلاً 50">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label class="form-label">رقم العملية أو ملاحظة التحويل (TXID)</label>
+        <input type="text" id="depositTxid" class="form-input" placeholder="أدخل رقم المعاملة أو كود التحويل">
+      </div>
+
+      <button type="button" class="submit-btn" style="width: 100%;" onclick="submitDepositRequest()">إرسال طلب الإيداع</button>
     </div>
+  </div>
 
-    <!-- Alert Box for Submit Feedback -->
-    <div id="alertBox" style="display: none; padding: 12px; border-radius: var(--radius-md); margin-bottom: 16px; font-size: 0.85rem; text-align: center;"></div>
+  <!-- القائمة السفلية -->
+  <div class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
+    <a href="tasks.html" class="nav-item"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
+    <a href="team.html" class="nav-item"><i class="fa-solid fa-users"></i><span>الفريق</span></a>
+    <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i><span>حسابي</span></a>
+  </div>
 
-    <!-- Deposit Form -->
-    <form id="depositForm" class="card-box">
-      <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-        <i class="bi bi-send-fill" style="color: var(--accent-green); margin-left: 6px;"></i>تأكيد طلب الإيداع
-      </h3>
-
-      <div class="form-group">
-        <label class="form-label" for="depositAmount">المبلغ المحوّل (USD / USDT):</label>
-        <input type="number" id="depositAmount" class="form-input" min="10" step="any" placeholder="الحد الأدنى للإيداع $10" required>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="txHash">رقم المعاملة / Hash (TXID):</label>
-        <input type="text" id="txHash" class="form-input" placeholder="أدخل رقم عملية التحويل TXID" required>
-      </div>
-
-      <button type="submit" id="submitBtn" class="submit-btn" style="background-color: var(--accent-green);">
-        <span id="btnText">تأكيد الإيداع الآن</span>
-        <span id="btnSpinner" class="spinner" style="display: none;"></span>
-      </button>
-    </form>
-
-  </main>
-
-  <!-- Bottom Navigation Bar -->
-  <nav class="bottom-nav">
-    <a href="index.html" class="nav-item">
-      <i class="bi bi-house-fill"></i>
-      <span>الرئيسية</span>
-    </a>
-    <a href="tasks.html" class="nav-item">
-      <i class="bi bi-check2-square"></i>
-      <span>المهام</span>
-    </a>
-    <a href="team.html" class="nav-item">
-      <i class="bi bi-people-fill"></i>
-      <span>الفريق</span>
-    </a>
-    <a href="vip.html" class="nav-item">
-      <i class="bi bi-award-fill"></i>
-      <span>VIP</span>
-    </a>
-  </nav>
-
-  <!-- Database Script -->
   <script src="db.js"></script>
-
-  <!-- Deposit Logic Script -->
   <script>
-    let currentUserObj = null;
-
-    // Check Active Session
-    window.addEventListener('DOMContentLoaded', async () => {
-      const activeUsername = localStorage.getItem('currentUser');
-      if (!activeUsername) {
-        window.location.href = 'login.html';
+    async function initPage() {
+      const user = await getCurrentUser();
+      if (!user) {
+        window.location.href = "login.html";
         return;
       }
+      document.getElementById("userVipBadge").innerHTML = `<i class="fa-solid fa-crown"></i> ${user.vip || 'VIP0'}`;
+    }
 
-      try {
-        currentUserObj = await getCurrentUser();
-        if (!currentUserObj) {
-          logoutUser();
-        }
-      } catch (error) {
-        console.error('Error fetching deposit page user:', error);
-      }
-    });
-
-    // Copy Wallet Address Helper
-    function copyWalletAddress() {
-      const walletInput = document.getElementById('walletAddress');
+    function copyWallet() {
+      const walletInput = document.getElementById("walletAddress");
       walletInput.select();
-      walletInput.setSelectionRange(0, 99999);
-      navigator.clipboard.writeText(walletInput.value).then(() => {
-        alert('تم نسخ عنوان المحفظة بنجاح!');
-      }).catch(err => {
-        console.error('Failed to copy:', err);
+      navigator.clipboard.writeText(walletInput.value);
+      alert("تم نسخ عنوان المحفظة بنجاح!");
+    }
+
+    async function submitDepositRequest() {
+      const amount = parseFloat(document.getElementById("depositAmount").value);
+      const txid = document.getElementById("depositTxid").value.trim();
+
+      if (!amount || amount <= 0) {
+        alert("يرجى إدخال مبلغ صحيح للإيداع.");
+        return;
+      }
+      if (!txid) {
+        alert("يرجى إدخال رقم المعاملة أو كود التحويل.");
+        return;
+      }
+
+      const user = await getCurrentUser();
+      const db = await getCloudDB();
+
+      const requestObj = {
+        id: generateTransactionId(),
+        username: user.username,
+        amount: amount,
+        txid: txid,
+        type: "deposit",
+        status: "pending",
+        date: new Date().toLocaleString('ar-EG')
+      };
+
+      // إضافة الطلب إلى قائمة الإيداعات العامة في السحابة
+      if (!db.depositRequests) db.depositRequests = [];
+      db.depositRequests.push(requestObj);
+
+      // إضافة العملية إلى سجل المستخدم المؤقت بانتظار الموافقة
+      if (!user.history) user.history = [];
+      user.history.unshift({
+        id: requestObj.id,
+        type: "deposit",
+        title: "طلب إيداع قيد المراجعة",
+        amount: amount,
+        status: "pending",
+        date: requestObj.date
       });
-    }
 
-    // Show Alert Utility
-    function showAlert(message, type) {
-      const alertBox = document.getElementById('alertBox');
-      alertBox.style.display = 'block';
-      alertBox.innerText = message;
-      if (type === 'error') {
-        alertBox.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
-        alertBox.style.color = 'var(--accent-red)';
-        alertBox.style.border = '1px solid var(--accent-red)';
+      const userIndex = db.users.findIndex(u => u.username === user.username);
+      if (userIndex !== -1) {
+        db.users[userIndex] = user;
+      }
+
+      const success = await updateCloudDB(db);
+      if (success) {
+        alert("تم إرسال طلب الإيداع بنجاح، سيتم مراجعته وتحديث رصيدك قريباً.");
+        window.location.href = "profile.html";
       } else {
-        alertBox.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
-        alertBox.style.color = 'var(--accent-green)';
-        alertBox.style.border = '1px solid var(--accent-green)';
+        alert("حدث خطأ أثناء الاتصال بالسحابة، يمحى المحاولة لاحقاً.");
       }
     }
 
-    // Deposit Submit Handler
-    document.getElementById('depositForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const amount = parseFloat(document.getElementById('depositAmount').value);
-      const txHash = document.getElementById('txHash').value.trim();
-
-      if (isNaN(amount) || amount < 10) {
-        showAlert('الحد الأدنى للإيداع هو $10', 'error');
-        return;
-      }
-
-      if (!txHash || txHash.length < 8) {
-        showAlert('يرجى إدخال رقم معاملة (TXID) صحيح', 'error');
-        return;
-      }
-
-      const submitBtn = document.getElementById('submitBtn');
-      const btnText = document.getElementById('btnText');
-      const btnSpinner = document.getElementById('btnSpinner');
-
-      submitBtn.disabled = true;
-      btnText.style.display = 'none';
-      btnSpinner.style.display = 'inline-block';
-
-      try {
-        const db = await getCloudDB();
-        const userIndex = db.users.findIndex(u => u.username === currentUserObj.username);
-
-        if (userIndex !== -1) {
-          const user = db.users[userIndex];
-          if (!user.history) user.history = [];
-
-          // Record new deposit transaction as pending
-          user.history.unshift({
-            id: generateTransactionId(),
-            type: "deposit",
-            title: "طلب إيداع رصيد (USDT-TRC20)",
-            amount: amount,
-            txHash: txHash,
-            status: "pending",
-            date: new Date().toLocaleString('ar-EG')
-          });
-
-          // Sync with JSONBin Cloud
-          const success = await updateCloudDB(db);
-
-          if (success) {
-            showAlert('تم إرسال طلب الإيداع بنجاح! سيتم مراجعته وإضافة الرصيد لحسابك قريباً.', 'success');
-            document.getElementById('depositForm').reset();
-            setTimeout(() => {
-              window.location.href = 'records.html';
-            }, 2000);
-          } else {
-            showAlert('حدث خطأ أثناء رفع الطلب للسحابة، حاول ثانية.', 'error');
-            submitBtn.disabled = false;
-            btnText.style.display = 'inline';
-            btnSpinner.style.display = 'none';
-          }
-        }
-      } catch (error) {
-        console.error('Deposit Error:', error);
-        showAlert('فشل الاتصال بالسيرفر، يرجى المحاولة لاحقاً', 'error');
-        submitBtn.disabled = false;
-        btnText.style.display = 'inline';
-        btnSpinner.style.display = 'none';
-      }
-    });
+    initPage();
   </script>
 </body>
 </html>
