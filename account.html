@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VirtualMall - إعدادات الحساب</title>
   <link rel="stylesheet" href="profile.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 
   <!-- Header Bar -->
   <header class="header-bar">
     <div class="brand-logo">
-      <i class="fa-solid fa-sliders" style="color: var(--accent-blue);"></i>
+      <i class="bi bi-sliders" style="color: var(--accent-blue);"></i>
       إعدادات <span>الحساب</span>
     </div>
     <a href="index.html" style="color: var(--text-primary); font-size: 1.2rem;">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
     </a>
   </header>
 
@@ -25,11 +25,11 @@
     <!-- User Profile Header Card -->
     <div class="card-box" style="text-align: center; margin-bottom: 20px; padding: 24px 16px;">
       <div style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); display: flex; justify-content: center; align-items: center; margin: 0 auto 12px auto; font-size: 2rem; color: #ffffff; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
-        <i class="fa-solid fa-user"></i>
+        <i class="bi bi-person-fill"></i>
       </div>
       <h2 id="displayUsername" style="font-size: 1.2rem; color: var(--text-primary); margin-bottom: 4px;">جاري التحميل...</h2>
       <div style="display: inline-block; background-color: rgba(245, 158, 11, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;" id="displayVipBadge">
-        <i class="fa-solid fa-crown"></i> <span id="vipText">VIP0</span>
+        <i class="bi bi-award-fill"></i> <span id="vipText">VIP0</span>
       </div>
     </div>
 
@@ -48,7 +48,7 @@
     <!-- Change Password Form -->
     <div class="card-box" style="margin-bottom: 20px;">
       <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-        <i class="fa-solid fa-key" style="color: var(--accent-blue); margin-left: 6px;"></i>تغيير كلمة المرور
+        <i class="bi bi-key-fill" style="color: var(--accent-blue); margin-left: 6px;"></i>تغيير كلمة المرور
       </h3>
 
       <div id="alertBox" style="display: none; padding: 10px; border-radius: var(--radius-sm); margin-bottom: 12px; font-size: 0.85rem; text-align: center;"></div>
@@ -80,32 +80,32 @@
     <div class="card-box" style="padding: 0; margin-bottom: 24px; overflow: hidden;">
       <a href="transfer.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <i class="fa-solid fa-arrow-right-arrow-left" style="color: var(--accent-blue); width: 20px;"></i>
+          <i class="bi bi-arrow-left-right" style="color: var(--accent-blue); width: 20px;"></i>
           <span>التحويل الداخلي للرصيد</span>
         </div>
-        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+        <i class="bi bi-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
       </a>
 
       <a href="records.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-gold); width: 20px;"></i>
+          <i class="bi bi-clock-history" style="color: var(--accent-gold); width: 20px;"></i>
           <span>سجل المعاملات المالية</span>
         </div>
-        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+        <i class="bi bi-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
       </a>
 
       <a href="team.html" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; color: var(--text-primary); text-decoration: none;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <i class="fa-solid fa-users" style="color: var(--accent-green); width: 20px;"></i>
+          <i class="bi bi-people-fill" style="color: var(--accent-green); width: 20px;"></i>
           <span>مركز إحصائيات الفريق</span>
         </div>
-        <i class="fa-solid fa-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+        <i class="bi bi-chevron-left" style="font-size: 0.8rem; color: var(--text-muted);"></i>
       </a>
     </div>
 
     <!-- Logout Button -->
     <button id="accountLogoutBtn" style="width: 100%; padding: 14px; background-color: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); border-radius: var(--radius-md); font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer;">
-      <i class="fa-solid fa-right-from-bracket"></i>
+      <i class="bi bi-box-arrow-right"></i>
       تسجيل الخروج من الحساب
     </button>
 
@@ -114,19 +114,19 @@
   <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
       <span>الرئيسية</span>
     </a>
     <a href="tasks.html" class="nav-item">
-      <i class="fa-solid fa-list-check"></i>
+      <i class="bi bi-check2-square"></i>
       <span>المهام</span>
     </a>
     <a href="team.html" class="nav-item">
-      <i class="fa-solid fa-users"></i>
+      <i class="bi bi-people-fill"></i>
       <span>الفريق</span>
     </a>
     <a href="vip.html" class="nav-item">
-      <i class="fa-solid fa-crown"></i>
+      <i class="bi bi-award-fill"></i>
       <span>VIP</span>
     </a>
   </nav>
