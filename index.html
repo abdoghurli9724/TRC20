@@ -1,159 +1,165 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الرئيسية - VirtualMall</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #0b1120; color: #f8fafc; min-height: 100vh; padding-bottom: 90px; }
-        .container { max-width: 480px; margin: 0 auto; padding: 15px; }
-
-        .balance-card {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            position: relative;
-            overflow: hidden;
-        }
-        .user-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-        .user-details h3 { font-size: 16px; color: #f8fafc; font-weight: 700; }
-        .user-badge { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
-
-        .balances-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        .balance-box { background: rgba(15, 23, 42, 0.5); padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); }
-        .balance-title { font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
-        .balance-amount { font-size: 22px; font-weight: 800; color: #38bdf8; }
-        .balance-amount.deposit { color: #10b981; }
-
-        .action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
-        .btn-action {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 12px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 13px;
-            transition: all 0.2s ease;
-        }
-        .btn-deposit { background: linear-gradient(135deg, #38bdf8, #0284c7); color: #fff; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2); }
-        .btn-withdraw { background: rgba(255, 255, 255, 0.05); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .btn-action:active { transform: scale(0.96); }
-
-        .section-title { font-size: 15px; font-weight: 700; color: #f8fafc; margin: 20px 0 12px 0; display: flex; align-items: center; gap: 8px; }
-        .history-list { display: flex; flex-direction: column; gap: 10px; }
-        .history-item {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 12px 15px; border-radius: 14px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .history-info div { font-size: 13px; font-weight: bold; color: #f8fafc; }
-        .history-info small { font-size: 10px; color: #64748b; }
-        .history-amount { font-weight: 800; font-size: 14px; }
-        .history-amount.plus { color: #10b981; }
-        .history-amount.minus { color: #ef4444; }
-
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); display: flex; justify-content: space-around; align-items: center; padding: 12px 0; border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 9999; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; }
-        .nav-item i { font-size: 18px; margin-bottom: 4px; }
-        .nav-item.active { color: #38bdf8; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VirtualMall - الصفحة الرئيسية</title>
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-<div class="container">
-    <div class="balance-card">
-        <div class="user-info">
-            <div class="user-details">
-                <h3 id="displayUsername">مستخدم</h3>
-            </div>
-            <span class="user-badge" id="displayVip">VIP0</span>
-        </div>
-        
-        <div class="balances-grid">
-            <div class="balance-box">
-                <div class="balance-title">إجمالي الإيداع</div>
-                <div class="balance-amount deposit" id="displayDeposit">$0.00</div>
-            </div>
-            <div class="balance-box">
-                <div class="balance-title">الرصيد المتاح</div>
-                <div class="balance-amount" id="displayBalance">$0.00</div>
-            </div>
-        </div>
+  <!-- Header Bar -->
+  <header class="header-bar">
+    <div class="brand-logo">
+      <i class="fa-solid fa-store" style="color: var(--accent-blue);"></i>
+      Virtual<span>Mall</span>
+    </div>
+    <div class="cart-icon-btn" onclick="window.location.href='tasks.html'">
+      <i class="fa-solid fa-cart-shopping"></i>
+    </div>
+  </header>
 
-        <div class="action-buttons">
-            <a href="#" class="btn-action btn-deposit"><i class="fa-solid fa-wallet"></i> إيداع</a>
-            <a href="#" class="btn-action btn-withdraw"><i class="fa-solid fa-money-bill-transfer"></i> سحب</a>
-        </div>
+  <!-- Ticker Bar -->
+  <div class="ticker-bar">
+    <div class="ticker-badge">
+      <i class="fa-solid fa-bell"></i> سحب جديد
+    </div>
+    <div class="ticker-content" id="tickerText">
+      قام المستخدم 09***432 بسحب $150.00 بنجاح ... قام المستخدم 08***911 بسحب $45.50 بنجاح ... مرحباً بك في منصة VirtualMall الرسمية!
+    </div>
+  </div>
+
+  <!-- Main Balance Card -->
+  <section class="balance-card">
+    <div class="user-info-row">
+      <div class="username-display" id="displayUsername">
+        <i class="fa-solid fa-user-circle" style="margin-left: 6px; color: var(--accent-blue);"></i>
+        <span id="usernameText">جاري التحميل...</span>
+      </div>
+      <div class="vip-badge" id="displayVipRank">
+        <i class="fa-solid fa-crown"></i>
+        <span id="vipRankText">VIP0</span>
+      </div>
     </div>
 
-    <div class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> سجل الحركات الأخيرة</div>
-    <div class="history-list" id="historyContainer">
-        <div style="text-align: center; color: #64748b; font-size: 12px; padding: 20px;">جاري جلب البيانات...</div>
+    <div class="balance-grid">
+      <div class="balance-item">
+        <span class="balance-label">إجمالي الإيداع</span>
+        <span class="balance-value deposit" id="totalDepositVal">$0.00</span>
+      </div>
+      <div class="balance-item">
+        <span class="balance-label">الرصيد المتاح</span>
+        <span class="balance-value available" id="availableBalanceVal">$0.00</span>
+      </div>
     </div>
-</div>
+  </section>
 
-<div class="bottom-nav">
-    <a href="index.html" class="nav-item active"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
-    <a href="tasks.html" class="nav-item"><i class="fa-solid fa-list-check"></i><span>المهام</span></a>
-    <a href="team.html" class="nav-item"><i class="fa-solid fa-users"></i><span>الفريق</span></a>
-    <a href="vip.html" class="nav-item"><i class="fa-solid fa-crown"></i><span>VIP</span></a>
-</div>
+  <!-- Quick Actions Grid -->
+  <section class="quick-actions-grid">
+    <a href="deposit.html" class="action-btn">
+      <div class="action-icon deposit">
+        <i class="fa-solid fa-wallet"></i>
+      </div>
+      <span class="action-title">إيداع</span>
+    </a>
 
-<script src="db.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", async function() {
-        let currentUser = localStorage.getItem('currentUser');
-        if (!currentUser) {
-            currentUser = 'demo';
-            localStorage.setItem('currentUser', currentUser);
+    <a href="withdraw.html" class="action-btn">
+      <div class="action-icon withdraw">
+        <i class="fa-solid fa-hand-holding-dollar"></i>
+      </div>
+      <span class="action-title">يسحب</span>
+    </a>
+
+    <a href="account.html" class="action-btn">
+      <div class="action-icon account">
+        <i class="fa-solid fa-sliders"></i>
+      </div>
+      <span class="action-title">حسابي</span>
+    </a>
+
+    <a href="records.html" class="action-btn">
+      <div class="action-icon records">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+      </div>
+      <span class="action-title">سجلات</span>
+    </a>
+  </section>
+
+  <!-- Logout Strip -->
+  <div style="margin: 0 20px 24px 20px;">
+    <button id="logoutBtn" style="width: 100%; padding: 12px; background-color: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); border-radius: var(--radius-md); font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer;">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      تسجيل الخروج من الحساب
+    </button>
+  </div>
+
+  <!-- Floating Telegram Support Button -->
+  <a href="https://t.me" target="_blank" class="floating-support-btn" title="الدعم الفني">
+    <i class="fa-solid fa-paper-plane"></i>
+  </a>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item active">
+      <i class="fa-solid fa-house"></i>
+      <span>الرئيسية</span>
+    </a>
+    <a href="tasks.html" class="nav-item">
+      <i class="fa-solid fa-list-check"></i>
+      <span>المهام</span>
+    </a>
+    <a href="team.html" class="nav-item">
+      <i class="fa-solid fa-users"></i>
+      <span>الفريق</span>
+    </a>
+    <a href="vip.html" class="nav-item">
+      <i class="fa-solid fa-crown"></i>
+      <span>VIP</span>
+    </a>
+  </nav>
+
+  <!-- Database Script -->
+  <script src="db.js"></script>
+
+  <!-- Dashboard Controller Script -->
+  <script>
+    // Verify Session and Load Cloud Data
+    window.addEventListener('DOMContentLoaded', async () => {
+      const activeUsername = localStorage.getItem('currentUser');
+      
+      if (!activeUsername) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      try {
+        // Fetch Live Data from JSONBin Cloud
+        const user = await getCurrentUser();
+
+        if (!user) {
+          alert('جلسة العمل انتهت أو الحساب غير موجود');
+          logoutUser();
+          return;
         }
 
-        document.getElementById('displayUsername').innerText = currentUser;
-        await loadUserData();
+        // Render Dashboard Data
+        document.getElementById('usernameText').innerText = user.username;
+        document.getElementById('vipRankText').innerText = user.vip || 'VIP0';
+        document.getElementById('totalDepositVal').innerText = '$' + parseFloat(user.totalDeposit || 0).toFixed(2);
+        document.getElementById('availableBalanceVal').innerText = '$' + parseFloat(user.balance || 0).toFixed(2);
+
+      } catch (error) {
+        console.error('Error loading dashboard:', error);
+      }
     });
 
-    async function loadUserData() {
-        const currentUser = localStorage.getItem('currentUser');
-        try {
-            const db = await getCloudDB();
-            let u = db.usersDB?.[currentUser] || { balance: 0, totalDeposit: 0, vip: 'VIP0', history: [] };
-
-            let balance = Number(u.balance);
-            if (isNaN(balance)) balance = 0;
-
-            let totalDeposit = Number(u.totalDeposit);
-            if (isNaN(totalDeposit)) totalDeposit = 0;
-
-            document.getElementById('displayBalance').innerText = `$${balance.toFixed(2)}`;
-            document.getElementById('displayDeposit').innerText = `$${totalDeposit.toFixed(2)}`;
-            document.getElementById('displayVip').innerText = u.vip || 'VIP0';
-
-            const historyContainer = document.getElementById('historyContainer');
-            historyContainer.innerHTML = '';
-
-            if (u.history && u.history.length > 0) {
-                u.history.slice(0, 5).forEach(item => {
-                    let isPlus = item.amount.includes('+');
-                    let div = document.createElement('div');
-                    div.className = 'history-item';
-                    div.innerHTML = `
-                        <div class="history-info">
-                            <div>${item.title}</div>
-                            <small>${item.date}</small>
-                        </div>
-                        <div class="history-amount ${isPlus ? 'plus' : 'minus'}">${item.amount}</div>
-                    `;
-                    historyContainer.appendChild(div);
-                });
-            } else {
-                historyContainer.innerHTML = '<div style="text-align: center; color: #64748b; font-size: 12px; padding: 20px;">لا توجد عمليات سابقة</div>';
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-</script>
+    // Logout Handler
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      if (confirm('هل أنت تأكد من رغبتك في تسجيل الخروج؟')) {
+        logoutUser();
+      }
+    });
+  </script>
 </body>
 </html>
