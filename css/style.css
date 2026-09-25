@@ -1,256 +1,455 @@
+/* ==========================================================================
+   VirtualMall - Complete Modern UI/UX Stylesheet (RTL & Mobile First)
+   ========================================================================== */
+
+/* 1. Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
+
+/* 2. Global CSS Variables & Theme Configuration */
 :root {
-    --primary-green: #00e676;
-    --primary-purple: #6200ee;
-    --bg-main: #e3f2fd;
-    --card-bg: #bbdefb;
-    --text-dark: #333333;
+  --bg-primary: #0a0f1d;
+  --bg-secondary: #131b2e;
+  --bg-card: rgba(23, 32, 54, 0.7);
+  --bg-card-hover: rgba(30, 42, 69, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  
+  --accent-gold: #f3ba2f;
+  --accent-gold-hover: #ffd056;
+  --accent-cyan: #00f2fe;
+  --accent-purple: #7928ca;
+  --accent-green: #00e676;
+  --accent-red: #ff3b30;
+  
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  
+  --nav-height: 65px;
+  --border-radius-sm: 8px;
+  --border-radius-md: 14px;
+  --border-radius-lg: 20px;
+  --border-radius-full: 9999px;
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-glow: 0 0 20px rgba(243, 186, 47, 0.25);
+  
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    -webkit-tap-highlight-color: transparent;
+/* 3. Base Reset & Layout Alignment */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  direction: rtl;
+  font-size: 16px;
+  scroll-behavior: smooth;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
 }
 
 body {
-    background-color: #121212;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    direction: rtl;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: calc(var(--nav-height) + 20px);
+  background: radial-gradient(circle at top right, #1a253f 0%, var(--bg-primary) 60%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+  line-height: 1.6;
 }
 
-/* Container Simulation for Mobile */
-.app-container {
-    width: 100%;
-    max-width: 430px;
-    min-height: 100vh;
-    background-color: var(--bg-main);
-    position: relative;
-    padding: 20px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    display: flex;
-    flex-direction: column;
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition-fast);
 }
 
-/* Auth Cards (Login & Register) */
-.auth-card {
-    background: #ffffff;
-    width: 100%;
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    margin: auto 0;
+ul, ol {
+  list-style: none;
 }
 
-.auth-header {
-    text-align: center;
-    margin-bottom: 25px;
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
-.auth-header .logo-icon {
-    width: 65px;
-    height: 65px;
-    background: linear-gradient(135deg, var(--primary-green), #00b0ff);
-    border-radius: 16px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto 10px;
-    color: #fff;
-    font-size: 28px;
+/* 4. Container Layouts */
+.container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
-.auth-header h2 {
-    color: var(--text-dark);
-    font-size: 20px;
-}
-
-.input-group {
-    margin-bottom: 15px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 13px;
-    color: #666;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    outline: none;
-    font-size: 14px;
-    background: #f9f9f9;
-}
-
-.btn-submit {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #fff;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.btn-green { background: var(--primary-green); }
-.btn-purple { background: var(--primary-purple); }
-
-.auth-footer {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 14px;
-    color: #666;
-}
-
-.auth-footer a {
-    color: var(--primary-purple);
-    font-weight: bold;
-    text-decoration: none;
-}
-
-/* Header UI inside Main App */
+/* 5. Header Component */
 .app-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 15, 29, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.app-title {
-    font-weight: bold;
-    font-size: 18px;
-    color: #1565c0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.header-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-gold), #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* VIP Card Design */
-.vip-card {
-    background: var(--card-bg);
-    border-radius: 14px;
-    padding: 15px;
-    margin-bottom: 15px;
-    position: relative;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.vip-badge {
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #ffb74d;
-    color: #fff;
-    padding: 3px 12px;
-    font-size: 11px;
-    font-weight: bold;
-    border-bottom-right-radius: 10px;
+/* 6. Form Control Elements */
+.form-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.vip-body {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
-.vip-icon {
-    width: 65px;
-    height: 65px;
-    background: #ffee58;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 28px;
-    color: #7b1fa2;
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.vip-info {
-    background: #ffffff;
-    border-radius: 8px;
-    padding: 10px;
-    width: 68%;
-    font-size: 12px;
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-md);
+  color: var(--text-main);
+  font-size: 0.95rem;
+  outline: none;
+  transition: var(--transition-normal);
 }
 
-.vip-info-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 4px;
-    color: var(--text-dark);
+.form-input:focus {
+  border-color: var(--accent-gold);
+  background-color: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 12px rgba(243, 186, 47, 0.15);
 }
 
-.btn-unlock {
-    width: 100%;
-    margin-top: 10px;
-    background: #ffe082;
-    color: #000;
-    border: none;
-    padding: 10px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
+.form-input::placeholder {
+  color: var(--text-dim);
 }
 
-/* Modal Window */
+/* 7. Modern Button Components */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--border-radius-md);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  user-select: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-gold), #e0a112);
+  color: #000;
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-primary:hover, .btn-primary:active {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--accent-gold-hover), var(--accent-gold));
+  box-shadow: 0 0 25px rgba(243, 186, 47, 0.4);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  border: 1px solid var(--glass-border);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, var(--accent-red), #c0261d);
+  color: #fff;
+}
+
+.btn-sm {
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  width: auto;
+  border-radius: var(--border-radius-sm);
+}
+
+/* 8. Modern Cards & Glassmorphism Panels */
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-lg);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-normal);
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* 9. Profile & Dashboard Specific Cards */
+.balance-card {
+  background: linear-gradient(135deg, #1e2c4d 0%, #111827 100%);
+  border: 1px solid rgba(243, 186, 47, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.balance-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(243, 186, 47, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.balance-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.balance-value {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--accent-gold);
+  margin: 6px 0 14px 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.stat-item {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--glass-border);
+}
+
+.stat-title {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.stat-number {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-top: 4px;
+}
+
+/* 10. Bottom Navigation Bar */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  background: rgba(19, 27, 46, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 1000;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: 20%;
+  height: 100%;
+  transition: var(--transition-fast);
+}
+
+.nav-item svg, .nav-item i {
+  font-size: 1.25rem;
+  transition: var(--transition-fast);
+}
+
+.nav-item.active {
+  color: var(--accent-gold);
+}
+
+.nav-item.active svg, .nav-item.active i {
+  transform: translateY(-2px);
+}
+
+/* 11. Custom Modals & Dialogs */
 .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition-normal);
+  padding: 16px;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
 }
 
 .modal-content {
-    background: #fff;
-    width: 90%;
-    max-width: 380px;
-    padding: 20px;
-    border-radius: 14px;
-    text-align: center;
-    position: relative;
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-lg);
+  width: 100%;
+  max-width: 400px;
+  padding: 24px;
+  transform: scale(0.9);
+  transition: var(--transition-normal);
+  box-shadow: var(--shadow-md);
 }
 
-.close-btn {
-    position: absolute;
-    top: 10px;
-    left: 15px;
-    font-size: 22px;
-    cursor: pointer;
-    color: #888;
+.modal-overlay.active .modal-content {
+  transform: scale(1);
 }
 
-.wallet-box {
-    background: #f5f5f5;
-    padding: 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    word-break: break-all;
-    margin: 10px 0;
-    border: 1px dashed #bbb;
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
 }
 
-.btn-copy {
-    background: #1976d2;
-    color: #fff;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    margin-bottom: 12px;
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* 12. Badges & Indicators */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--border-radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.badge-vip {
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+  color: #fff;
+}
+
+.badge-success {
+  background: rgba(0, 230, 118, 0.15);
+  color: var(--accent-green);
+  border: 1px solid rgba(0, 230, 118, 0.3);
+}
+
+/* 13. VIP Packages Grid */
+.vip-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.vip-card {
+  position: relative;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-lg);
+  padding: 20px;
+}
+
+.vip-card.unlocked {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 15px rgba(243, 186, 47, 0.15);
+}
+
+/* 14. Responsive Breakpoints */
+@media (min-width: 481px) {
+  body {
+    background-size: cover;
+  }
+  
+  .app-header, .bottom-nav {
+    border-left: 1px solid var(--glass-border);
+    border-right: 1px solid var(--glass-border);
+  }
 }
