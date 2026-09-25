@@ -1,18 +1,36 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>سحب الأموال - VirtualMall</title>
   <link rel="stylesheet" href="profile.css">
-  <!-- خط Cairo -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-  <!-- مكتبة Bootstrap Icons المجانية والمستقرة -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    .custom-toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-card, #1e293b);
+      border: 1px solid var(--accent-green, #10b981);
+      color: var(--text-primary, #f8fafc);
+      padding: 12px 24px;
+      border-radius: 12px;
+      z-index: 9999;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: none;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Toast Notification -->
+  <div id="customToast" class="custom-toast"></div>
 
   <div class="header-bar">
     <div class="brand-logo"><i class="bi bi-wallet2" style="color: var(--accent-gold);"></i> سحب <span>الأموال</span></div>
@@ -42,7 +60,6 @@
     </div>
   </div>
 
-  <!-- القائمة السفلية باستخدام Bootstrap Icons -->
   <div class="bottom-nav">
     <a href="index.html" class="nav-item"><i class="bi bi-house-door"></i><span>الرئيسية</span></a>
     <a href="tasks.html" class="nav-item"><i class="bi bi-list-check"></i><span>المهام</span></a>
@@ -52,6 +69,16 @@
 
   <script src="db.js"></script>
   <script>
+    function showCustomToast(message, isSuccess = true) {
+      const toast = document.getElementById('customToast');
+      toast.innerText = message;
+      toast.style.borderColor = isSuccess ? 'var(--accent-green, #10b981)' : 'var(--accent-red, #ef4444)';
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3500);
+    }
+
     async function initPage() {
       const user = await getCurrentUser();
       if (!user) {
@@ -67,17 +94,17 @@
       const address = document.getElementById("withdrawAddress").value.trim();
 
       if (!amount || amount <= 0) {
-        alert("يرجى إدخال مبلغ صحيح للسحب.");
+        showCustomToast("يرجى إدخال مبلغ صحيح للسحب.", false);
         return;
       }
       if (!address) {
-        alert("يرجى إدخال عنوان المحفظة.");
+        showCustomToast("يرجى إدخال عنوان المحفظة.", false);
         return;
       }
 
       const user = await getCurrentUser();
       if (amount > user.balance) {
-        alert("رصيدك المتاح لا يكفي لإتمام عملية السحب.");
+        showCustomToast("رصيدك المتاح لا يكفي لإتمام عملية السحب.", false);
         return;
       }
 
@@ -93,7 +120,6 @@
         date: new Date().toLocaleString('ar-EG')
       };
 
-      // خصم المبلغ مؤقتاً من رصيد المستخدم وحفظه في الطلبات العامة
       user.balance -= amount;
       if (!db.withdrawRequests) db.withdrawRequests = [];
       db.withdrawRequests.push(requestObj);
@@ -115,10 +141,12 @@
 
       const success = await updateCloudDB(db);
       if (success) {
-        alert("تم إرسال طلب السحب بنجاح وهو قيد المراجعة من الإدارة.");
-        window.location.href = "profile.html";
+        showCustomToast("تم إرسال طلب السحب بنجاح وهو قيد المراجعة من الإدارة.", true);
+        setTimeout(() => {
+          window.location.href = "profile.html";
+        }, 1500);
       } else {
-        alert("حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.");
+        showCustomToast("حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.", false);
       }
     }
 
