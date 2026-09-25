@@ -20,8 +20,13 @@
       <i class="bi bi-shop" style="color: var(--accent-blue); font-size: 1.4rem;"></i>
       Virtual<span>Mall</span>
     </div>
-    <div class="cart-icon-btn" onclick="window.location.href='tasks.html'" style="cursor: pointer; font-size: 1.2rem; color: var(--text-main);">
-      <i class="bi bi-cart3"></i>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <!-- زر لوحة الأدمن (يتم حقنه برمجياً هنا إذا كان المستخدم هو الأدمن) -->
+      <div id="adminNavBtnContainer"></div>
+
+      <div class="cart-icon-btn" onclick="window.location.href='tasks.html'" style="cursor: pointer; font-size: 1.2rem; color: var(--text-main);">
+        <i class="bi bi-cart3"></i>
+      </div>
     </div>
   </header>
 
@@ -140,6 +145,19 @@
         document.getElementById('vipRankText').innerText = user.vip || 'VIP0';
         document.getElementById('totalDepositVal').innerText = '$' + parseFloat(user.totalDeposit || 0).toFixed(2);
         document.getElementById('availableBalanceVal').innerText = '$' + parseFloat(user.balance || 0).toFixed(2);
+
+        // التحقق مما إذا كان المستخدم هو الأدمن لإظهار زر لوحة التحكم في الهيدر العلوي
+        if (user.username === "088888888") {
+          const adminContainer = document.getElementById('adminNavBtnContainer');
+          if (adminContainer) {
+            adminContainer.innerHTML = `
+              <a href="admin.html" style="background: rgba(168, 85, 247, 0.15); border: 1px solid #a855f7; color: #a855f7; padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px; text-decoration: none;">
+                <i class="bi bi-shield-lock-fill"></i>
+                <span>الأدمن</span>
+              </a>
+            `;
+          }
+        }
 
       } catch (error) {
         console.error('Error loading dashboard:', error);
