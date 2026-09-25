@@ -431,3 +431,9 @@ input[type="text"]:focus {
     from { transform: scale(0.9); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }
+
+/* إعادة ضبط خط الأيقونات لعمل مكتبة FontAwesome بشكل صحيح */
+i.fa-solid, i.fa-regular, i.fa-brands, 
+.fa-solid, .fa-regular, .fa-brands {
+  font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+}
