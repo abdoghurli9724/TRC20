@@ -6,7 +6,7 @@
   <title>VirtualMall - فريق العمل والإحالات</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   
-  <!-- استبدال مكتبة FontAwesome بمكتبة Bootstrap Icons المجانية والمستقرة -->
+  <!-- مكتبة Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="profile.css">
 </head>
@@ -15,7 +15,7 @@
   <!-- Header Bar -->
   <header class="header-bar">
     <div class="brand-logo">
-      <i class="fa-solid fa-users" style="color: var(--accent-blue);"></i>
+      <i class="bi bi-people-fill" style="color: var(--accent-blue);"></i>
       فريق <span>العمل</span>
     </div>
   </header>
@@ -24,7 +24,7 @@
     <!-- Referral Code & Link Card -->
     <section class="card-box" style="margin: 20px;">
       <h3 style="font-size: 1.05rem; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-        <i class="fa-solid fa-share-nodes" style="color: var(--accent-blue);"></i>
+        <i class="bi bi-share-fill" style="color: var(--accent-blue);"></i>
         رابط وكود الدعوة الخاص بك
       </h3>
 
@@ -34,7 +34,7 @@
         <div style="display: flex; gap: 8px;">
           <input type="text" id="myReferralCode" class="form-input" readonly value="جاري التحميل..." style="font-weight: 800; letter-spacing: 1px; color: var(--accent-gold);">
           <button class="submit-btn" style="width: auto; padding: 0 16px; font-size: 0.85rem;" onclick="copyInputText('myReferralCode', 'تم نسخ كود الدعوة!')">
-            <i class="fa-solid fa-copy"></i> نسخ
+            <i class="bi bi-clipboard-fill"></i> نسخ
           </button>
         </div>
       </div>
@@ -45,7 +45,7 @@
         <div style="display: flex; gap: 8px;">
           <input type="text" id="myReferralLink" class="form-input" readonly value="جاري التحميل..." style="font-size: 0.8rem; direction: ltr; text-align: left;">
           <button class="submit-btn" style="width: auto; padding: 0 16px; font-size: 0.85rem;" onclick="copyInputText('myReferralLink', 'تم نسخ رابط الدعوة!')">
-            <i class="fa-solid fa-link"></i> نسخ
+            <i class="bi bi-link-45deg"></i> نسخ
           </button>
         </div>
       </div>
@@ -71,7 +71,7 @@
     <!-- Referral Levels Breakdown -->
     <section style="margin: 0 20px;">
       <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 12px;">
-        <i class="fa-solid fa-sitemap" style="color: var(--accent-gold); margin-left: 6px;"></i>مستويات الفريق
+        <i class="bi bi-diagram-3-fill" style="color: var(--accent-gold); margin-left: 6px;"></i>مستويات الفريق
       </h3>
 
       <!-- Level 1 Card -->
@@ -114,7 +114,7 @@
     <!-- Referred Users List -->
     <section class="card-box" style="margin: 20px;">
       <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 12px;">
-        <i class="fa-solid fa-list" style="margin-left: 6px; color: var(--accent-blue);"></i>قائمة الأعضاء المدعوين
+        <i class="bi bi-list-ul" style="margin-left: 6px; color: var(--accent-blue);"></i>قائمة الأعضاء المدعوين
       </h3>
       <div id="referredUsersList" style="font-size: 0.85rem; color: var(--text-secondary);">
         جاري جلب القائمة من السحابة...
@@ -125,19 +125,19 @@
   <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
-      <i class="fa-solid fa-house"></i>
+      <i class="bi bi-house-fill"></i>
       <span>الرئيسية</span>
     </a>
     <a href="tasks.html" class="nav-item">
-      <i class="fa-solid fa-list-check"></i>
+      <i class="bi bi-check2-square"></i>
       <span>المهام</span>
     </a>
     <a href="team.html" class="nav-item active">
-      <i class="fa-solid fa-users"></i>
+      <i class="bi bi-people-fill"></i>
       <span>الفريق</span>
     </a>
     <a href="vip.html" class="nav-item">
-      <i class="fa-solid fa-crown"></i>
+      <i class="bi bi-award-fill"></i>
       <span>VIP</span>
     </a>
   </nav>
@@ -147,7 +147,6 @@
 
   <!-- Team Controller Script -->
   <script>
-    // Copy Text Helper
     function copyInputText(inputId, successMsg) {
       const inputEl = document.getElementById(inputId);
       if (!inputEl || !inputEl.value) return;
@@ -161,7 +160,6 @@
       });
     }
 
-    // Load Team Data
     window.addEventListener('DOMContentLoaded', async () => {
       const activeUsername = localStorage.getItem('currentUser');
       if (!activeUsername) {
@@ -178,32 +176,26 @@
           return;
         }
 
-        // Set Referral Code and Link
         const myCode = user.referralCode || generateReferralCode();
         document.getElementById('myReferralCode').value = myCode;
         
         const baseUrl = window.location.origin + window.location.pathname.replace('team.html', 'register.html');
         document.getElementById('myReferralLink').value = `${baseUrl}?ref=${myCode}`;
 
-        // Calculate Level 1 Referrals
         const level1Members = db.users.filter(u => u.invitedBy === user.username);
         const level1Usernames = level1Members.map(u => u.username);
 
-        // Calculate Level 2 Referrals
         const level2Members = db.users.filter(u => u.invitedBy && level1Usernames.includes(u.invitedBy));
         const level2Usernames = level2Members.map(u => u.username);
 
-        // Calculate Level 3 Referrals
         const level3Members = db.users.filter(u => u.invitedBy && level2Usernames.includes(u.invitedBy));
 
-        // Update UI Stats
         const totalMembersCount = level1Members.length + level2Members.length + level3Members.length;
         document.getElementById('totalTeamMembers').innerText = totalMembersCount;
         document.getElementById('lvl1Count').innerText = level1Members.length;
         document.getElementById('lvl2Count').innerText = level2Members.length;
         document.getElementById('lvl3Count').innerText = level3Members.length;
 
-        // Calculate estimated team deposit commissions
         let teamDeposits = 0;
         level1Members.forEach(m => teamDeposits += (parseFloat(m.totalDeposit || 0) * 0.10));
         level2Members.forEach(m => teamDeposits += (parseFloat(m.totalDeposit || 0) * 0.03));
@@ -211,7 +203,6 @@
 
         document.getElementById('totalTeamCommission').innerText = '$' + teamDeposits.toFixed(2);
 
-        // Render Direct Referred Users List
         const listContainer = document.getElementById('referredUsersList');
         if (level1Members.length === 0) {
           listContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 12px;">لا يوجد أعضاء منضمين عبر كود الدعوة الخاص بك حتى الآن.</div>';
@@ -221,7 +212,7 @@
             const maskedUsername = m.username.length > 4 ? m.username.substring(0, 3) + '****' + m.username.slice(-2) : m.username;
             html += `
               <div style="display: flex; justify-content: space-between; padding: 8px 12px; background-color: var(--bg-main); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-                <span><i class="fa-solid fa-user-check" style="color: var(--accent-green); margin-left:6px;"></i>${maskedUsername}</span>
+                <span><i class="bi bi-person-check-fill" style="color: var(--accent-green); margin-left:6px;"></i>${maskedUsername}</span>
                 <span style="color: var(--accent-gold);">${m.vip || 'VIP0'}</span>
               </div>
             `;
