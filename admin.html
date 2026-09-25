@@ -66,7 +66,7 @@
             <tr>
               <th>المستخدم</th>
               <th>المبلغ</th>
-              <th>TXID</th>
+              <th>TXID / Hash</th>
               <th>الإجراء</th>
             </tr>
           </thead>
@@ -111,23 +111,12 @@
     async function loadAdminData() {
       try {
         const db = await getCloudDB();
-        if (!db) {
+        if (!db || !db.users) {
           document.getElementById("usersListContainer").innerHTML = `<div style="text-align: center; color: red;">فشل الاتصال بقاعدة البيانات</div>`;
           return;
         }
 
-        // استخراج المستخدمين بمرونة تامة بغض النظر عن مكان تخزينهم في الـ JSONBin
-        let usersList = [];
-        if (Array.isArray(db)) {
-          usersList = db;
-        } else if (db.users && Array.isArray(db.users)) {
-          usersList = db.users;
-        } else {
-          // البحث عن أي مصفوفة داخل كائن القاعدة
-          const foundKey = Object.keys(db).find(k => Array.isArray(db[k]));
-          if (foundKey) usersList = db[foundKey];
-        }
-
+        const usersList = db.users || [];
         const depositReqs = db.depositRequests || [];
         const withdrawReqs = db.withdrawRequests || [];
 
@@ -147,9 +136,9 @@
           pendingDeposits.forEach((req) => {
             depositTbody.innerHTML += `
               <tr>
-                <td>${req.username || req.name || 'مجهول'}</td>
+                <td>${req.username || 'مجهول'}</td>
                 <td>${req.amount || 0}</td>
-                <td>${req.txid || '-'}</td>
+                <td>${req.txHash || req.txid || '-'}</td>
                 <td>
                   <div class="action-btns">
                     <button class="btn-approve" onclick="handleDeposit('${req.id}', 'approve')">قبول</button>
@@ -170,7 +159,7 @@
           pendingWithdraws.forEach((req) => {
             withdrawTbody.innerHTML += `
               <tr>
-                <td>${req.username || req.name || 'مجهول'}</td>
+                <td>${req.username || 'مجهول'}</td>
                 <td>${req.amount || 0}</td>
                 <td>${req.address ? req.address.substring(0,6) + '...' : '-'}</td>
                 <td>
@@ -184,15 +173,15 @@
           });
         }
 
-        // عرض قائمة المستخدمين بوضوح تام
+        // عرض قائمة المستخدمين (تظهر الأسماء والأرصدة والمستويات مباشرة)
         const usersContainer = document.getElementById("usersListContainer");
         usersContainer.innerHTML = "";
         if (usersList.length === 0) {
           usersContainer.innerHTML = `<div style="text-align: center; color: var(--text-secondary);">لا يوجد مستخدمون مسجلون حالياً</div>`;
         } else {
-          usersList.forEach((u, index) => {
-            const uname = u.username || u.name || u.email || `مستخدم_${index + 1}`;
-            const ubal = (u.balance || 0).toFixed(2);
+          usersList.forEach((u) => {
+            const uname = u.username || 'مستخدم';
+            const ubal = Number(u.balance || 0).toFixed(2);
             const uvip = u.vip || 'VIP0';
             
             usersContainer.innerHTML += `
@@ -212,8 +201,55 @@
         }
       } catch (err) {
         console.error(err);
-        document.getElementById("usersListContainer").innerHTML = `<div style="text-align: center; color: red;">حدث خطأ: ${err.message}</div>`;
       }
+    }
+
+    async function handleDeposit(reqId, action) {
+      const db = await getCloudDB();
+      if (!db.depositRequests) return;
+      const reqIndex = db.depositRequests.findIndex(r => r.id === reqId);
+      if (reqIndex === -1) return;
+
+      const req = db.depositRequests[reqIndex];
+      const userIndex = db.users.findIndex(u => u.username === req.username);
+
+      if (action === 'approve') {
+        if (userIndex !== -1) {
+          db.users[userIndex].balance = Number(db.users[userIndex].balance || 0) + Number(req.amount);
+        }
+        req.status = 'approved';
+        alert("تمت الموافقة على الإيداع.");
+      } else {
+        req.status = 'rejected';
+        alert("تم رفض طلب الإيداع.");
+      }
+
+      await updateCloudDB(db);
+      loadAdminData();
+    }
+
+    async function handleWithdraw(reqId, action) {
+      const db = await getCloudDB();
+      if (!db.withdrawRequests) return;
+      const reqIndex = db.withdrawRequests.findIndex(r => r.id === reqId);
+      if (reqIndex === -1) return;
+
+      const req = db.withdrawRequests[reqIndex];
+      const userIndex = db.users.findIndex(u => u.username === req.username);
+
+      if (action === 'approve') {
+        req.status = 'approved';
+        alert("تمت الموافقة على السحب.");
+      } else {
+        if (userIndex !== -1) {
+          db.users[userIndex].balance = Number(db.users[userIndex].balance || 0) + Number(req.amount);
+        }
+        req.status = 'rejected';
+        alert("تم رفض السحب وإعادة المبلغ.");
+      }
+
+      await updateCloudDB(db);
+      loadAdminData();
     }
 
     async function modifyUserBalance(username) {
@@ -226,12 +262,10 @@
       }
 
       const db = await getCloudDB();
-      let targetList = Array.isArray(db) ? db : db.users;
-      if (!targetList) return;
-
-      const userIndex = targetList.findIndex(u => (u.username || u.name || u.email) === username);
+      if (!db.users) return;
+      const userIndex = db.users.findIndex(u => u.username === username);
       if (userIndex !== -1) {
-        targetList[userIndex].balance = newBalance;
+        db.users[userIndex].balance = newBalance;
         await updateCloudDB(db);
         alert("تم تحديث الرصيد وحفظه في JSONBin بنجاح!");
         loadAdminData();
@@ -239,16 +273,14 @@
     }
 
     async function modifyUserVip(username) {
-      const newVip = prompt(`أدخل مستوى الـ VIP الجديد للمستخدم ${username}:`);
+      const newVip = prompt(`أدخل مستوى الـ VIP الجديد للمستخدم ${username} (مثال: VIP1, VIP2):`);
       if (!newVip) return;
 
       const db = await getCloudDB();
-      let targetList = Array.isArray(db) ? db : db.users;
-      if (!targetList) return;
-
-      const userIndex = targetList.findIndex(u => (u.username || u.name || u.email) === username);
+      if (!db.users) return;
+      const userIndex = db.users.findIndex(u => u.username === username);
       if (userIndex !== -1) {
-        targetList[userIndex].vip = newVip.trim().toUpperCase();
+        db.users[userIndex].vip = newVip.trim().toUpperCase();
         await updateCloudDB(db);
         alert("تم تحديث مستوى VIP وحفظه في JSONBin بنجاح!");
         loadAdminData();
