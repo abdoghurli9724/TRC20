@@ -119,8 +119,9 @@
   <div style="padding: 10px 16px; background: rgba(11, 16, 33, 0.95); border-bottom: 1px solid var(--border-color);">
     <div class="ticker-bar" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: var(--radius-sm); font-size: 0.85rem; overflow: hidden;">
       <i class="bi bi-megaphone-fill" style="color: var(--accent-gold); flex-shrink: 0;"></i>
+      <!-- أضفنا id="topTickerText" لتحديثه ديناميكياً من الأدمن -->
       <marquee behavior="scroll" direction="right" scrollamount="4" style="width: 100%; color: var(--text-main);">
-        <span>قام المستخدم 09***432 بسحب $150.00 بنجاح &nbsp;&nbsp;&nbsp;...&nbsp;&nbsp;&nbsp; قام المستخدم 08***911 بسحب $45.50 بنجاح &nbsp;&nbsp;&nbsp;...&nbsp;&nbsp;&nbsp; مرحباً بك في منصة VirtualMall الرسمية!</span>
+        <span id="topTickerText">مرحباً بك في منصة VirtualMall الرسمية!</span>
       </marquee>
     </div>
   </div>
@@ -195,8 +196,8 @@
       </div>
   </div>
 
-  <!-- Floating Telegram Support Button -->
-  <a href="https://t.me" target="_blank" class="floating-support-btn" title="الدعم الفني" style="position: fixed; bottom: 90px; left: 20px; background: var(--accent-blue); color: #fff; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 99;">
+  <!-- Floating Telegram Support Button (أضفنا id="telegramSupportBtn" لربط الرابط برمجياً) -->
+  <a id="telegramSupportBtn" href="https://t.me" target="_blank" class="floating-support-btn" title="الدعم الفني" style="position: fixed; bottom: 90px; left: 20px; background: var(--accent-blue); color: #fff; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 99;">
     <i class="bi bi-telegram" style="font-size: 1.4rem;"></i>
   </a>
 
@@ -276,6 +277,19 @@
         document.getElementById('vipRankText').innerText = user.vip || 'VIP0';
         document.getElementById('totalDepositVal').innerText = '$' + parseFloat(user.totalDeposit || 0).toFixed(2);
         document.getElementById('availableBalanceVal').innerText = '$' + parseFloat(user.balance || 0).toFixed(2);
+
+        // جلب إعدادات الموقع العامة (النص العلوي ورابط التلجرام المعرفين من قبل الـ Admin)
+        if (typeof getAppSettings === 'function') {
+          const settings = await getAppSettings();
+          if (settings) {
+            if (settings.topText) {
+              document.getElementById('topTickerText').innerText = settings.topText;
+            }
+            if (settings.telegramLink) {
+              document.getElementById('telegramSupportBtn').href = settings.telegramLink;
+            }
+          }
+        }
 
         // التحقق مما إذا كان المستخدم هو الأدمن لإظهار زر لوحة التحكم في الهيدر العلوي
         if (user.username === "admin") {
