@@ -96,7 +96,7 @@
         to { transform: scale(1); opacity: 1; }
     }
 
-    /* تنسيق الشريط العلوي المتحرك مع إعادة التشغيل من البداية بشكل متصل */
+    /* تنسيق الشريط العلوي المتحرك */
     .modern-ticker-container {
       padding: 10px 16px;
       background: rgba(11, 16, 33, 0.95);
@@ -112,22 +112,10 @@
       border-radius: var(--radius-sm);
       overflow: hidden;
     }
-    .ticker-wrapper {
-      overflow: hidden;
-      width: 100%;
-      white-space: nowrap;
-      position: relative;
-    }
     #topTickerText {
-      display: inline-block;
-      animation: infiniteScroll 30s linear infinite;
       color: var(--text-main, #f8fafc);
       font-size: 0.82rem;
       font-weight: 600;
-    }
-    @keyframes infiniteScroll {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
     }
   </style>
 </head>
@@ -149,13 +137,13 @@
     </div>
   </header>
 
-  <!-- Ticker Bar (شريط متحرك متصل) -->
+  <!-- Ticker Bar (شريط متحرك من اليسار لليمين مع إعادة التلقائية) -->
   <div class="modern-ticker-container">
     <div class="ticker-box">
       <i class="bi bi-megaphone-fill" style="color: var(--accent-gold); flex-shrink: 0;"></i>
-      <div class="ticker-wrapper">
+      <marquee behavior="scroll" direction="right" scrollamount="4" style="width: 100%;">
         <span id="topTickerText">مرحباً بك في منصة Maliqa Online الرسمية!</span>
-      </div>
+      </marquee>
     </div>
   </div>
 
