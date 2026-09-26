@@ -96,7 +96,7 @@
         to { transform: scale(1); opacity: 1; }
     }
 
-    /* شريط الإشعارات المتحرك بوضوح وبدون أي تأخير */
+    /* شريط الإشعارات المتحرك من اليمين لليسار للنصوص الإنجليزية */
     .modern-ticker-container {
       padding: 10px 16px;
       background: rgba(11, 16, 33, 0.95);
@@ -126,13 +126,15 @@
       font-size: 0.85rem;
       font-weight: 600;
       white-space: nowrap;
-      padding-left: 100%;
-      animation: tickerScroll 30s linear infinite;
+      position: absolute;
+      will-change: transform;
+      /* يبدأ من خارج اليمين (100%) ويتحرك لليسار (-100%) */
+      animation: tickerRightToLeft 30s linear infinite;
     }
 
-    @keyframes tickerScroll {
+    @keyframes tickerRightToLeft {
       0% {
-        transform: translateX(0);
+        transform: translateX(100%);
       }
       100% {
         transform: translateX(-100%);
@@ -161,7 +163,7 @@
     <div class="ticker-box">
       <i class="bi bi-megaphone-fill" style="color: var(--accent-gold); flex-shrink: 0; z-index: 2; background: rgba(59, 130, 246, 0.1); padding-left: 5px;"></i>
       <div class="ticker-wrap">
-        <div id="topTickerText">مرحباً بك في منصة Maliqa Online الرسمية!</div>
+        <div id="topTickerText" dir="ltr">Welcome to Maliqa Online Official Platform!</div>
       </div>
     </div>
   </div>
@@ -271,6 +273,7 @@
         const cancelBtn = document.getElementById('vipModalCancelBtn');
         const confirmBtn = document.getElementById('vipModalConfirmBtn');
         
+        confirmDir = confirmText;
         confirmBtn.innerText = confirmText;
         cancelBtn.style.display = showCancel ? 'block' : 'none';
 
