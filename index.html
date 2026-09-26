@@ -96,7 +96,7 @@
         to { transform: scale(1); opacity: 1; }
     }
 
-    /* تنسيق الشريط المتحرك المضمون 100% بدون اختفاء */
+    /* شريط الإشعارات المتحرك بالـ CSS النقي (بدون Marquee لمنع الاختفاء تماماً) */
     .modern-ticker-container {
       padding: 10px 16px;
       background: rgba(11, 16, 33, 0.95);
@@ -117,11 +117,27 @@
       width: 100%;
       overflow: hidden;
       white-space: nowrap;
+      position: relative;
+      height: 24px;
     }
     #topTickerText {
       color: var(--text-main, #f8fafc);
       font-size: 0.85rem;
       font-weight: 600;
+      position: absolute;
+      white-space: nowrap;
+      will-change: transform;
+      /* حركة من اليمين إلى اليسار بشكل مستقر ودائم */
+      animation: tickerAnimation 18s linear infinite;
+    }
+
+    @keyframes tickerAnimation {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
     }
   </style>
 </head>
@@ -134,31 +150,27 @@
       Online<span>Maliqa</span>
     </div>
     <div style="display: flex; align-items: center; gap: 12px;">
-      <!-- زر لوحة الأدمن (يتم حقنه برمجياً هنا إذا كان المستخدم هو الأدمن) -->
       <div id="adminNavBtnContainer"></div>
-
       <div class="cart-icon-btn" onclick="window.location.href='tasks.html'" style="cursor: pointer; font-size: 1.2rem; color: var(--text-main);">
         <i class="bi bi-cart3"></i>
       </div>
     </div>
   </header>
 
-  <!-- Ticker Bar (شريط متحرك ثابت ولا يختفي نهائياً) -->
+  <!-- Ticker Bar -->
   <div class="modern-ticker-container">
     <div class="ticker-box">
-      <i class="bi bi-megaphone-fill" style="color: var(--accent-gold); flex-shrink: 0;"></i>
+      <i class="bi bi-megaphone-fill" style="color: var(--accent-gold); flex-shrink: 0; z-index: 2; background: rgba(59, 130, 246, 0.1); padding-left: 5px;"></i>
       <div class="ticker-wrap">
-        <!-- تم تغيير direction إلى right لكي يبدأ النص من اليمين ويتجه نحو اليسار ببطء -->
-        <marquee direction="right" scrollamount="3" id="topTickerText">مرحباً بك في منصة Maliqa Online الرسمية!</marquee>
+        <div id="topTickerText">مرحباً بك في منصة Maliqa Online الرسمية!</div>
       </div>
     </div>
   </div>
 
   <div class="container" style="padding: 20px;">
-    <!-- Main Balance Card (Glassmorphism) -->
+    <!-- Main Balance Card -->
     <div class="glass-card" style="text-align: center; position: relative; overflow: hidden;">
       
-      <!-- User Info & VIP Badge Row -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;">
         <div id="displayUsername" style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.95rem;">
           <i class="bi bi-person-circle" style="color: var(--accent-blue); font-size: 1.2rem;"></i>
@@ -170,7 +182,6 @@
         </div>
       </div>
 
-      <!-- Balances Grid -->
       <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 4px;">الرصيد المتاح</p>
       <h1 id="availableBalanceVal" style="font-size: 2.2rem; font-weight: 900; color: var(--accent-gold); margin-bottom: 16px;">$0.00</h1>
       
@@ -181,7 +192,6 @@
         </div>
       </div>
 
-      <!-- Quick Actions Grid -->
       <div class="actions-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
         <a href="deposit.html" class="action-btn" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px; background: var(--bg-secondary); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
           <i class="bi bi-wallet2" style="font-size: 1.2rem; color: var(--accent-green);"></i>
@@ -202,7 +212,6 @@
       </div>
     </div>
 
-    <!-- Logout Strip -->
     <div style="margin-top: 20px;">
       <button id="logoutBtn" style="width: 100%; padding: 12px; background-color: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; border-radius: var(--radius-md); font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; transition: var(--transition);">
         <i class="bi bi-box-arrow-right"></i>
@@ -306,7 +315,7 @@
         document.getElementById('totalDepositVal').innerText = '$' + parseFloat(user.totalDeposit || 0).toFixed(2);
         document.getElementById('availableBalanceVal').innerText = '$' + parseFloat(user.balance || 0).toFixed(2);
 
-        // جلب الإعدادات العامة من قاعدة البيانات السحابية مباشرة
+        // جلب الإعدادات بأمان تام بدون التأثير على حركة النص
         const db = await getCloudDB();
         if (db) {
           if (db.topBannerText) {
@@ -317,7 +326,6 @@
           }
         }
 
-        // التحقق مما إذا كان المستخدم هو الأدمن لإظهار زر لوحة التحكم في الهيدر العلوي
         if (user.username === "admin") {
           const adminContainer = document.getElementById('adminNavBtnContainer');
           if (adminContainer) {
@@ -335,7 +343,6 @@
       }
     });
 
-    // Logout Handler using Custom Modal
     document.getElementById('logoutBtn').addEventListener('click', () => {
       showCustomModal(
         "تسجيل الخروج",
