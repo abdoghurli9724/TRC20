@@ -96,7 +96,7 @@
         to { transform: scale(1); opacity: 1; }
     }
 
-    /* شريط الإشعارات المتحرك بالـ CSS النقي (بدون Marquee لمنع الاختفاء تماماً) */
+    /* شريط الإشعارات المحسّن بدون تأخير وبسلسلة جيدة */
     .modern-ticker-container {
       padding: 10px 16px;
       background: rgba(11, 16, 33, 0.95);
@@ -121,22 +121,22 @@
       height: 24px;
     }
     #topTickerText {
+      display: inline-block;
       color: var(--text-main, #f8fafc);
       font-size: 0.85rem;
       font-weight: 600;
-      position: absolute;
       white-space: nowrap;
       will-change: transform;
-      /* حركة بطيئة جداً من اليسار لليمين (مدة 28 ثانية للحركة الكاملة) */
-      animation: tickerAnimationFromLeft 200s linear infinite;
+      padding-right: 100%; /* يبدأ النص مباشرة من حافة الإطار */
+      animation: smoothTicker 25s linear infinite;
     }
 
-    @keyframes tickerAnimationFromLeft {
+    @keyframes smoothTicker {
       0% {
-        transform: translateX(-100%);
+        transform: translate3d(0, 0, 0);
       }
       100% {
-        transform: translateX(100%);
+        transform: translate3d(-100%, 0, 0);
       }
     }
   </style>
