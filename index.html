@@ -127,16 +127,16 @@
       position: absolute;
       white-space: nowrap;
       will-change: transform;
-      /* حركة من اليمين إلى اليسار بشكل مستقر ودائم */
-      animation: tickerAnimation 18s linear infinite;
+      /* حركة بطيئة جداً من اليسار لليمين (مدة 28 ثانية للحركة الكاملة) */
+      animation: tickerAnimationFromLeft 28s linear infinite;
     }
 
-    @keyframes tickerAnimation {
+    @keyframes tickerAnimationFromLeft {
       0% {
-        transform: translateX(100%);
+        transform: translateX(-100%);
       }
       100% {
-        transform: translateX(-100%);
+        transform: translateX(100%);
       }
     }
   </style>
