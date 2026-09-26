@@ -270,6 +270,26 @@
 
     function renderTasksPage() {
       const userVip = currentUserObj.vip || "VIP0";
+      
+      // منع عرض المهام لمستخدمي VIP0 وعرض رسالة ترقية بديلة
+      if (userVip === "VIP0") {
+        document.getElementById('userVipText').innerText = userVip;
+        document.getElementById('taskProgressText').innerText = `0 / 0`;
+        
+        const container = document.getElementById('tasksContainer');
+        container.innerHTML = `
+          <div style="text-align: center; padding: 40px 20px; background: var(--bg-card); border-radius: var(--radius-md); border: 1px solid var(--border-color); margin: 0 20px;">
+            <i class="bi bi-lock-fill" style="font-size: 40px; color: var(--accent-gold); margin-bottom: 15px; display: inline-block;"></i>
+            <h3 style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 8px;">لا توجد مهام متاحة لرتبة VIP0</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px; line-height: 1.5;">عذراً، الباقة المجانية لا تتضمن مهام يومية. يرجى ترقية حسابك إلى إحدى باقات VIP للبدء في إنجاز المهام وجني الأرباح.</p>
+            <a href="vip.html" style="background: linear-gradient(135deg, #f39c12, #d68910); color: #111; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 0.9rem; font-weight: bold; text-decoration: none; display: inline-block;">
+              ترقية الحساب الآن
+            </a>
+          </div>
+        `;
+        return;
+      }
+
       const config = cloudVipConfig[userVip] || { dailyLimit: 2, rewardPerTask: 1.00 };
 
       document.getElementById('userVipText').innerText = userVip;
