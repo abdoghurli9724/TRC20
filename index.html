@@ -96,7 +96,7 @@
         to { transform: scale(1); opacity: 1; }
     }
 
-    /* تنسيق الشريط المتحرك الجديد (من اليسار إلى اليمين ببطء وبدون اختفاء) */
+    /* تنسيق الشريط المتحرك المضمون 100% بدون اختفاء */
     .modern-ticker-container {
       padding: 10px 16px;
       background: rgba(11, 16, 33, 0.95);
@@ -117,21 +117,11 @@
       width: 100%;
       overflow: hidden;
       white-space: nowrap;
-      position: relative;
     }
     #topTickerText {
-      display: inline-block;
-      /* الحركة من اليسار إلى اليمين ببطء (35 ثانية) ومستقرة تماماً */
-      animation: tickerLeftToRight 35s linear infinite;
       color: var(--text-main, #f8fafc);
       font-size: 0.85rem;
       font-weight: 600;
-    }
-
-    /* اتجاه الحركة من اليسار إلى اليمين */
-    @keyframes tickerLeftToRight {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
     }
   </style>
 </head>
@@ -153,12 +143,13 @@
     </div>
   </header>
 
-  <!-- Ticker Bar (شريط متحرك حديث ومستقر تماماً) -->
+  <!-- Ticker Bar (شريط متحرك ثابت ولا يختفي نهائياً) -->
   <div class="modern-ticker-container">
     <div class="ticker-box">
       <i class="bi bi-megaphone-fill" style="color: var(--accent-gold); flex-shrink: 0;"></i>
       <div class="ticker-wrap">
-        <span id="topTickerText">مرحباً بك في منصة Maliqa Online الرسمية!</span>
+        <!-- استخدام marquee للتحكم بالحركة ببطء من اليسار إلى اليمين وبدون أي مشاكل اختفاء -->
+        <marquee direction="left" scrollamount="3" id="topTickerText">مرحباً بك في منصة Maliqa Online الرسمية!</marquee>
       </div>
     </div>
   </div>
